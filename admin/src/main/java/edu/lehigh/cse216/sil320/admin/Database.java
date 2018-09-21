@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.ArrayList;
 
 public class Database {
@@ -107,35 +106,22 @@ public class Database {
     static Database getDatabase(String db_url) {
         // Create an un-configured Database object
         Database db = new Database();
-        // Give the Database object a connection, fail if we cannot get one
-        //old one
-        /*
-        try {
-            Connection conn = DriverManager.getConnection("jdbc:postgresql://" + ip + ":" + port + "/", user, pass);
-            if (conn == null) {
-                System.err.println("Error: DriverManager.getConnection() returned a null object");
-                return null;
-            }
-            db.mConnection = conn;
-        } catch (SQLException e) {
-            System.err.println("Error: DriverManager.getConnection() threw a SQLException");
-            e.printStackTrace();
-            return null;
-        }*/
-
-        // Give the Database object a connection, fail if we cannot get one
+        System.out.println(db_url);
         try {
             Class.forName("org.postgresql.Driver");
             URI dbUri = new URI(db_url);
+            System.out.println(dbUri);
             String username = dbUri.getUserInfo().split(":")[0];
             String password = dbUri.getUserInfo().split(":")[1];
             String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
             Connection conn = DriverManager.getConnection(dbUrl, username, password);
+            
             if (conn == null) {
                 System.err.println("Error: DriverManager.getConnection() returned a null object");
-                return null;
+            return null;
             }
-            db.mConnection = conn;
+    
+        db.mConnection = conn;
         } catch (SQLException e) {
             System.err.println("Error: DriverManager.getConnection() threw a SQLException");
             e.printStackTrace();
@@ -146,7 +132,8 @@ public class Database {
         } catch (URISyntaxException s) {
             System.out.println("URI Syntax Error");
             return null;
-        }
+        }  
+
         // Attempt to create all of our prepared statements.  If any of these 
         // fail, the whole getDatabase() call should fail
         try {
