@@ -27,10 +27,10 @@ public class App {
         System.out.println("  [-] Delete a row");
         System.out.println("  [+] Insert a new row");
         System.out.println("  [~] Update a row");
+        System.out.println("  [&] Add Like to a row");
         System.out.println("  [q] Quit Program");
         System.out.println("  [?] Help (this message)");
     }
-
     /**
      * Ask the user to enter a menu option; repeat until we get a valid option
      * 
@@ -40,7 +40,7 @@ public class App {
      */
     static char prompt(BufferedReader in) {
         // The valid actions:
-        String actions = "TD1*-+~q?";
+        String actions = "TD1*-+~q?&";
 
         // We repeat until a valid single-character option is selected        
         while (true) {
@@ -117,7 +117,7 @@ public class App {
         Database db = Database.getDatabase(db_url);
         if (db == null)
             return;
-
+        menu();
         // Start our basic command-line interpreter:
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
         while (true) {
@@ -140,8 +140,7 @@ public class App {
                     continue;
                 Database.RowData res = db.selectOne(id);
                 if (res != null) {
-                    System.out.println("  [" + res.mId + "] " + res.mSubject);
-                    System.out.println("  --> " + res.mMessage);
+                    System.out.println("  [" + res.mId + "] " + res.mMessage + " Like: " + res.mlikeCount);
                 }
             } else if (action == '*') {
                 ArrayList<Database.RowData> res = db.selectAll();
@@ -150,7 +149,7 @@ public class App {
                 System.out.println("  Current Database Contents");
                 System.out.println("  -------------------------");
                 for (Database.RowData rd : res) {
-                    System.out.println("  [" + rd.mId + "] " + rd.mSubject);
+                    System.out.println("  [" + rd.mId + "] " + rd.mMessage + " Like: " + rd.mlikeCount);
                 }
             } else if (action == '-') {
                 int id = getInt(in, "Enter the row ID");
@@ -161,11 +160,10 @@ public class App {
                     continue;
                 System.out.println("  " + res + " rows deleted");
             } else if (action == '+') {
-                String subject = getString(in, "Enter the subject");
                 String message = getString(in, "Enter the message");
-                if (subject.equals("") || message.equals(""))
+                if (message.equals(""))
                     continue;
-                int res = db.insertRow(subject, message);
+                int res = db.insertRow(message);
                 System.out.println(res + " rows added");
             } else if (action == '~') {
                 int id = getInt(in, "Enter the row ID :> ");
@@ -176,6 +174,12 @@ public class App {
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows updated");
+            } else if (action == '&'){
+                int id = getInt(in, "Enter the row ID :> ");
+                if (id == -1)
+                    continue;
+                int res = db.addLike(id);;
+                System.out.println(res + " Like added");
             }
         }
         // Always remember to disconnect from the database when the program 
