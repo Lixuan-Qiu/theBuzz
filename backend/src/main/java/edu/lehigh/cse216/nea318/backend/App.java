@@ -115,7 +115,7 @@ public class App {
             if (newId == -1) {
                 return gson.toJson(new StructuredResponse("error", "error performing insertion", null));
             } else {
-                return gson.toJson(new StructuredResponse("ok", "" + newId, null));
+                return gson.toJson(new StructuredResponse("ok", "New message id: " + newId, null));
             }
         });
 
@@ -134,7 +134,7 @@ public class App {
             if (result == -1) {
                 return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
             } else {
-                return gson.toJson(new StructuredResponse("ok", null, result));
+                return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is updated.", result));
             }
         });
 
@@ -152,7 +152,7 @@ public class App {
             if (result == -1) {
                 return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
             } else {
-                return gson.toJson(new StructuredResponse("ok", null, result));
+                return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is liked.", result));
             }
         });
 
@@ -172,7 +172,7 @@ public class App {
             if (result == -1) {
                 return gson.toJson(new StructuredResponse("error", "unable to delete row " + idx, null));
             } else {
-                return gson.toJson(new StructuredResponse("ok", null, null));
+                return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is deleted.", null));
             }
         });
     }

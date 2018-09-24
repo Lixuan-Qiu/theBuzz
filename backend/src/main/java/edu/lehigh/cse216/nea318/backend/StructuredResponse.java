@@ -17,7 +17,7 @@ public class StructuredResponse {
     /**
      * The message is only useful when this is an error, or when data is null.
      */
-    public String mMessage;
+    public String echoMessage;
 
     /**
      * Any JSON-friendly object can be referenced here, so that we can have a rich
@@ -35,7 +35,7 @@ public class StructuredResponse {
      */
     public StructuredResponse(String status, String message, Object data) {
         mStatus = (status != null) ? status : "invalid";
-        mMessage = message;
+        echoMessage = message;
         mData = data;
     }
 }

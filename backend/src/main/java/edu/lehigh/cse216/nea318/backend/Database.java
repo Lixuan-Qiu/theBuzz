@@ -74,11 +74,6 @@ public class Database {
         /**
          * Construct a RowData object by providing values for its fields
          */
-        public RowData(int id, String message) {
-            mId = id;
-            mMessage = message;
-            mlikeCount = 0;
-        }
 
         public RowData(int id, String message, int likeCount) {
             mId = id;
@@ -115,7 +110,8 @@ public class Database {
             System.out.println(dbUri);
             String username = dbUri.getUserInfo().split(":")[0];
             String password = dbUri.getUserInfo().split(":")[1];
-            String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath();
+            String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + ':' + dbUri.getPort() + dbUri.getPath()
+                    + "?sslmode=require";
             Connection conn = DriverManager.getConnection(dbUrl, username, password);
 
             if (conn == null) {
@@ -146,15 +142,14 @@ public class Database {
 
             // Note: no "IF NOT EXISTS" or "IF EXISTS" checks on table
             // creation/deletion, so multiple executions will cause an exception
-            db.mCreateTable = db.mConnection
-                    .prepareStatement("CREATE TABLE tblData (id SERIAL PRIMARY KEY, subject VARCHAR(50) "
-                            + "NOT NULL, message VARCHAR(500) NOT NULL)");
+            db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblData (id SERIAL PRIMARY KEY, "
+                    + "message VARCHAR(500) NOT NULL, likeCount INT NOT NULL)");
             db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
 
             // Standard CRUD operations
             db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id = ?");
-            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblData VALUES (default, ?, ?)");
-            db.mSelectAll = db.mConnection.prepareStatement("SELECT id, subject FROM tblData");
+            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblData VALUES (default, ?, 0)");
+            db.mSelectAll = db.mConnection.prepareStatement("SELECT id , message, likeCount FROM tblData");
             db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
             db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblData SET message = ? WHERE id = ?");
             // not sure
@@ -292,14 +287,13 @@ public class Database {
     }
 
     /* increase likeCount */
-    // TODO: update it to not use "selectOne"
     int addLike(int id) {
         int res = -1;
         RowData data = selectOne(id);
         int newCount = data.mlikeCount + 1;
         try {
-            mAddLike.setInt(1, id);
-            mAddLike.setInt(2, newCount);
+            mAddLike.setInt(1, newCount);
+            mAddLike.setInt(2, id);
             res = mAddLike.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
