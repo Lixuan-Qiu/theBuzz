@@ -73,11 +73,6 @@ public class Database {
         /**
          * Construct a RowData object by providing values for its fields
          */
-        public RowData(int id, String message) {
-            mId = id;
-            mMessage = message;
-            mlikeCount = 0;
-        }
 
         public RowData(int id, String message, int likeCount) {
             mId = id;
@@ -291,7 +286,6 @@ public class Database {
     }
 
     /* increase likeCount */
-    // TODO: update it to not use "selectOne"
     int addLike(int id) {
         int res = -1;
         RowData data = selectOne(id);
