@@ -7,7 +7,7 @@ class NewMessage {
      * The name of the DOM entry associated with NewMessage
      */
     private static readonly NAME = "NewMessage";
-
+    
     /**
      * Track if the Singleton has been initialized
      */
@@ -16,7 +16,7 @@ class NewMessage {
     /**
      * Initialize the NewMessage by creating its element in the DOM and 
      * configuring its buttons.  This needs to be called from any public static 
-     * method, to ensure that the Singleton is initialized before use
+     * method, to ensure that the Singleton is initialized before uses
      */
     private static init() {
         if (!NewMessage.isInit) {
@@ -66,10 +66,9 @@ class NewMessage {
     public static addMessage() {
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
-        let title = "" + $("#" + NewMessage.NAME + "-title").val();
         let msg = "" + $("#" + NewMessage.NAME + "-message").val();
-        if (title === "" || msg === "") {
-            window.alert("Error: title or message is not valid");
+        if (msg === "") {
+            window.alert("Error: message is not valid");
             return;
         }
         NewMessage.hide();
@@ -94,7 +93,7 @@ class NewMessage {
         // If we get an "ok" message, clear the form and refresh the main 
         // listing of messages
         if (data.mStatus === "ok") {
-            ElementList.refresh();
+            Message.refresh();
         }
         // Handle explicit errors with a detailed popup message
         else if (data.mStatus === "error") {

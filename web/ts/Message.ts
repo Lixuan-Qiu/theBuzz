@@ -15,21 +15,22 @@ class Message {
      * Singleton is initialized before use.
      */
     private static init() {
+        console.log(Message.isInit);
         if (!Message.isInit) {
             $("body").append('<div id="' + Message.NAME +
                 '"><h3>All Messages</h3><button id="' + Message.NAME +
-                '-showFormButton">Add Message</button><div id="' +
+                '-showFormButton">Add 1324132412 Message</button><div id="' +
                 Message.NAME + '-messageList"></div></div>');
             Message.isInit = true;
         }
-        $("#" + Message.NAME + "-showFormButton").click(NewMessage.addMessage());
+        $("#" + Message.NAME + "-showFormButton").click(NewMessage.addMessage);
 
     }
 
     /**
  * refresh() is the public method for updating the Message
  */
-public refresh() {
+public static refresh() {
     // Make sure the singleton is initialized
     Message.init();
     // Issue a GET, and then pass the result to update()

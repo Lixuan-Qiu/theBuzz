@@ -45,7 +45,7 @@ class EditMessage {
             type: "PUT", 
             url: backendUrl + "/like/" + id,
             dataType: "json",
-            success: message.refresh()
+            success: Message.refresh()
         });
     }
 
