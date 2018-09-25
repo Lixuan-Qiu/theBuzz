@@ -1,4 +1,11 @@
+/// <reference path="NewMessage.ts"/>
+var $: any;
+var editMessage: EditMessage;
+var message: Message;
+var newMessage: NewMessage;
 class Message {
+   
+
      /**
      * The name of the DOM entry associated with Message
      */
@@ -15,11 +22,11 @@ class Message {
      * Singleton is initialized before use.
      */
     private static init() {
-        console.log(Message.isInit);
+        console.log("test from message");
         if (!Message.isInit) {
             $("body").append('<div id="' + Message.NAME +
                 '"><h3>All Messages</h3><button id="' + Message.NAME +
-                '-showFormButton">Add 1324132412 Message</button><div id="' +
+                '-showFormButton">Add Message</button><div id="' +
                 Message.NAME + '-messageList"></div></div>');
             Message.isInit = true;
         }
@@ -32,11 +39,12 @@ class Message {
  */
 public static refresh() {
     // Make sure the singleton is initialized
+    console.log("test from message refresh");
     Message.init();
     // Issue a GET, and then pass the result to update()
     $.ajax({
         type: "GET",
-        url: backendUrl + "/messages",
+        url: "/messages",
         dataType: "json",
         success: Message.update
     });
@@ -47,6 +55,7 @@ public static refresh() {
  * Message
  */
 private static update(data: any) {
+    console.log(data);
     // create the new table of data
     let newHTML = "<table><tr><th>" + "Messages" + "</th>" + "<th>" + "Likes" + "</th></tr><tr>";
     for (let i = 0; i < data.mData.length; ++i) {

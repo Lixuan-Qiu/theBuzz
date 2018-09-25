@@ -1,8 +1,13 @@
 /**
  * NewMessage encapsulates all of the code for the form for adding an entry
  */
-class NewMessage {
+/// <reference path="EditMessage.ts"/>
+/// <reference path="Message.ts"/>
+var $: any;
 
+
+class NewMessage {
+    $: any;
     /**
      * The name of the DOM entry associated with NewMessage
      */
@@ -20,7 +25,7 @@ class NewMessage {
      */
     private static init() {
         if (!NewMessage.isInit) {
-            $("body").append(Handlebars.templates[NewMessage.NAME + ".hb"]());
+            //$("body").append(Handlebars.templates[NewMessage.NAME + ".hb"]());
             $("#" + NewMessage.NAME + "-OK").click(NewMessage.addMessage);
             $("#" + NewMessage.NAME + "-Close").click(NewMessage.hide);
             NewMessage.isInit = true;
@@ -76,7 +81,7 @@ class NewMessage {
         // onSubmitResponse
         $.ajax({
             type: "POST",
-            url: backendUrl + "/addMessage/",
+            url: "/addMessage",
             dataType: "json",
             data: JSON.stringify({ mMessage: msg }),
             success: NewMessage.onSubmitResponse

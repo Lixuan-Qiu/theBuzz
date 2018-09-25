@@ -1,7 +1,14 @@
 /**
  * EditMessage encapsulates all of the code for the form for editing an entry
  */
+/// <reference path="NewMessage.ts"/>
+/// <reference path="Message.ts"/>
+var $: any;
+var editMessage: EditMessage;
+var message: Message;
+var newMessage: NewMessage;
 class EditMessage {
+    $: any;
     /**
      * To initialize the object, we say what method of EditMessage should be
      * run in response to each of the form's buttons being clicked.
@@ -43,7 +50,7 @@ class EditMessage {
         let id = $(this).data("value");
         $.ajax({
             type: "PUT", 
-            url: backendUrl + "/like/" + id,
+            url: "/like/" + id,
             dataType: "json",
             success: Message.refresh()
         });
