@@ -20,6 +20,7 @@ public class Database {
      * A prepared statement for getting all data in the database
      */
     private PreparedStatement mSelectAll;
+    private PreparedStatement mSelectAll2;
 
     /**
      * A prepared statement for getting one row from the database
@@ -155,6 +156,7 @@ public class Database {
             // not sure
             db.mAddLike = db.mConnection.prepareStatement("UPDATE tblData SET likeCount = ? WHERE id = ?");
 
+            db.mSelectAll2 = db.mConnection.prepareStatement("SELECT * FROM tblData");
         } catch (SQLException e) {
             System.err.println("Error creating prepared statement");
             e.printStackTrace();
@@ -216,6 +218,21 @@ public class Database {
         ArrayList<RowData> res = new ArrayList<RowData>();
         try {
             ResultSet rs = mSelectAll.executeQuery();
+            while (rs.next()) {
+                res.add(new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount")));
+            }
+            rs.close();
+            return res;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    ArrayList<RowData> selectAll2() {
+        ArrayList<RowData> res = new ArrayList<RowData>();
+        try {
+            ResultSet rs = mSelectAll2.executeQuery();
             while (rs.next()) {
                 res.add(new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount")));
             }

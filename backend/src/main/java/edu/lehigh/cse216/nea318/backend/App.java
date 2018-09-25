@@ -1,10 +1,5 @@
 package edu.lehigh.cse216.nea318.backend;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.Map;
 
 // Import the Spark package, so that we can make use of the "get" function to 
@@ -13,9 +8,6 @@ import spark.Spark;
 
 // Import Google's JSON library
 import com.google.gson.*;
-
-import java.net.URI;
-import java.net.URISyntaxException;
 
 /**
  * For now, our app creates an HTTP server that can only get and add data.
@@ -76,6 +68,14 @@ public class App {
             return gson.toJson(new StructuredResponse("ok", null, database.selectAll()));
         });
 
+        // 2nd GET ALL for testing purpose
+        Spark.get("/messages/all", (request, response) -> {
+            // ensure status 200 OK, with a MIME type of JSON
+            response.status(200);
+            response.type("application/json");
+            return gson.toJson(new StructuredResponse("ok", null, database.selectAll2()));
+        });
+
         /////////////////////// GET SINGLE ROW///////////////////////
         // GET route that returns everything for a single row in the DataStore.
         // The ":id" suffix in the first parameter to get() becomes
@@ -115,7 +115,7 @@ public class App {
             if (newId == -1) {
                 return gson.toJson(new StructuredResponse("error", "error performing insertion", null));
             } else {
-                return gson.toJson(new StructuredResponse("ok", "New message id: " + newId, null));
+                return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
             }
         });
 
@@ -144,7 +144,6 @@ public class App {
             // If we can't get an ID or can't parse the JSON, Spark will send
             // a status 500
             int idx = Integer.parseInt(request.params("id"));
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
