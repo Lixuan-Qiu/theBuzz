@@ -15,52 +15,63 @@ public class Database {
      * null. Otherwise, there is a valid open connection
      */
     private Connection mConnection;
-
     /**
      * A prepared statement for getting all data in the database
      */
     private PreparedStatement mSelectAll;
-    private PreparedStatement mSelectAll2;
-
     /**
      * A prepared statement for getting one row from the database
      */
     private PreparedStatement mSelectOne;
-
     /**
      * A prepared statement for deleting a row from the database
      */
     private PreparedStatement mDeleteOne;
-
     /**
      * A prepared statement for inserting into the database
      */
     private PreparedStatement mInsertOne;
-
     /**
      * A prepared statement for updating a single row in the database
      */
     private PreparedStatement mUpdateOne;
-
     /*
-     * increase the amount of like by one
+     * increase the amount of like/dislike by one
      */
     private PreparedStatement mAddLike;
-
+    private PreparedStatement mAddDislike;
     /**
      * A prepared statement for creating the table in our database
      */
     private PreparedStatement mCreateTable;
-
     /**
      * A prepared statement for dropping the table in our database
      */
     private PreparedStatement mDropTable;
 
+    //all prepared statment for  User table
+    private PreparedStatement uSelectAll;
+    private PreparedStatement uSelectOne;
+    private PreparedStatement uDeleteOne;
+    private PreparedStatement uInsertOne;
+    private PreparedStatement uUpdatePassword;
+    private PreparedStatement uCreateTable;
+    private PreparedStatement uDropTable;
+    private PreparedStatement uUpdateProfile;
+
+    //all prepared statment for Comment table
+    private PreparedStatement cSelectAll;
+    private PreparedStatement cSelectOne;
+    private PreparedStatement cDeleteOne;
+    private PreparedStatement cInsertOne;
+    private PreparedStatement cUpdateOne;
+    private PreparedStatement cCreateTable;
+    private PreparedStatement cDropTable;
+
     /* data structure for message */
-    public static class RowData {
+    public static class message_RowData {
         /**
-         * The ID of this row of the database
+         * The ID of this message
          */
         int mId;
 
@@ -71,15 +82,79 @@ public class Database {
 
         // number of like
         int mlikeCount;
+        // number of dislike
+        int mdislikeCount;
 
+        // ID of the creator of this message
+        int uId;
         /**
          * Construct a RowData object by providing values for its fields
          */
 
-        public RowData(int id, String message, int likeCount) {
+        public message_RowData(int id, String message, int likeCount, int dislikeCount, int uid) {
             mId = id;
             mMessage = message;
             mlikeCount = likeCount;
+            mdislikeCount = dislikeCount;
+            uId = uid;
+        }
+    }
+    /* data structure for user table */
+    public static class user_RowData {
+        /**
+         * The ID of this user
+         */
+        int uId;
+
+        // the actual username 
+        String uUsername;
+
+        // the real name of the user
+        String uRealname;
+        // the comment on profile (user creates it themselves)
+        String uProfile;
+        // the email of the user
+        String uEmail;
+        // the salt
+        String uSalt;
+        // the password after hashing
+        String uPassword;
+        /**
+         * Construct a RowData object by providing values for its fields
+         */
+
+        public user_RowData(int uid, String username, String realname, String profile, String email, String salt, String password) {
+            uId = uid;
+            uUsername = username;
+            uRealname = realname;
+            uProfile = profile;
+            uEmail = email;
+            uSalt = salt;
+            uPassword = password;
+        }
+    }
+
+    /* data structure for comment table */
+    public static class comment_RowData {
+        // the id of the comment
+        int cId
+        /**
+         * The ID of the user that comment
+         */
+        int uId;
+        // the message id that commented on
+        int mId;
+        //the comment
+        String cComment;
+        /**
+         * Construct a RowData object by providing values for its fields
+         */
+
+        public comment_RowData(int cid, int uid, int id, int comment) {
+            cId = cid
+            uId = uid;
+            mId = id;
+            cComment = comment;
         }
     }
 
@@ -137,26 +212,45 @@ public class Database {
         // fail, the whole getDatabase() call should fail
         try {
             // NB: we can easily get ourselves in trouble here by typing the
-            // SQL incorrectly. We really should have things like "tblData"
+            // SQL incorrectly. We really should have things like "tblMessage"
             // as constants, and then build the strings for the statements
             // from those constants.
 
             // Note: no "IF NOT EXISTS" or "IF EXISTS" checks on table
             // creation/deletion, so multiple executions will cause an exception
-            db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblData (id SERIAL PRIMARY KEY, "
-                    + "message VARCHAR(500) NOT NULL, likeCount INT NOT NULL)");
-            db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
+            db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblMessage (id SERIAL PRIMARY KEY, "
+                    + "message VARCHAR(500) NOT NULL, likeCount INT NOT NULL, dislikeCount INT NOT NULL, uid INT NOT NULL)");
 
-            // Standard CRUD operations
-            db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id = ?");
-            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblData VALUES (default, ?, 0)");
-            db.mSelectAll = db.mConnection.prepareStatement("SELECT id , message, likeCount FROM tblData");
-            db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
-            db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblData SET message = ? WHERE id = ?");
-            // not sure
-            db.mAddLike = db.mConnection.prepareStatement("UPDATE tblData SET likeCount = ? WHERE id = ?");
+            db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (uid SERIAL PRIMARY KEY, "
+                    + "username VARCHAR(100) NOT NULL, realname VARCHAR(100) NOT NULL, profile VARCHAR(200) NOT NULL, "
+                    + "email VARCHAR(50), salt VARCHAR(200), password VARCHAR(400)");
+            db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblComment (cid SERIAL PRIMARY KEY, "
+                    + "uid INT NOT NULL, mid INT NOT NULL, comment VARCHAR(200) NOT NULL)");
 
-            db.mSelectAll2 = db.mConnection.prepareStatement("SELECT * FROM tblData");
+            db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblMessage");
+            db.uDropTable = db.mConnection.prepareStatement("DROP TABLE tblUser");
+            db.cDropTable = db.mConnection.prepareStatement("DROP TABLE tblComment");
+            // Standard CRUD operations for Message table
+            db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblMessage WHERE id = ?");
+            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblMessage VALUES (default, ?, 0, 0, ?)");
+            db.mSelectAll = db.mConnection.prepareStatement("SELECT id , message, likeCount, dislikeCount, uid FROM tblMessage");
+            db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblMessage WHERE id=?");
+            db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblMessage SET message = ? WHERE id = ?");
+            db.mAddLike = db.mConnection.prepareStatement("UPDATE tblMessage SET likeCount = ? WHERE id = ?");
+            db.mAddDislike = db.mConnection.prepareStatement("UPDATE tblMessage SET dislikeCount = ? WHERE id = ?");
+            // Standard CRUD operations for User table
+            db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblUser WHERE uid = ?");
+            db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO tblUser VALUES (default, ?, ?, "-", ?, ?, ?)");
+            db.uSelectAll = db.mConnection.prepareStatement("SELECT uid , username, realname, profile, email FROM tblUser");
+            db.uSelectOne = db.mConnection.prepareStatement("SELECT * from tblUser WHERE uid=?");
+            db.uUpdateProfile = db.mConnection.prepareStatement("UPDATE tblUser SET profile = ? WHERE uid = ?");
+            db.uUpdatePassword = db.mConnection.prepareStatement("UPDATE tblUser SET password = ? WHERE uid = ?");
+            // Standard CRUD operations for Comment table
+            db.cDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE cid = ?");
+            db.cInsertOne = db.mConnection.prepareStatement("INSERT INTO tblComment VALUES (default, ?, ?, ?)");
+            db.cSelectAll = db.mConnection.prepareStatement("SELECT cid , uid, mid, comment FROM tblMessage");
+            db.cSelectOne = db.mConnection.prepareStatement("SELECT * from tblComment WHERE cid=?");
+            db.cUpdateOne = db.mConnection.prepareStatement("UPDATE tblComment SET comment = ? WHERE cid = ?");
         } catch (SQLException e) {
             System.err.println("Error creating prepared statement");
             e.printStackTrace();
@@ -198,10 +292,11 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insertRow(String message) {
+    int insert_messageRow(String message, int uid) {
         int count = 0;
         try {
             mInsertOne.setString(1, message);
+            mInsertOne.setInt(4, uid);
             count += mInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -214,27 +309,12 @@ public class Database {
      * 
      * @return All rows, as an ArrayList
      */
-    ArrayList<RowData> selectAll() {
+    ArrayList<RowData> select_messageAll() {
         ArrayList<RowData> res = new ArrayList<RowData>();
         try {
             ResultSet rs = mSelectAll.executeQuery();
             while (rs.next()) {
-                res.add(new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount")));
-            }
-            rs.close();
-            return res;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    ArrayList<RowData> selectAll2() {
-        ArrayList<RowData> res = new ArrayList<RowData>();
-        try {
-            ResultSet rs = mSelectAll2.executeQuery();
-            while (rs.next()) {
-                res.add(new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount")));
+                res.add(new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount"), rs.getInt("dislikeCount"), rs.getInt("uid")));
             }
             rs.close();
             return res;
@@ -251,13 +331,13 @@ public class Database {
      * 
      * @return The data for the requested row, or null if the ID was invalid
      */
-    RowData selectOne(int id) {
+    RowData select_messageOne(int id) {
         RowData res = null;
         try {
             mSelectOne.setInt(1, id);
             ResultSet rs = mSelectOne.executeQuery();
             if (rs.next()) {
-                res = new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount"));
+                res = new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount"), rs.getInt("dislikeCount"), rs.getInt("uid"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -272,7 +352,7 @@ public class Database {
      * 
      * @return The number of rows that were deleted. -1 indicates an error.
      */
-    int deleteRow(int id) {
+    int delete_messageRow(int id) {
         int res = -1;
         try {
             mDeleteOne.setInt(1, id);
@@ -291,7 +371,7 @@ public class Database {
      * 
      * @return The number of rows that were updated. -1 indicates an error.
      */
-    int updateOne(int id, String message) {
+    int update_messageOne(int id, String message) {
         int res = -1;
         try {
             mUpdateOne.setString(1, message);
@@ -318,10 +398,25 @@ public class Database {
         return res;
     }
 
+    /* increase dislikeCount */
+    int addDislike(int id) {
+        int res = -1;
+        RowData data = selectOne(id);
+        int newCount = data.mdislikeCount + 1;
+        try {
+            mAddDislike.setInt(1, newCount);
+            mAddDislike.setInt(2, id);
+            res = mAddDislike.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
     /**
-     * Create tblData. If it already exists, this will print an error
+     * Create tblMessage. If it already exists, this will print an error
      */
-    void createTable() {
+    void create_messageTable() {
         try {
             mCreateTable.execute();
         } catch (SQLException e) {
@@ -330,14 +425,35 @@ public class Database {
     }
 
     /**
-     * Remove tblData from the database. If it does not exist, this will print an
+     * Remove tblMessage from the database. If it does not exist, this will print an
      * error.
      */
-    void dropTable() {
+    void drop_messageTable() {
         try {
             mDropTable.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Insert a row into the user database
+     * 
+     * @return The number of rows that were inserted
+     */
+    int insert_userRow(int uid, String username, String realname, String email, String password) {
+        int count = 0;
+        String salt = "";//create salt
+        try {
+            uInsertOne.setString(1, username);
+            uInsertOne.setString(2, realname);
+            uInsertOne.setString(4, email);
+            uInsertOne.setString(5, salt);
+            uInsertOne.setString(6, password);
+            count += uInsertOne.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 }
