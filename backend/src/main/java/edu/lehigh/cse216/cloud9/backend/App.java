@@ -68,6 +68,14 @@ public class App {
             return gson.toJson(new StructuredResponse("ok", null, database.selectAll()));
         });
 
+        // 2nd GET ALL for testing purpose
+        Spark.get("/messages/all", (request, response) -> {
+            // ensure status 200 OK, with a MIME type of JSON
+            response.status(200);
+            response.type("application/json");
+            return gson.toJson(new StructuredResponse("ok", null, database.selectAll2()));
+        });
+
         /////////////////////// GET SINGLE ROW///////////////////////
         // GET route that returns everything for a single row in the DataStore.
         // The ":id" suffix in the first parameter to get() becomes
@@ -103,7 +111,7 @@ public class App {
             response.status(200);
             response.type("application/json");
             // NB: createEntry checks for null title and message
-            int newId = database.insert_messageRow(req.mMessage);
+            int newId = database.insertRow(req.mMessage);
             if (newId == -1) {
                 return gson.toJson(new StructuredResponse("error", "error performing insertion", null));
             } else {
