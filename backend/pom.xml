@@ -89,7 +89,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>edu.lehigh.cse216.nea318.backend.App</mainClass>
+                            <mainClass>edu.lehigh.cse216.cloud9.backend.App</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
