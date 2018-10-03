@@ -190,22 +190,23 @@ public class App {
                 // a status 500
                 int idx = Integer.parseInt(request.params("id"));
                 // check if this guy already like/dislike or not
-                Database.vote_RowData vote = database.select_voteOne(req.uid, idx);
-                if (vote != 1) { // KOP
-                    if (vote == -1) {
+                Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
+                if (Vote.vote != 1) { 
+                    if (Vote.vote == -1) {
                         database.update_voteOne(1, req.uid, idx);
                         database.addDislike(idx, -1);
-                    } else if (vote == 0) {
+                    } else if (Vote.vote == 0) {
                         database.insert_voteRow(1, req.uid, idx);
                     }
                     int result = database.addLike(idx, 1);
                     if (result == -1) {
                         return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
                     } else {
-                        return gson
-                                .toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is liked.", result));
                     }
                 }
+                else
+                    return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is already disliked.", 0));
             } else {
                 return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
             }
@@ -224,22 +225,23 @@ public class App {
                 // a status 500
                 int idx = Integer.parseInt(request.params("id"));
                 // ensure status 200 OK, with a MIME type of JSON
-                Database.vote_RowData vote = database.select_voteOne(req.uid, idx);
-                if (vote != -1) { //// KOP vote is wrong
-                    if (vote == 1) {
+                Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
+                if (Vote.vote != -1) { 
+                    if (Vote.vote == 1) {
                         database.update_voteOne(-1, req.uid, idx);
                         database.addLike(idx, -1);
-                    } else if (vote == 0) {
+                    } else if (Vote.vote == 0) {
                         database.insert_voteRow(-1, req.uid, idx);
                     }
                     int result = database.addDislike(idx, 1);
                     if (result == -1) {
                         return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
                     } else {
-                        return gson
-                                .toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
                     }
                 }
+                else
+                    return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is already liked.", 0));
             } else {
                 return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
             }
@@ -285,13 +287,43 @@ public class App {
             // ensure status 200 OK, with a MIME type of JSON
             if (req.key == database.get_sessionKey(req.uid)) {
                 Database.user_RowData data = database.select_userOne(req.uid);
-                String profile = data.uProfile;
-                String email = data.uEmail;
-                String realname = data.uRealname;
-                String[] box = { realname, profile, email };
                 if (data == null) {
                     return gson.toJson(new StructuredResponse("error", "user_id: " + req.uid + " not found", null));
                 } else {
+                    String profile = data.uProfile;
+                    String email = data.uEmail;
+                    String realname = data.uRealname;
+                    String[] box = { realname, profile, email };
+                    return gson.toJson(new StructuredResponse("ok", null, box));
+                }
+            } else {
+                return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
+            }
+        });
+
+        /////////////////////// GET PROFILE OF THAT ID///////////////////////
+        // GET route that returns everything for a single row in the DataStore.
+        // The ":id" suffix in the first parameter to get() becomes
+        // request.params("id"), so that we can get the requested row ID. If
+        // ":id" isn't a number, Spark will reply with a status 500 Internal
+        // Server Error. Otherwise, we have an integer, and the only possible
+        // error is that it doesn't correspond to a row with data.
+        Spark.get("/profile/:id", (request, response) -> {
+            // parse request to SimpleRequest
+            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            response.status(200);
+            response.type("application/json");
+            // ensure status 200 OK, with a MIME type of JSON
+            if (req.key == database.get_sessionKey(req.uid)) {
+                int idx = Integer.parseInt(request.params("id"));
+                Database.user_RowData data = database.select_userOne(idx);
+                if (data == null) {
+                    return gson.toJson(new StructuredResponse("error", "user_id: " + idx + " not found", null));
+                } else {
+                    String profile = data.uProfile;
+                    String email = data.uEmail;
+                    String realname = data.uRealname;
+                    String[] box = { realname, profile, email };
                     return gson.toJson(new StructuredResponse("ok", null, box));
                 }
             } else {
@@ -371,8 +403,8 @@ public class App {
             response.type("application/json");
             // ensure status 200 OK, with a MIME type of JSON
             if (req.key == database.get_sessionKey(req.uid)) {
-                Database.comment_RowData data = database.select_messageComment(idx); // KOP
-                if (data == null) {
+                int data = database.insert_commentRow(req.mMessage, req.uid, idx);
+                if (data == 0) {
                     return gson.toJson(new StructuredResponse("error", idx + " not found", null));
                 } else {
                     return gson.toJson(new StructuredResponse("ok", null, data));

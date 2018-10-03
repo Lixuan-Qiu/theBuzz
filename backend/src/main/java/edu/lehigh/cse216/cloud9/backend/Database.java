@@ -82,7 +82,6 @@ public class Database {
     private PreparedStatement sInsertOne;
     private PreparedStatement sCreateTable;
     private PreparedStatement sDropTable;
-    private PreparedStatement sGetuId;
     private PreparedStatement sGetKey;
     // all prepared statment for Vote table
     private PreparedStatement vSelectAll;
@@ -301,7 +300,7 @@ public class Database {
             // create vote_table
             db.vCreateTable = db.mConnection
                     .prepareStatement("CREATE TABLE tblVote (" + "FOREIGN KEY (uid) REFERENCES tblUser (uid), "
-                            + "FOREIGN KEY (id) REFERENCES tblMessage (id)," + "newvote INT NOT NULL");
+                            + "FOREIGN KEY (id) REFERENCES tblMessage (id), vote INT NOT NULL");
 
             //////////////////// All table deleetion ////////////////////
             db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblMessage");
@@ -346,7 +345,6 @@ public class Database {
             db.sInsertOne = db.mConnection.prepareStatement("INSERT INTO tblSession VALUES (default, ?)");
             db.sSelectAll = db.mConnection.prepareStatement("SELECT key , uid FROM tblSession");
             db.sSelectOne = db.mConnection.prepareStatement("SELECT * from tblSession WHERE uid=?");
-            db.sGetuId = db.mConnection.prepareStatement("SELECT uid FROM tblSession WHERE key = ?");
             db.sGetKey = db.mConnection.prepareStatement("SELECT key FROM tblSession WHERE uid = ?");
 
             // Standard CRUD operations for Vote table
@@ -1153,7 +1151,4 @@ public class Database {
             e.printStackTrace();
         }
     }
-
-    ////////////////////// END vote opertion //////////////////////
-
 }
