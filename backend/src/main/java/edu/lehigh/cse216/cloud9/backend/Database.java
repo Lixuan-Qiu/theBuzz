@@ -289,7 +289,7 @@ public class Database {
             db.uCreateTable = db.mConnection.prepareStatement(
                     "CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, " + "username VARCHAR(100) NOT NULL, "
                             + "realname VARCHAR(100) NOT NULL, " + "profile VARCHAR(200) NOT NULL, "
-                            + "email VARCHAR(50), " + "salt VARCHAR(200), " + "password VARCHAR(400)");
+                            + "email VARCHAR(50), " + "salt VARCHAR(200), " + "password VARCHAR(400))");
             // create comment_table
             db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblComment (" + "cid SERIAL PRIMARY KEY, "
                     + "FOREIGN KEY (uid) REFERENCES tblUser (uid), " + "FOREIGN KEY (id) REFERENCES tblMessage (id), "
@@ -300,7 +300,7 @@ public class Database {
             // create vote_table
             db.vCreateTable = db.mConnection
                     .prepareStatement("CREATE TABLE tblVote (" + "FOREIGN KEY (uid) REFERENCES tblUser (uid), "
-                            + "FOREIGN KEY (id) REFERENCES tblMessage (id), vote INT NOT NULL");
+                            + "FOREIGN KEY (id) REFERENCES tblMessage (id), vote INT NOT NULL)");
 
             //////////////////// All table deleetion ////////////////////
             db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblMessage");
