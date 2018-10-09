@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.sil320.admin;
+package edu.lehigh.cse216.cloud9.admin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -92,10 +92,10 @@ public class App {
         System.out.println("  [-] Delete a row");
         System.out.println("  [+] Insert a new row");
         System.out.println("  [~] Update a row");
+        System.out.println("  [&] Add Like to a row");
         System.out.println("  [q] Quit Program");
         System.out.println("  [?] Help (this message)");
     }
-
     /**
      * Ask the user to enter a menu option; repeat until we get a valid option
      * 
@@ -103,8 +103,16 @@ public class App {
      * 
      * @return The character corresponding to the chosen menu option
      */
+<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/App.java
     static char prompt(BufferedReader in, String actions) {
         // We repeat until a valid single-character option is selected
+=======
+    static char prompt(BufferedReader in) {
+        // The valid actions:
+        String actions = "TD1*-+~q?&";
+
+        // We repeat until a valid single-character option is selected        
+>>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/App.java
         while (true) {
             System.out.print("[" + actions + "] :> ");
             String action;
@@ -164,6 +172,7 @@ public class App {
         return i;
     }
 
+<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/App.java
     static void messageMenu(Database db, BufferedReader in){
         mMenu();
         while (true) {
@@ -245,6 +254,26 @@ public class App {
 
     static void userMenu(Database db, BufferedReader in){
         uMenu();
+=======
+    /**
+     * The main routine runs a loop that gets a request from the user and
+     * processes it
+     * 
+     * @param argv Command-line options.  Ignored by this program.
+     */
+    public static void main(String[] argv) {
+        // get the Postgres configuration from the environment
+        Map<String, String> env = System.getenv();
+        String db_url = env.get("DATABASE_URL");
+        // Get a fully-configured connection to the database, or exit 
+        // immediately
+        Database db = Database.getDatabase(db_url);
+        if (db == null)
+            return;
+        menu();
+        // Start our basic command-line interpreter:
+        BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+>>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/App.java
         while (true) {
             // Get the user's request, and do it
             //
@@ -426,8 +455,7 @@ public class App {
                     continue;
                 Database.vote_RowData res = db.mSelectOne(id);
                 if (res != null) {
-                    System.out.println("  [" + res.mId + "] " + res.mSubject);
-                    System.out.println("  --> " + res.mMessage);
+                    System.out.println("  [" + res.mId + "] " + res.mMessage + " Like: " + res.mlikeCount);
                 }
             } else if (action == '*') {
                 ArrayList<Database.vote_RowData> res = db.mSelectAll();
@@ -435,8 +463,13 @@ public class App {
                     continue;
                 System.out.println("  Current Database Contents");
                 System.out.println("  -------------------------");
+<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/App.java
                 for (Database.vote_RowData rd : res) {
                     System.out.println("  [" + rd.mId + "] " + rd.mSubject);
+=======
+                for (Database.RowData rd : res) {
+                    System.out.println("  [" + rd.mId + "] " + rd.mMessage + " Like: " + rd.mlikeCount);
+>>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/App.java
                 }
             } else if (action == '-') {
                 int id = getInt(in, "Enter the row ID");
@@ -447,11 +480,14 @@ public class App {
                     continue;
                 System.out.println("  " + res + " rows deleted");
             } else if (action == '+') {
-                String subject = getString(in, "Enter the subject");
                 String message = getString(in, "Enter the message");
-                if (subject.equals("") || message.equals(""))
+                if (message.equals(""))
                     continue;
+<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/App.java
                 int res = db.mInsertOne(subject, message);
+=======
+                int res = db.insertRow(message);
+>>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/App.java
                 System.out.println(res + " rows added");
             } else if (action == '~') {
                 int id = getInt(in, "Enter the row ID :> ");
@@ -462,6 +498,7 @@ public class App {
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows updated");
+<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/App.java
             }*/
         }
     }
@@ -566,6 +603,14 @@ public class App {
                 voteMenu(db, in);
             } else if (action == 'S') {
                 sessionMenu(db, in);
+=======
+            } else if (action == '&'){
+                int id = getInt(in, "Enter the row ID :> ");
+                if (id == -1)
+                    continue;
+                int res = db.addLike(id);;
+                System.out.println(res + " Like added");
+>>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/App.java
             }
             menu();
         }

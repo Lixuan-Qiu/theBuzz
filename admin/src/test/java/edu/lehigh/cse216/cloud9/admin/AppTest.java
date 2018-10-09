@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.sil320.admin;
+package edu.lehigh.cse216.cloud9.admin;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
