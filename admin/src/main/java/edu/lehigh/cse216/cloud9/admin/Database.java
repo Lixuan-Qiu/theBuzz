@@ -1,4 +1,5 @@
-package edu.lehigh.cse216.cloud9.admin;
+package edu.lehigh.cse216.cloud9.backend;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -38,20 +39,11 @@ public class Database {
      * A prepared statement for updating a single row in the database
      */
     private PreparedStatement mUpdateOne;
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
     /*
      * increase the amount of like/dislike by one
      */
     private PreparedStatement mAddLike;
     private PreparedStatement mAddDislike;
-=======
-
-    /*
-     * increase the amount of like by one
-     */
-    private PreparedStatement mAddLike;
-
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
     /**
      * A prepared statement for creating the table in our database
      */
@@ -61,7 +53,6 @@ public class Database {
      */
     private PreparedStatement mDropTable;
 
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
     // all prepared statment for User table
     private PreparedStatement uSelectAll;
     private PreparedStatement uSelectOne;
@@ -103,10 +94,6 @@ public class Database {
 
     /* data structure for message */
     public static class message_RowData {
-=======
-    /* data structure for message */
-    public static class RowData {
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
         /**
          * The ID of this message
          */
@@ -119,20 +106,16 @@ public class Database {
 
         // number of like
         int mlikeCount;
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
         // number of dislike
         int mdislikeCount;
 
         // ID of the creator of this message
         int uId;
-=======
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
 
         /**
          * Construct a RowData object by providing values for its fields
          */
 
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
         public message_RowData(int id, String message, int likeCount, int dislikeCount, int uid) {
             mId = id;
             mMessage = message;
@@ -240,12 +223,6 @@ public class Database {
         public session_RowData(int sessionkey, int uid) {
             key = sessionkey;
             uId = uid;
-=======
-        public RowData(int id, String message, int likeCount) {
-            mId = id;
-            mMessage = message;
-            mlikeCount = likeCount;
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
         }
     }
 
@@ -302,13 +279,12 @@ public class Database {
         // Attempt to create all of our prepared statements. If any of these
         // fail, the whole getDatabase() call should fail
         try {
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
 
             //////////////////// ALL table creation ////////////////////
             // create message_table
             db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblMessage (" + "id SERIAL PRIMARY KEY, "
-                    + "uid INT NOT NULL, message VARCHAR(500) NOT NULL, likeCount INT NOT NULL, " + "dislikeCount INT NOT NULL, "
-                    + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
+                    + "dislikeCount INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
             db.uCreateTable = db.mConnection.prepareStatement(
                     "CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, " + "username VARCHAR(100) NOT NULL, "
@@ -316,14 +292,15 @@ public class Database {
                             + "email VARCHAR(50), " + "salt VARCHAR(200), " + "password VARCHAR(400))");
             // create comment_table
             db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblComment (" + "cid SERIAL PRIMARY KEY, "
-                    + "uid INT NOT NULL, id INT NOT NULL, "+"FOREIGN KEY (uid) REFERENCES tblUser(uid), " + "FOREIGN KEY (id) REFERENCES tblMessage(id), "
-                    + "comment VARCHAR(200) NOT NULL)");
+                    + "uid INT NOT NULL, " + "id INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
+                    + "FOREIGN KEY (id) REFERENCES tblMessage(id), " + "comment VARCHAR(200) NOT NULL)");
             // create session_table
-            db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession (" + "uid INT NOT NULL, key SERIAL PRIMARY KEY, "
-                    + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+            db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession (" + "uid INT NOT NULL, "
+                    + "key SERIAL PRIMARY KEY, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create vote_table
-            db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "+"id INT NOT NULL, "+"FOREIGN KEY (uid) REFERENCES tblUser(uid), "
-                            + "FOREIGN KEY (id) REFERENCES tblMessage(id), vote INT NOT NULL)");
+            db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "
+                    + "id INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
+                    + "FOREIGN KEY (id) REFERENCES tblMessage(id), vote INT NOT NULL)");
 
             //////////////////// All table deletion ////////////////////
             db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblMessage");
@@ -335,7 +312,8 @@ public class Database {
             // Standard CRUD operations for message_table
             db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblMessage WHERE id = ?");
             db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblMessage VALUES (default, ?, 0, 0, ?)");
-            db.mSelectAll = db.mConnection.prepareStatement("SELECT id , message, likeCount, dislikeCount, uid FROM tblMessage");
+            db.mSelectAll = db.mConnection
+                    .prepareStatement("SELECT id , message, likeCount, dislikeCount, uid FROM tblMessage");
             db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblMessage WHERE id=?");
             db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblMessage SET message = ? WHERE id = ?");
             db.mAddLike = db.mConnection.prepareStatement("UPDATE tblMessage SET likeCount = ? WHERE id = ?");
@@ -349,7 +327,8 @@ public class Database {
             db.uSelectAll = db.mConnection.prepareStatement("SELECT uid , username, realname, email FROM tblUser");
             db.uSelectOne = db.mConnection.prepareStatement("SELECT * from tblUser WHERE uid=?");
             db.uUpdateProfile = db.mConnection.prepareStatement("UPDATE tblUser SET profile = ? WHERE uid = ?");
-            db.uUpdatePassword = db.mConnection.prepareStatement("UPDATE tblUser SET password = ?, salt = ? WHERE uid = ?");
+            db.uUpdatePassword = db.mConnection
+                    .prepareStatement("UPDATE tblUser SET password = ?, salt = ? WHERE uid = ?");
             db.uGetuId = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE username=?");
 
             // Standard CRUD operations for comment_table
@@ -374,28 +353,6 @@ public class Database {
             db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , id, vote, FROM tblVote");
             db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=?, id=?");
             db.vUpdateOne = db.mConnection.prepareStatement("UPDATE tblVote SET vote = ? WHERE uid = ?, id = ?");
-=======
-            // NB: we can easily get ourselves in trouble here by typing the
-            // SQL incorrectly. We really should have things like "tblData"
-            // as constants, and then build the strings for the statements
-            // from those constants.
-
-            // Note: no "IF NOT EXISTS" or "IF EXISTS" checks on table
-            // creation/deletion, so multiple executions will cause an exception
-            db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblData (id SERIAL PRIMARY KEY, "
-                    + "message VARCHAR(500) NOT NULL, likeCount INT NOT NULL)");
-            db.mDropTable = db.mConnection.prepareStatement("DROP TABLE tblData");
-
-            // Standard CRUD operations
-            db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblData WHERE id = ?");
-            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblData VALUES (default, ?, 0)");
-            db.mSelectAll = db.mConnection.prepareStatement("SELECT id , message, likeCount FROM tblData");
-            db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblData WHERE id=?");
-            db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblData SET message = ? WHERE id = ?");
-            // not sure
-            db.mAddLike = db.mConnection.prepareStatement("UPDATE tblData SET likeCount = ? WHERE id = ?");
-
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
         } catch (SQLException e) {
             System.err.println("Error creating prepared statement");
             e.printStackTrace();
@@ -479,18 +436,11 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
     int insert_messageRow(String message, int uid) {
         int count = 0;
         try {
             mInsertOne.setString(1, message);
             mInsertOne.setInt(2, uid);
-=======
-    int insertRow(String message) {
-        int count = 0;
-        try {
-            mInsertOne.setString(1, message);
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
             count += mInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -508,12 +458,8 @@ public class Database {
         try {
             ResultSet rs = mSelectAll.executeQuery();
             while (rs.next()) {
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
                 res.add(new message_RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount"),
                         rs.getInt("dislikeCount"), rs.getInt("uid")));
-=======
-                res.add(new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount")));
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
             }
             rs.close();
             return res;
@@ -536,12 +482,8 @@ public class Database {
             mSelectOne.setInt(1, id);
             ResultSet rs = mSelectOne.executeQuery();
             if (rs.next()) {
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
                 res = new message_RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount"),
                         rs.getInt("dislikeCount"), rs.getInt("uid"));
-=======
-                res = new RowData(rs.getInt("id"), rs.getString("message"), rs.getInt("likeCount"));
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -698,16 +640,9 @@ public class Database {
     /**
      * Get all data for a specific row, by ID
      * 
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
      * @param username
      * 
      * @return The data for the requested row, or null if the ID was invalid
-=======
-     * @param id      The id of the row to update
-     * @param message The new message contents
-     * 
-     * @return The number of rows that were updated. -1 indicates an error.
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
      */
     int get_userId(String username) {
         int res = -1;
@@ -741,32 +676,13 @@ public class Database {
         return res;
     }
 
-    /* increase likeCount */
-    int addLike(int id) {
-        int res = -1;
-        RowData data = selectOne(id);
-        int newCount = data.mlikeCount + 1;
-        try {
-            mAddLike.setInt(1, newCount);
-            mAddLike.setInt(2, id);
-            res = mAddLike.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
-
     /**
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
      * Update the profile for a row in the database
      * 
      * @param uid      The uid of the row to update
      * @param password The new password
      * 
      * @return The number of rows that were updated. -1 indicates an error.
-=======
-     * Create tblData. If it already exists, this will print an error
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
      */
     int update_userPassword(int uid, String password) {
         int res = -1;
@@ -804,14 +720,9 @@ public class Database {
     }
 
     /**
-<<<<<<< HEAD:admin/src/main/java/edu/lehigh/cse216/sil320/admin/Database.java
      * @uid
      * 
      * @return password
-=======
-     * Remove tblData from the database. If it does not exist, this will print an
-     * error.
->>>>>>> 3453b16da530ce7cb743fe583eb1f20d77b58b34:admin/src/main/java/edu/lehigh/cse216/cloud9/admin/Database.java
      */
     String generate_Password(int uid, String password) {
         try {
