@@ -39,7 +39,7 @@ public class App {
         /////////////////////////// LOGIN ///////////////////////////
         Spark.post("/login", (request, response) -> {
 
-            // parse request to SimpleRequest
+            // parse request to FirstRequest
             FirstRequest req = gson.fromJson(request.body(), FirstRequest.class);
             response.status(200);
             response.type("application/json");

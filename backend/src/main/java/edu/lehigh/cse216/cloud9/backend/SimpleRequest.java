@@ -18,11 +18,5 @@ public class SimpleRequest {
     /**
      * The message being provided by the client.
      */
-    public String mMessage;
-
-    public String user_name;
-    public String password;
-
-
-    
+    public String mMessage; 
 }
