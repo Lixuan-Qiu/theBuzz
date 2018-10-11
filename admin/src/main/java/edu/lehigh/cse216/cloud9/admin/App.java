@@ -1,4 +1,4 @@
-package edu.lehigh.cse216.sil320.admin;
+package edu.lehigh.cse216.cloud9.admin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -8,6 +8,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
+
+import com.sendgrid.*;
+import java.io.IOException;
 
 /**
  * App is our basic admin app. For now, it is a demonstration of the six key
@@ -52,7 +55,7 @@ public class App {
         System.out.println("  [-] Delete a User");
         System.out.println("  [+] Insert a new User");
         System.out.println("  [~] Update a Profile");
-        System.out.println("  [p] Query for a Password");
+        System.out.println("  [i] Query for User ID by Username");
         System.out.println("  [r] Update  a Password");
         System.out.println("  [q] Quit Program");
         System.out.println("  [?] Help (this message)");
@@ -67,7 +70,6 @@ public class App {
         System.out.println("  [m] Query for all Comments for a specific Message");
         System.out.println("  [-] Delete a Comment");
         System.out.println("  [+] Insert a new Comment");
-        System.out.println("  [s] Query all Comments for a Message");
         System.out.println("  [q] Quit Program");
         System.out.println("  [?] Help (this message)");
     }
@@ -76,7 +78,8 @@ public class App {
         System.out.println("Session Menu");
         System.out.println("  [T] Create tblData");
         System.out.println("  [D] Drop tblData");
-        System.out.println("  [1] Query for a specific users session");
+        System.out.println("  [1] Query for a specific user's session");
+        System.out.println("  [k] query for a specific session");
         System.out.println("  [*] Query for all sessions");
         System.out.println("  [-] Delete a session");
         System.out.println("  [+] Insert a new row");
@@ -187,8 +190,8 @@ public class App {
                     continue;
                 Database.message_RowData res = db.select_messageOne(id);
                 if (res != null) {
-                    System.out.println("User Id: " + res.uId + "Message Id " + res.mId);
-                    System.out.println("  --> " + res.mMessage + "Vote Count: " + (res.mlikeCount - res.mdislikeCount));
+                    System.out.println("User Id: " + res.uId + ", Message Id: " + res.mId);
+                    System.out.println("  --> " + res.mMessage + "  Vote Count: " + (res.mlikeCount - res.mdislikeCount));
                 }
             } else if (action == '*') {
                 ArrayList<Database.message_RowData> res = db.select_messageAll();
@@ -197,8 +200,8 @@ public class App {
                 System.out.println("  Current Message Database Contents");
                 System.out.println("  -------------------------");
                 for (Database.message_RowData rd : res) {
-                    System.out.println("User Id: " + rd.uId + "Message Id " + rd.mId);
-                    System.out.println("  --> " + rd.mMessage + "Vote Count: " + (rd.mlikeCount - rd.mdislikeCount));
+                    System.out.println("User Id: " + rd.uId + ", Message Id: " + rd.mId);
+                    System.out.println("  --> " + rd.mMessage + "   Vote Count: " + (rd.mlikeCount - rd.mdislikeCount));
                 }
             } else if (action == '-') {
                 int id = getInt(in, "Enter the Message ID:");
@@ -232,7 +235,7 @@ public class App {
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows like added");
-            } else if (action == '-') {
+            } else if (action == 'v') {
                 int id = getInt(in, "Enter the Message ID: ");
                 if (id == -1)
                     continue;
@@ -251,7 +254,7 @@ public class App {
             //
             // NB: for better testability, each action should be a separate
             // function call
-            char action = prompt(in, "TD1*-+~prq?");
+            char action = prompt(in, "TD1*-+~irq?");
             if (action == '?') {
                 uMenu();
             } else if (action == 'q') {
@@ -261,10 +264,10 @@ public class App {
             } else if (action == 'D') {
                 db.drop_userTable();
             } else if (action == '1') {
-                int id = getInt(in, "Enter the User ID: ");
-                if (id == -1)
+                int uId = getInt(in, "Enter the User ID: ");
+                if (uId == -1)
                     continue;
-                Database.user_RowData res = db.select_userOne(id);
+                Database.user_RowData res = getOneUser(db, uId);
                 if (res != null) {
                     System.out.println("User Id: " + res.uId + ", Real Name: " + res.uRealname);
                     System.out.println("Username: " + res.uUsername + ", Email: " + res.uEmail);
@@ -289,16 +292,18 @@ public class App {
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows deleted");
-            } /*else if (action == '+') {
+            } else if (action == '+') {
                 String username = getString(in, "Enter the username: ");
                 String realname = getString(in, "Enter the real name: ");
                 String email = getString(in, "Enter the email: ");
                 String password = getString(in, "Enter the password: ");
                 if (username.equals("") || realname.equals("") || email.equals("") || password.equals(""))
                     continue;
-                int res = db.insert_userRow(username, realname, email, password);
+                int res = addUser(db, username, realname, email, password);
                 System.out.println(res + " rows added");
-            } */else if (action == '~') {
+                //if (res > 0)
+                    //sendEmail();
+            } else if (action == '~') {
                 int id = getInt(in, "Enter the user ID: ");
                 if (id == -1)
                     continue;
@@ -307,14 +312,14 @@ public class App {
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows updated");
-            } else if (action == 'p') {
-                int id = getInt(in, "Enter the User ID: ");
-                if (id == -1)
+            } else if (action == 'i') {
+                String username = getString(in, "Enter the Username: ");
+                if (username.equals(""))
                     continue;
-                String res = db.get_Password(id);
-                if (res.equals(""))
+                int res = db.get_userId(username);
+                if (res == -1)
                     continue;
-                System.out.println("User ID: "+ id +" Password: "+ res);
+                System.out.println("User ID: "+ res +" Username: "+ username);
             } else if (action == 'r') {
                 int id = getInt(in, "Enter the User ID: ");
                 if (id == -1)
@@ -328,8 +333,19 @@ public class App {
         } 
     }
 
+    static int addUser(Database db, String username, String realname, String email, String password){
+        
+        int res = db.insert_userRow(username, realname, email, password);
+        return res;
+    }
+
+    static Database.user_RowData getOneUser(Database db, int uId){
+         Database.user_RowData res = db.select_userOne(uId);
+         return res;
+    }
+    
     static void commentMenu(Database db, BufferedReader in){
-        mMenu();
+        cMenu();
         while (true) {
             // Get the user's request, and do it
             //
@@ -337,7 +353,7 @@ public class App {
             // function call
             char action = prompt(in, "TD1*m-+~q?");
             if (action == '?') {
-                menu();
+                cMenu();
             } else if (action == 'q') {
                 break;
             } else if (action == 'T') {
@@ -412,7 +428,7 @@ public class App {
             //
             // NB: for better testability, each action should be a separate
             // function call
-            char action = prompt(in, "TD1*-+~q?");
+            char action = prompt(in, "TD1*-+kq?");
             if (action == '?') {
                 sMenu();
             } else if (action == 'q') {
@@ -421,49 +437,46 @@ public class App {
                 db.create_sessionTable();
             } else if (action == 'D') {
                 db.drop_sessionTable();
-            } /**else if (action == '1') {
-                int id = getInt(in, "Enter the row ID");
-                if (id == -1)
+            } else if (action == '1') {
+                int uId = getInt(in, "Enter the User ID");
+                if (uId == -1)
                     continue;
-                Database.vote_RowData res = db.mSelectOne(id);
+                Database.session_RowData res = db.select_sessionOne(uId);
                 if (res != null) {
-                    System.out.println("  [" + res.mId + "] " + res.mSubject);
-                    System.out.println("  --> " + res.mMessage);
+                    System.out.println("  [" + res.uId + "] " + res.key);
                 }
             } else if (action == '*') {
-                ArrayList<Database.vote_RowData> res = db.mSelectAll();
+                ArrayList<Database.session_RowData> res = db.select_sessionAll();
                 if (res == null)
                     continue;
-                System.out.println("  Current Database Contents");
+                System.out.println("  Current Session Key Database Contents");
                 System.out.println("  -------------------------");
-                for (Database.vote_RowData rd : res) {
-                    System.out.println("  [" + rd.mId + "] " + rd.mSubject);
+                for (Database.session_RowData rd : res) {
+                    System.out.println("  [" + rd.uId + "] " + rd.key);
                 }
             } else if (action == '-') {
-                int id = getInt(in, "Enter the row ID");
-                if (id == -1)
+                int uId = getInt(in, "Enter the User Id: ");
+                if (uId == -1)
                     continue;
-                int res = db.mDeleteOne(id);
+                int res = db.delete_sessionRow(uId);
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows deleted");
             } else if (action == '+') {
-                String subject = getString(in, "Enter the subject");
-                String message = getString(in, "Enter the message");
-                if (subject.equals("") || message.equals(""))
+                int uId = getInt(in, "Enter the User Id: ");
+                if (uId == -1)
                     continue;
-                int res = db.mInsertOne(subject, message);
+                int res = db.insert_sessionRow(uId);
                 System.out.println(res + " rows added");
-            } else if (action == '~') {
-                int id = getInt(in, "Enter the row ID :> ");
-                if (id == -1)
+            } else if (action == 'k') {
+                int uId = getInt(in, "Enter the User ID: ");
+                if (uId == -1)
                     continue;
-                String newMessage = getString(in, "Enter the new message");
-                int res = db.mUpdateOne(id, newMessage);
-                if (res == -1)
-                    continue;
-                System.out.println("  " + res + " rows updated");
-            }*/
+                int res = db.get_sessionKey(uId);
+                if (res != -1) {
+                    System.out.println("  [" + uId + "] " + res);
+                }
+            }
         }
     }
 
@@ -483,51 +496,77 @@ public class App {
                 db.create_voteTable();
             } else if (action == 'D') {
                 db.drop_voteTable();
-            } /*else if (action == '1') {
-                int id = getInt(in, "Enter the row ID");
-                if (id == -1)
+            } else if (action == '1') {
+                int uId = getInt(in, "Enter the User Id: ");
+                int mId = getInt(in, "Enter the Message Id: ");
+                if (uId == -1 || mId == -1)
                     continue;
-                Database.vote_RowData res = db.mSelectOne(id);
+                Database.vote_RowData res = db.select_voteOne(uId, mId);
                 if (res != null) {
-                    System.out.println("  [" + res.mId + "] " + res.mSubject);
-                    System.out.println("  --> " + res.mMessage);
+                    System.out.println("User Id: " + res.uId + ", Message Id: " + res.mId + ", Vote: " + res.vote);
                 }
             } else if (action == '*') {
-                ArrayList<Database.vote_RowData> res = db.mSelectAll();
+                ArrayList<Database.vote_RowData> res = db.select_voteAll();
                 if (res == null)
                     continue;
                 System.out.println("  Current Vote Database Contents");
                 System.out.println("  -------------------------");
                 for (Database.vote_RowData rd : res) {
-                    System.out.println("  [" + rd.mId + "] " + rd.mSubject);
+                    System.out.println("User Id: " + rd.uId + ", Message Id: " + rd.mId + ", Vote: " + rd.vote);
                 }
             } else if (action == '-') {
-                int id = getInt(in, "Enter the row ID");
-                if (id == -1)
+                int uId = getInt(in, "Enter the User Id: ");
+                int mId = getInt(in, "Enter the Message Id: ");
+                if (uId == -1 || mId == -1)
                     continue;
-                int res = db.mDeleteOne(id);
+                int res = db.delete_voteRow(uId, mId);
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows deleted");
             } else if (action == '+') {
                 int uId = getInt(in, "Enter the User Id: ");
                 int mId = getInt(in, "Enter the Message Id: ");
-                if (subject.equals("") || message.equals(""))
+                int vote = getInt(in, "Enter the vote: ");
+                if (uId == -1 || mId == -1 || vote == -1)
                     continue;
-                int res = db.mInsertOne(subject, message);
+                int res = db.insert_voteRow(vote, uId, mId);
                 System.out.println(res + " rows added");
             } else if (action == '~') {
-                int id = getInt(in, "Enter the row ID :> ");
-                if (id == -1)
+                int uId = getInt(in, "Enter the User Id: ");
+                int mId = getInt(in, "Enter the Message Id: ");
+                if (uId == -1 || mId == -1)
                     continue;
-                String newMessage = getString(in, "Enter the new message");
-                int res = db.mUpdateOne(id, newMessage);
+                int newVote = getInt(in, "Enter the new vote: ");
+                int res = db.update_voteOne(newVote, uId, mId);
                 if (res == -1)
                     continue;
                 System.out.println("  " + res + " rows updated");
-            }*/
+            }
         }
     } 
+    
+    static void sendEmail() throws IOException{
+        Email from = new Email("cse216cloud9@gmail.com");
+        String subject = "Welcome to Cloud9";
+        Email to = new Email("cpl220@lehigh.edu");
+        Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+        Mail mail = new Mail(from, subject, to, content);
+
+        SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+        } catch (IOException ex) {
+            throw ex;
+    }
+    }
+
 
     /**
      * The main routine runs a loop that gets a request from the user and processes
@@ -544,7 +583,11 @@ public class App {
         Database db = Database.getDatabase(db_url);
         if (db == null)
             return;
-
+        try{
+            sendEmail();
+        }catch(IOException e){
+            System.err.println("Caught IOException: " + e.getMessage());
+        }
         menu();
         // Start our basic command-line interpreter:
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
