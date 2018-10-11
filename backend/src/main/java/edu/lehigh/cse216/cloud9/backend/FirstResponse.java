@@ -24,6 +24,7 @@ public class FirstResponse {
      */
     public int sessionkey;
 
+    public int uid;
     /**
      * Construct a StructuredResponse by providing a status, message, and data. If
      * the status is not provided, set it to "invalid".
@@ -32,9 +33,10 @@ public class FirstResponse {
      * @param message The message to go along with an error status
      * @param object  An object with additional data to send to the client
      */
-    public FirstResponse(String status, String message, int key) {
+    public FirstResponse(String status, String message, int key, int user_id) {
         mStatus = (status != null) ? status : "invalid";
         echoMessage = message;
         sessionkey = key;
+        uid = user_id;
     }
 }

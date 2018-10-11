@@ -59,7 +59,7 @@ public class App {
                     database.insert_sessionRow(uid);
                 }
                 return gson.toJson(new FirstResponse("ok", "session key for uid = " + uid + " is sent.",
-                        database.get_sessionKey(uid)));
+                        database.get_sessionKey(uid), uid));
             } else {
                 return gson.toJson(new StructuredResponse("error", "login error: wrong password", null));
             }
