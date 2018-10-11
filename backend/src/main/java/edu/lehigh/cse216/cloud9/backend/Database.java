@@ -295,8 +295,8 @@ public class Database {
                     + "uid INT NOT NULL, " + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
                     + "FOREIGN KEY (mid) REFERENCES tblMessage(mid), " + "comment VARCHAR(200) NOT NULL)");
             // create session_table
-            db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession (" + "uid INT NOT NULL, "
-                    + "key SERIAL PRIMARY KEY, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+            db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession ("  
+                    + "key SERIAL PRIMARY KEY, " +"uid INT NOT NULL, "+ "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create vote_table
             db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "
                     + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
@@ -649,7 +649,9 @@ public class Database {
         try {
             uGetuId.setString(1, username);
             ResultSet rs = uGetuId.executeQuery();
-            res = rs.getInt("uid");
+            if (rs.next()) {
+                res = rs.getInt("uid");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -729,12 +731,15 @@ public class Database {
         try {
             uSelectSalt.setInt(1, uid);
             ResultSet rs = uSelectSalt.executeQuery();
-            String salt = rs.getString("salt");
-            return get_SecurePassword(password, salt.getBytes());
+            if (rs.next()) {
+                String salt = rs.getString("salt");
+                return get_SecurePassword(password, salt.getBytes());
+            }
         } catch (SQLException e) {
             e.printStackTrace();
             return null;
         }
+        return null;
     }
 
     /**
@@ -959,7 +964,9 @@ public class Database {
         try {
             sGetKey.setInt(1, uid);
             ResultSet rs = sGetKey.executeQuery();
-            key = rs.getInt("key");
+            if (rs.next()) {
+                key = rs.getInt("key");
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -967,7 +974,7 @@ public class Database {
     }
 
     /**
-     * Delete a row by cid
+     * Delete a row by uid
      * 
      * @param uid The id of the row to delete
      * 
