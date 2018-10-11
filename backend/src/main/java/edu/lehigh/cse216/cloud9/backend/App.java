@@ -447,6 +447,29 @@ public class App {
             }
         });
 
+        // >> LOGOUT <<
+        Spark.post("/logout", (request, response) -> {
+            // parse request to SimpleRequest
+            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+
+            // ensure status 200 OK, with a MIME type of JSON
+            response.status(200);
+            response.type("application/json");
+
+            // session_key check
+            if (req.key == database.get_sessionKey(req.uid)) {
+                int result = database.delete_sessionRow(req.uid);
+                if (result == -1) { // on failure
+                    return gson.toJson(new StructuredResponse("error", req.uid + " not found", null));
+
+                } else {
+                    return gson.toJson(new StructuredResponse("ok", null, result));
+                }
+            } else {
+                return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
+            }
+        });
+
     }
 
     /**
