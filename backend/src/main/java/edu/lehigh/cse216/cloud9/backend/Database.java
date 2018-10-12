@@ -348,11 +348,11 @@ public class Database {
             db.sGetKey = db.mConnection.prepareStatement("SELECT key FROM tblSession WHERE uid = ?");
 
             // Standard CRUD operations for Vote table
-            db.vDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE uid = ?");
+            db.vDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE uid = ? AND mid = ?");
             db.vInsertOne = db.mConnection.prepareStatement("INSERT INTO tblVote VALUES (?, ?, ?)");
-            db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , mid, vote, FROM tblVote");
-            db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=?, mid=?");
-            db.vUpdateOne = db.mConnection.prepareStatement("UPDATE tblVote SET vote = ? WHERE uid = ?, mid = ?");
+            db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , mid, vote FROM tblVote");
+            db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=? AND mid=?");
+            db.vUpdateOne = db.mConnection.prepareStatement("UPDATE tblVote SET vote = ? WHERE uid = ? AND mid = ?");
         } catch (SQLException e) {
             System.err.println("Error creating prepared statement");
             e.printStackTrace();
