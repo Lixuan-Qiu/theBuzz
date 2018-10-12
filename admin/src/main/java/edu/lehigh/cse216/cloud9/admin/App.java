@@ -1,18 +1,16 @@
+
 package edu.lehigh.cse216.cloud9.admin;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
 import java.security.SecureRandom;
 import java.util.Random;
 
 import com.sendgrid.*;
-import java.io.IOException;
 
 /**
  * App is our basic admin app. For now, it is a demonstration of the six key
@@ -218,7 +216,7 @@ public class App {
                 System.out.println("  -------------------------");
                 for (Database.message_RowData rd : res) {
                     System.out.println("User Id: " + rd.uId + ", Message Id: " + rd.mId);
-                    System.out.println("  --> " + rd.mMessage + "   Vote Count: " + (rd.mlikeCount - rd.mdislikeCount));
+                    System.out.println("  --> " + rd.mMessage + "   Vote Count: " + (rd.mlikeCount + rd.mdislikeCount));
                 }
             } else if (action == '-') {
                 int id = getInt(in, "Enter the Message ID:");
