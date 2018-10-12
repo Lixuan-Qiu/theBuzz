@@ -8,6 +8,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.security.SecureRandom;
+import java.util.Random;
 
 import com.sendgrid.*;
 import java.io.IOException;
@@ -31,6 +33,9 @@ public class App {
         System.out.println("  [q] Quit Program");
     }
 
+    /**
+     * Print the menu for the Message table
+     */
     static void mMenu() {
         System.out.println("Message Menu");
         System.out.println("  [T] Create tblData");
@@ -46,6 +51,9 @@ public class App {
         System.out.println("  [?] Help (this message)");
     }
 
+    /**
+     * Print the menu for the User table
+     */
     static void uMenu() {
         System.out.println("User Menu");
         System.out.println("  [T] Create tblData");
@@ -61,6 +69,9 @@ public class App {
         System.out.println("  [?] Help (this message)");
     }
 
+    /**
+     * Print the menu for the Comment table
+     */
     static void cMenu() {
         System.out.println("Comment Menu");
         System.out.println("  [T] Create tblData");
@@ -74,6 +85,9 @@ public class App {
         System.out.println("  [?] Help (this message)");
     }
 
+    /**
+     * Print the menu for the Session table
+     */
     static void sMenu() {
         System.out.println("Session Menu");
         System.out.println("  [T] Create tblData");
@@ -87,6 +101,9 @@ public class App {
         System.out.println("  [?] Help (this message)");
     }
 
+    /**
+     * Print the menu for the Vote table
+     */
     static void vMenu() {
         System.out.println("Vote Menu");
         System.out.println("  [T] Create tblData");
@@ -217,6 +234,7 @@ public class App {
                 if (id == -1 || message.equals(""))
                     continue;
                 int res = db.insert_messageRow(message, id);
+
                 System.out.println(res + " rows added");
             } else if (action == '~') {
                 int id = getInt(in, "Enter the Message ID: ");
@@ -296,13 +314,17 @@ public class App {
                 String username = getString(in, "Enter the username: ");
                 String realname = getString(in, "Enter the real name: ");
                 String email = getString(in, "Enter the email: ");
-                String password = getString(in, "Enter the password: ");
+                String password = randomPassword();
                 if (username.equals("") || realname.equals("") || email.equals("") || password.equals(""))
                     continue;
                 int res = addUser(db, username, realname, email, password);
                 System.out.println(res + " rows added");
-                //if (res > 0)
-                    //sendEmail();
+                if (res > 0)
+                    try{
+                        sendEmail(email, realname, username, password);
+                    }catch(IOException e){
+                        System.err.println("Caught IOException: " + e.getMessage());
+                    }
             } else if (action == '~') {
                 int id = getInt(in, "Enter the user ID: ");
                 if (id == -1)
@@ -333,15 +355,43 @@ public class App {
         } 
     }
 
+    /**
+     * Runs the insert_userRow method to insert a new row
+     * @param db the current database
+     * @param username the new user's username
+     * @param realname the new user's real name
+     * @param email the new user's email
+     * @param password the new user's password
+     * @return the number of rows added
+     */
     static int addUser(Database db, String username, String realname, String email, String password){
-        
         int res = db.insert_userRow(username, realname, email, password);
         return res;
     }
 
+    /**
+     * Gets one user's info from the database
+     * @param db the current database
+     * @param uId the Id of the user who's information we are getting
+     * @return the user's information in a user_RowData
+     */
     static Database.user_RowData getOneUser(Database db, int uId){
          Database.user_RowData res = db.select_userOne(uId);
          return res;
+    }
+
+    /**
+     * Generates a random password of length 10
+     * @return the new password
+     */
+    static String randomPassword(){
+        SecureRandom random = new SecureRandom();
+        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+        StringBuilder password = new StringBuilder(10);
+        for (int i = 0; i < 10; i++) {
+            password.append(characters.charAt(random.nextInt(characters.length())));
+        }
+        return new String(password);
     }
     
     static void commentMenu(Database db, BufferedReader in){
@@ -545,15 +595,37 @@ public class App {
         }
     } 
     
-    static void sendEmail() throws IOException{
+    /**
+     * Sends an email to the new user containing their password and username
+     * @param toEmail the address of where the email is going
+     * @param realname the name of the new user
+     * @param username the username of the new user
+     * @param password the password of the new user
+     */
+    static void sendEmail(String toEmail, String realname,String username, String password) throws IOException{
         Email from = new Email("cse216cloud9@gmail.com");
-        String subject = "Welcome to Cloud9";
-        Email to = new Email("cpl220@lehigh.edu");
-        Content content = new Content("text/plain", "and easy to do anywhere, even with Java");
+        String subject = "Welcome to The Buzz!";
+        Email to = new Email(toEmail);
+        Content content = new Content("text/plain", "hi");
+        String templateId = "d-fc5401079cc548d78cc952334ad91a6c";
         Mail mail = new Mail(from, subject, to, content);
+        mail.setTemplateId(templateId);
+
+        //Attaches the values to the tags. TECHNICAL DEBT:Figure out a more effective and consistent way to do this
+        mail.addCustomArg("realname",  realname);
+        mail.addCustomArg("username",  username);
+        mail.addCustomArg("password",  password);
+        Personalization obj = new Personalization();
+        obj.addTo(to);
+        obj.addDynamicTemplateData("realname",  realname);
+        obj.addDynamicTemplateData("username",  username);
+        obj.addDynamicTemplateData("password",  password);
+        mail.addPersonalization(obj);
 
         SendGrid sg = new SendGrid(System.getenv("SENDGRID_API_KEY"));
         Request request = new Request();
+
+
         try {
             request.setMethod(Method.POST);
             request.setEndpoint("mail/send");
@@ -564,7 +636,7 @@ public class App {
             System.out.println(response.getHeaders());
         } catch (IOException ex) {
             throw ex;
-    }
+        }
     }
 
 
@@ -583,11 +655,7 @@ public class App {
         Database db = Database.getDatabase(db_url);
         if (db == null)
             return;
-        try{
-            sendEmail();
-        }catch(IOException e){
-            System.err.println("Caught IOException: " + e.getMessage());
-        }
+        
         menu();
         // Start our basic command-line interpreter:
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));

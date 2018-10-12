@@ -348,11 +348,11 @@ public class Database {
             db.sGetKey = db.mConnection.prepareStatement("SELECT key FROM tblSession WHERE uid = ?");
 
             // Standard CRUD operations for Vote table
-            db.vDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE uid = ?");
+            db.vDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE uid = ? AND mid = ?");
             db.vInsertOne = db.mConnection.prepareStatement("INSERT INTO tblVote VALUES (?, ?, ?)");
-            db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , mid, vote, FROM tblVote");
-            db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=?, mid=?");
-            db.vUpdateOne = db.mConnection.prepareStatement("UPDATE tblVote SET vote = ? WHERE uid = ?, mid = ?");
+            db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , mid, vote FROM tblVote");
+            db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=? AND mid=?");
+            db.vUpdateOne = db.mConnection.prepareStatement("UPDATE tblVote SET vote = ? WHERE uid = ? AND mid = ?");
         } catch (SQLException e) {
             System.err.println("Error creating prepared statement");
             e.printStackTrace();
@@ -580,7 +580,7 @@ public class Database {
             uInsertOne.setString(3, " ");
             uInsertOne.setString(4, email);
             uInsertOne.setString(5, salt.toString());
-            String Hash_password = get_SecurePassword(password, salt);
+            String Hash_password = get_SecurePassword(password, salt.toString());
             uInsertOne.setString(6, Hash_password);
             count += uInsertOne.executeUpdate();
         } catch (SQLException e) {
@@ -602,11 +602,11 @@ public class Database {
         return salt;
     }
 
-    private static String get_SecurePassword(String passwordToHash, byte[] salt) {
+    private static String get_SecurePassword(String passwordToHash, String salt) {
         String generatedPassword = null;
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt);
+            md.update(salt.getBytes());
             byte[] bytes = md.digest(passwordToHash.getBytes());
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < bytes.length; i++) {
@@ -690,7 +690,7 @@ public class Database {
         int res = -1;
         try {
             byte[] salt = getSalt();
-            String Hash_password = get_SecurePassword(password, salt);
+            String Hash_password = get_SecurePassword(password, salt.toString());
             uUpdatePassword.setString(1, Hash_password);
             uUpdatePassword.setString(2, salt.toString());
             uUpdatePassword.setInt(3, uid);
@@ -733,7 +733,7 @@ public class Database {
             ResultSet rs = uSelectSalt.executeQuery();
             if (rs.next()) {
                 String salt = rs.getString("salt");
-                return get_SecurePassword(password, salt.getBytes());
+                return get_SecurePassword(password, salt);
             }
         } catch (SQLException e) {
             e.printStackTrace();
