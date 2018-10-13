@@ -1,12 +1,11 @@
 /**
  * EditMessage encapsulates all of the code for the form for editing an entry
  */
-/// <reference path="NewMessage.ts"/>
 /// <reference path="Message.ts"/>
+/// <reference path="../app.ts"/>
 var $: any;
 var editMessage: EditMessage;
-var message: Message;
-var newMessage: NewMessage;
+// var message: Message;
 class EditMessage {
     $: any;
     /**
@@ -14,7 +13,7 @@ class EditMessage {
      * run in response to each of the form's buttons being clicked.
      */
     constructor() {
-        $("#editLike").click(this.clickLike);
+        //$("#editLike").click(this.clickLike);
         //$("#editDislike").click(this.clickDislike);
     }
 
@@ -47,11 +46,13 @@ class EditMessage {
      */
     clickLike() {
         // as in clickDelete, we need the ID of the row
-        let id = $(this).data("value");
+        let id = $(this).attr("value");
+        console.log(id + "is liked");
         $.ajax({
             type: "PUT", 
-            url: "/like/" + id,
+            url: "/messages/"+id+"/like",
             dataType: "json",
+            data: JSON.stringify({ mId: id }),
             success: Message.refresh()
         });
     }
