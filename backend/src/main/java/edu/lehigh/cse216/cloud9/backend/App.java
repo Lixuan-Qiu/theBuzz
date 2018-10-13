@@ -61,7 +61,7 @@ public class App {
                 return gson.toJson(new FirstResponse("ok", "session key for uid = " + uid + " is sent.",
                         database.get_sessionKey(uid), uid));
             } else {
-                return gson.toJson(new StructuredResponse("error", "login error: wrong password", null));
+                return gson.toJson(new FirstResponse("error", "login error: wrong password", -1, -1));
             }
         });
 
@@ -76,14 +76,14 @@ public class App {
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
+            int key = req.key;
+            int uid = req.uid;
             // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+            if (key == database.get_sessionKey(uid)) {
                 // return ArrayList<message_RowData> upon success
                 return gson.toJson(new StructuredResponse("ok", null, database.select_messageAll()));
 
             } else {
-
                 return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
             }
         });
