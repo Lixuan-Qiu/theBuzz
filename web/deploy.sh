@@ -5,7 +5,7 @@
 # web deploy directory.
 
 # This is the resource folder where maven expects to find our files
-TARGETFOLDER=../backend/src/main/resources
+TARGETFOLDER=./backend/src/main/resources
 
 # This is the folder that we used with the Spark.staticFileLocation command
 WEBFOLDERNAME=web
@@ -31,14 +31,17 @@ cp -R node_modules/bootstrap/dist/fonts $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 4: compile TypeScript files
 node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
-node_modules/typescript/bin/tsc ts/Message.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/Message.js
+node_modules/typescript/bin/tsc ts/MessageList.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/MessageList.js
 node_modules/typescript/bin/tsc ts/EditMessage.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/EditMessage.js
+node_modules/typescript/bin/tsc ts/Login.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/Login.js
+node_modules/typescript/bin/tsc ts/Profile.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/Profile.js
+node_modules/typescript/bin/tsc ts/NewMessage.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/NewMessage.js
+node_modules/typescript/bin/tsc ts/Navbar.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/Navbar.js
+# step 5: copy css files
+cat app.css  > $TARGETFOLDER/$WEBFOLDERNAME/app.css
 
-
-# # step 5: copy css files
-# cat app.css css/ElementList.css css/EditEntryForm.css css/NewEntryForm.css > $TARGETFOLDER/$WEBFOLDERNAME/app.css
-
-# # step 6: compile handlebars templates to the deploy folder
-# node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-# node_modules/handlebars/bin/handlebars hb/EditEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-# node_modules/handlebars/bin/handlebars hb/NewMessage.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+# step 6: compile handlebars templates to the deploy folder
+#node_modules/handlebars/bin/handlebars hb/MessageList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+#node_modules/handlebars/bin/handlebars hb/EditMessage.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/NewMessage.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/Navbar.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
