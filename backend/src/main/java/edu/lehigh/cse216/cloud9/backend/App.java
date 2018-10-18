@@ -181,7 +181,16 @@ public class App {
                 int idx = Integer.parseInt(request.params("id"));
                 // check if this guy already like/dislike or not
                 Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
-                if (Vote.vote != 1) { // user has not liked this message
+                if(Vote == null){
+                    database.insert_voteRow(1, req.uid, idx); // insert new vote_RowData
+                    int result = database.addLike(idx, 1);
+                    if (result == -1) { // if failed to addLike
+                        return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
+                    } else {
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is liked.", result));
+                    }
+                }
+                else if (Vote.vote != 1) { // user has not liked this message
 
                     if (Vote.vote == -1) { // user dislike this message before
 
@@ -224,7 +233,15 @@ public class App {
 
                 int idx = Integer.parseInt(request.params("id"));
                 Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
-
+                if(Vote == null){
+                    database.insert_voteRow(-1, req.uid, idx); // insert new vote_RowData
+                    int result = database.addDislike(idx, 1);
+                    if (result == -1) { // if failed to addLike
+                        return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
+                    } else {
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                    }
+                }
                 if (Vote.vote != -1) { // user has not disliked this message before
 
                     if (Vote.vote == 1) { // user like this message before
