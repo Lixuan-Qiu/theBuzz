@@ -71,6 +71,7 @@ public class Database {
     private PreparedStatement cSelectOne;
     private PreparedStatement cSelectMessage;
     private PreparedStatement cDeleteOne;
+    private PreparedStatement cDeleteAll;
     private PreparedStatement cInsertOne;
     private PreparedStatement cCreateTable;
     private PreparedStatement cDropTable;
@@ -87,6 +88,7 @@ public class Database {
     private PreparedStatement vSelectAll;
     private PreparedStatement vSelectOne;
     private PreparedStatement vDeleteOne;
+    private PreparedStatement vDeleteAll;
     private PreparedStatement vInsertOne;
     private PreparedStatement vUpdateOne;
     private PreparedStatement vCreateTable;
@@ -333,6 +335,7 @@ public class Database {
 
             // Standard CRUD operations for comment_table
             db.cDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE cid = ?");
+            db.cDeleteAll = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE mid = ?");
             db.cInsertOne = db.mConnection.prepareStatement("INSERT INTO tblComment VALUES (default, ?, ?, ?)");
             db.cSelectAll = db.mConnection.prepareStatement("SELECT cid , uid, mid, comment FROM tblComment");
             db.cSelectOne = db.mConnection.prepareStatement("SELECT * from tblComment WHERE cid=?");
@@ -349,6 +352,7 @@ public class Database {
 
             // Standard CRUD operations for Vote table
             db.vDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE uid = ? AND mid = ?");
+            db.vDeleteAll = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE mid = ?");
             db.vInsertOne = db.mConnection.prepareStatement("INSERT INTO tblVote VALUES (?, ?, ?)");
             db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , mid, vote FROM tblVote");
             db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=? AND mid=?");
@@ -421,6 +425,8 @@ public class Database {
     int delete_messageRow(int mid) {
         int res = -1;
         try {
+            delete_commentAll(mid);
+            delete_voteAll(mid);
             mDeleteOne.setInt(1, mid);
             res = mDeleteOne.executeUpdate();
         } catch (SQLException e) {
@@ -852,6 +858,24 @@ public class Database {
     }
 
     /**
+     * Delete a row by mid
+     * 
+     * @param mid The id of the row to delete
+     * 
+     * @return The number of rows that were deleted. -1 indicates an error.
+     */
+    int delete_commentAll(int mid) {
+        int res = -1;
+        try {
+            cDeleteAll.setInt(1, mid);
+            res = cDeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    /**
      * Query the database for a list of all subjects and their IDs
      * 
      * @return All rows, as an ArrayList
@@ -1074,6 +1098,25 @@ public class Database {
         }
         return res;
     }
+
+    /**
+     * Delete a row by mid
+     * 
+     * @param uid The id of the row to delete
+     * 
+     * @return The number of rows that were deleted. -1 indicates an error.
+     */
+    int delete_voteAll(int mid) {
+        int res = -1;
+        try {
+            vDeleteAll.setInt(1, mid);
+            res = vDeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
 
     /**
      * Query the database for a list of all subjects and their IDs

@@ -475,6 +475,7 @@ public class App {
 
             // session_key check
             if (req.key == database.get_sessionKey(req.uid)) {
+                System.out.println("uid: "+req.uid+" key: "+req.key);
                 int result = database.delete_sessionRow(req.uid);
                 if (result == -1) { // on failure
                     return gson.toJson(new StructuredResponse("error", req.uid + " not found", null));
