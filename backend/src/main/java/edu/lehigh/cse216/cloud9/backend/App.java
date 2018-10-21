@@ -39,6 +39,16 @@ public class App {
         /////////////////////////// LOGIN ///////////////////////////
         Spark.post("/login", (request, response) -> {
 
+            System.out.println("receive request to /login");
+            System.out.println("url: " + request.url());
+            System.out.println("request body: " + request.body());
+            System.out.println("attributes list: " + request.attributes());
+            System.out.println("contentType: " + request.contentType());
+            System.out.println("headers: " + request.headers());
+            System.out.println("params: " + request.params());
+            System.out.println("raw: " + request.raw());
+            System.out.println("requestMethod" + request.requestMethod());
+
             // parse request to FirstRequest
             FirstRequest req = gson.fromJson(request.body(), FirstRequest.class);
             response.status(200);
@@ -70,15 +80,28 @@ public class App {
         // return all message_RowData on success
         Spark.get("/messages", (request, response) -> {
 
+            System.out.println("receive request to /messages");
+            System.out.println("url: " + request.url());
+            System.out.println("request body: " + request.body());
+            System.out.println("attributes list: " + request.attributes());
+            System.out.println("contentType: " + request.contentType());
+            System.out.println("headers: " + request.headers());
+            System.out.println("params: " + request.params());
+            System.out.println("raw: " + request.raw());
+            System.out.println("requestMethod" + request.requestMethod());
+
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
+
             int key = req.key;
             int uid = req.uid;
             // session_key check
+            System.out.println("sessionkey check...");
+            System.out.println("your key: " + key + " our key:" + database.get_sessionKey(uid));
             if (key == database.get_sessionKey(uid)) {
                 // return ArrayList<message_RowData> upon success
                 return gson.toJson(new StructuredResponse("ok", null, database.select_messageAll()));
@@ -181,7 +204,7 @@ public class App {
                 int idx = Integer.parseInt(request.params("id"));
                 // check if this guy already like/dislike or not
                 Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
-                if(Vote == null){
+                if (Vote == null) {
                     database.insert_voteRow(1, req.uid, idx); // insert new vote_RowData
                     int result = database.addLike(idx, 1);
                     if (result == -1) { // if failed to addLike
@@ -189,8 +212,7 @@ public class App {
                     } else {
                         return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is liked.", result));
                     }
-                }
-                else if (Vote.vote != 1) { // user has not liked this message
+                } else if (Vote.vote != 1) { // user has not liked this message
 
                     if (Vote.vote == -1) { // user dislike this message before
 
@@ -233,13 +255,14 @@ public class App {
 
                 int idx = Integer.parseInt(request.params("id"));
                 Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
-                if(Vote == null){
+                if (Vote == null) {
                     database.insert_voteRow(-1, req.uid, idx); // insert new vote_RowData
                     int result = database.addDislike(idx, 1);
                     if (result == -1) { // if failed to addLike
                         return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
                     } else {
-                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                        return gson
+                                .toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
                     }
                 }
                 if (Vote.vote != -1) { // user has not disliked this message before
@@ -475,7 +498,7 @@ public class App {
 
             // session_key check
             if (req.key == database.get_sessionKey(req.uid)) {
-                System.out.println("uid: "+req.uid+" key: "+req.key);
+                System.out.println("uid: " + req.uid + " key: " + req.key);
                 int result = database.delete_sessionRow(req.uid);
                 if (result == -1) { // on failure
                     return gson.toJson(new StructuredResponse("error", req.uid + " not found", null));
