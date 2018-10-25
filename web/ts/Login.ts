@@ -1,10 +1,13 @@
 /// <reference path="EditMessage.ts"/>
 /// <reference path="../app.ts"/>
 /// <reference path="MessageList.ts"/>
+/// <reference path="NewMessage.ts"/>
 //var $: any;
 var login: Login;
 
 class Login {
+    public static userid = 0;
+    public static userkey = 0;
      /**
      * The name of the DOM entry associated with Login
      */
@@ -13,7 +16,7 @@ class Login {
      * Track if the Singleton has been initialized
      */
     private static isInit = false;
-
+    
     /**
      * Initialize the Message singleton by creating its element in the DOM.
      * This needs to be called from any public static method, to ensure that the 
@@ -32,6 +35,7 @@ class Login {
      * run in response to each of the form's buttons being clicked.
      */
     constructor() {
+       
         //$("#login").click(this.submit);
         //$("#editDislike").click(this.clickDislike);
     }
@@ -93,30 +97,53 @@ private static submit() {
             type: "POST", 
             url: "/login",
             dataType: "json",
-            data:JSON.stringify({uUsername: user, uPassword: pass}),
-            success: Login.onSubmitResponse,
-            error: Login.onFail
+            data:JSON.stringify({username: user, password: pass}),
+            success: Login.onSubmitResponse
         });
 }
+
+
+    public static setUserId(usernum: number){
+    console.log("in set method");
+    console.log(usernum);
+    Login.userid = usernum;
+
+    }
+
+    public static setSessionKey(userSessionKey: number){
+
+        Login.userkey = userSessionKey;
+    
+        }
 /**
      * onSubmitResponse runs when the AJAX call in submitForm() returns a 
      * result.
      * 
      * @param data The object returned by the server
      */
-    private static onSubmitResponse(data: any) {
+    protected static onSubmitResponse(data: any) {
         // If we get an "ok" message, clear the form and refresh the main 
         // listing of messages
         if (data.mStatus === "ok") {
             console.log(data.sessionkey);
+            console.log(data.uid);
             window.alert(data.echoMessage);
-            var userkey = data.mData;
+            
+            
+            var usernum = data.uid;
+            var userSessionKey = data.sessionkey;
+            //send object info from backend to set method's for later use
+            Login.setUserId(usernum);
+            Login.setSessionKey(userSessionKey);
+            
+            //var userkey = data.sessionkey;
             //after successful login, allow add message
-            NewMessage.refresh();
+            MessageList.refresh();
         }
-        // Handle explicit errors with a detailed popup message
+
         else if (data.mStatus === "error") {
             window.alert("The server replied with an error:\n" + data.echoMessage);
+            Login.refresh();
         }
         // Handle other errors with a less-detailed popup message
         else {
@@ -124,13 +151,6 @@ private static submit() {
         }
     }
 
-    private static onFail(data: any){
-        // Handle explicit errors with a detailed popup message
-        if (data.mStatus === "error") {
-            window.alert("The server replied with an error:\n" + data.echoMessage);
-            Login.refresh();
-        }
-    }
     /**
      * Invoked when user clicks "login" button
      */

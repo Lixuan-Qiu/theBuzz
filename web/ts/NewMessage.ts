@@ -2,6 +2,7 @@
 /// <reference path="Navbar.ts"/>
 /// <reference path="EditMessage.ts"/>
 /// <reference path="MessageList.ts"/>
+/// <reference path="Login.ts"/>
 // Prevent compiler errors when using jQuery.  "$" will be given a type of 
 // "any", so that we can use it anywhere, and assume it has any fields or
 // methods, without the compiler producing an error.
@@ -16,8 +17,9 @@ var newMessage: NewMessage;
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
  */
-class NewMessage {
 
+class NewMessage {
+    
     /**
      * The name of the DOM entry associated with NewEntryForm
      */
@@ -73,13 +75,20 @@ class NewMessage {
         $("#" + NewMessage.NAME).modal("show");
     }
 
+    /*public getUserId():number{
+        return Login.userid;
+    }
+
+    public getSessionKey():number{
+        return Login.userkey;
+    }*/
 
     /**
      * Send data to submit the form only if the fields are both valid.  
      * Immediately hide the form when we send data, so that the user knows that 
      * their click was received.
      */
-    private static submitForm() {
+    private static submitForm(data: any) {
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
         let title = "" + $("#" + NewMessage.NAME + "-title").val();
@@ -88,6 +97,9 @@ class NewMessage {
             window.alert("Error: title or message is not valid");
             return;
         }
+        
+        /*console.log(newMessage.getUserId());
+        console.log(newMessage.getSessionKey());
         NewMessage.hide();
         // set up an AJAX post.  When the server replies, the result will go to
         // onSubmitResponse
@@ -95,9 +107,9 @@ class NewMessage {
             type: "POST",
             url: "/messages",
             dataType: "json",
-            data: JSON.stringify({mMessage: msg }),
+            data: JSON.stringify({uid: newMessage.getUserId(), key: newMessage.getSessionKey(), mMessage: msg }),
             success: NewMessage.onSubmitResponse
-        });
+        });*/
     }
 
     /**
@@ -111,7 +123,8 @@ class NewMessage {
         // listing of messages
         console.log("hello from");
         if (data.mStatus === "ok") {
-            MessageList.refresh();
+            console.log("it worked");
+            NewMessage.refresh();
             //$("#editElement").show();
             
         }

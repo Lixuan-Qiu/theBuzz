@@ -35,6 +35,14 @@ class MessageList {
         }
     }
 
+    public static getUserId():number{
+        return Login.userid;
+    }
+
+    public static getSessionKey():number{
+        return Login.userkey;
+    }
+
     /**
  * refresh() is the public method for updating the MessageList
  */
@@ -42,11 +50,13 @@ public static refresh() {
     // Make sure the singleton is initialized
     MessageList.init();
     console.log("message list refresh");
+    //console.log(sample);
     // Issue a GET, and then pass the result to update()
     $.ajax({
         type: "GET",
         url: "/messages",
         dataType: "json",
+        data: {uid: MessageList.getUserId(), key: MessageList.getSessionKey()},
         success: MessageList.update
     });
 }
