@@ -1,16 +1,12 @@
 {
-  "name": "web",
-  "version": "1.0.0",
-  "description": "Web Front-End",
-  "dependencies": {
-    "@types/jquery": "^3.3.22",
-    "bootstrap": "^3.3.7",
-    "handlebars": "^4.0.12",
-    "http-server": "^0.11.1",
-    "jasmine-core": "^3.2.1",
-    "jquery": "^3.3.1",
-    "typescript": "^3.1.3",
-    "typings": "^2.1.1"
-  },
-  "devDependencies": {}
+    "name": "web",
+    "version": "1.0.0",
+    "description": "Web Front-End",
+    "dependencies": {
+        "bootstrap": "^3.3.7",
+        "handlebars": "^4.0.12",
+        "http-server": "^0.11.1",
+        "jquery": "^3.3.1",
+        "typescript": "^3.1.5"
+    }
 }
