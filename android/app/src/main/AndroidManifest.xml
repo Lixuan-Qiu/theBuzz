@@ -30,11 +30,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="cloud9.cse216.lehigh.edu.cloud9.DisplayActivity" />
         </activity>
-        <activity
-            android:name=".DisplayActivity">
-        </activity>
-
-
+        <activity android:name=".DisplayActivity"></activity>
+        <activity android:name=".GoogleLogin"></activity>
     </application>
 
 </manifest>
