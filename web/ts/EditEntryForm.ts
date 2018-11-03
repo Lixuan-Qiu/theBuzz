@@ -8,7 +8,7 @@ class EditEntryForm {
     /**
      * The name of the DOM entry associated with EditEntryForm
      */
-    private static readonly NAME = "EditEntryForm";
+    public static readonly NAME = "EditEntryForm";
 
     /**
      * Track if the Singleton has been initialized
@@ -83,7 +83,7 @@ class EditEntryForm {
             type: "PUT",
             url: backendUrl + "/messages/" + EditEntryForm.id,
             dataType: "json",
-            data: JSON.stringify({ mMessage: msg }),
+            data: JSON.stringify({ uid: user_id, key: session_key, mMessage: msg }),
             success: EditEntryForm.onSubmitResponse
         });
     }
@@ -95,14 +95,16 @@ class EditEntryForm {
      * @param data The object returned by the server
      */
     private static onSubmitResponse(data: any) {
-        // If we get an "ok" message, clear the form and refresh the main 
-        // listing of messages
+
+        console.log("EditEntryForm.onSubmitResponse: status = " + data.mStatus);
+
         if (data.mStatus === "ok") {
             ElementList.refresh();
         }
         // Handle explicit errors with a detailed popup message
         else if (data.mStatus === "error") {
-            window.alert("The server replied with an error:\n" + data.mMessage);
+            window.alert("The server replied with an error:\n" + data.echoMessage);
+            Login.hideMainPage();
         }
         // Handle other errors with a less-detailed popup message
         else {

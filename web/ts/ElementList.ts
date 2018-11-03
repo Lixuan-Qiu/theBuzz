@@ -6,7 +6,7 @@ class ElementList {
     /**
      * The name of the DOM entry associated with ElementList
      */
-    private static readonly NAME = "ElementList";
+    public static readonly NAME = "ElementList";
 
     /**
      * Track if the Singleton has been initialized
@@ -29,6 +29,7 @@ class ElementList {
      * ElementList
      */
     private static update(data: any) {
+
         // Remove the table of data, if it exists
         $("#" + ElementList.NAME).remove();
         // Use a template to re-generate the table, and then insert it
@@ -37,30 +38,35 @@ class ElementList {
         $("." + ElementList.NAME + "-delbtn").click(ElementList.clickDelete);
         // Find all of the Edit buttons, and set their behavior
         $("." + ElementList.NAME + "-editbtn").click(ElementList.clickEdit);
+        // Find all of the delete buttons, and set their behavior
+        $("." + ElementList.NAME + "-likebtn").click(ElementList.clickLike);
+        // Find all of the Edit buttons, and set their behavior
+        $("." + ElementList.NAME + "-dislikebtn").click(ElementList.clickDislike);
+
+        $("#" + ElementList.NAME + "-logoutbtn").click(ElementList.clickLogout);
+
+
     }
 
     public static refresh() {
-        // Make sure the singleton is initialized
+        console.log("ElementList: refresh");
+        // Make sure the ElementList is initialized
         ElementList.init();
-        // Issue a GET, and then pass the result to update()
-        $.ajax({
-            type: "GET",
-            url: "/messages",
-            dataType: "json",
-            success: ElementList.update
-        });
-    }
 
-
-    /**
-     * buttons() creates 'edit' and 'delete' buttons for an id, and puts them in
-     * a TD
-     */
-    private static buttons(id: string): string {
-        return "<td><button class='" + ElementList.NAME +
-            "-editbtn' data-value='" + id + "'>Edit</button></td>" +
-            "<td><button class='" + ElementList.NAME +
-            "-delbtn' data-value='" + id + "'>Delete</button></td>";
+        //check if user logout
+        if(user_id === -1 || session_key === -1){
+            Login.hideMainPage();
+        }
+        else {
+            // get message list
+            $.ajax({
+                type: "GET",
+                url: "/messages",
+                dataType: "json",
+                data: JSON.stringify({ uid: user_id, key: session_key }),
+                success: ElementList.update
+            });
+        }
     }
 
     /**
@@ -74,9 +80,10 @@ class ElementList {
             type: "DELETE",
             url: "/messages/" + id,
             dataType: "json",
+            data: JSON.stringify({ uid: user_id, key: session_key }),
             // TODO: we should really have a function that looks at the return
             //       value and possibly prints an error message.
-            success: ElementList.refresh
+            success: ElementList.onSubmitResponse
         });
     }
 
@@ -90,7 +97,69 @@ class ElementList {
             type: "GET",
             url: "/messages/" + id,
             dataType: "json",
+            data: JSON.stringify({ uid: user_id, key: session_key }),
             success: EditEntryForm.show
         });
+    }
+
+    /**
+     * clickLike is the code we run in response to a click of a like button
+     */
+    private static clickLike() {
+
+        let id = $(this).data("value");
+        $.ajax({
+            type: "PUT",
+            url: "/messages/" + id + "/like",
+            dataType: "json",
+            data: JSON.stringify({ uid: user_id, key: session_key }),
+            success: ElementList.onSubmitResponse
+        });
+    }
+
+    /**
+     * clickDislike is the code we run in response to a click of a dislike button
+     */
+    private static clickDislike() {
+
+        let id = $(this).data("value");
+        $.ajax({
+            type: "PUT",
+            url: "/messages/" + id + "/dislike",
+            dataType: "json",
+            data: JSON.stringify({ uid: user_id, key: session_key }),
+            success: ElementList.onSubmitResponse
+        });
+    }
+
+    private static clickLogout() {
+
+        $.ajax({
+            type: "POST",
+            url: "/logout",
+            dataType: "json",
+            data: JSON.stringify({ uid: user_id, key: session_key }),
+            success: ElementList.onSubmitResponse
+        });
+
+        user_id = -1;
+        session_key = -1;
+    }
+
+    private static onSubmitResponse(data: any) {
+
+        console.log("ElementList.onSubmitResponse: status = " + data.mStatus);
+        if (data.mStatus === "ok") {
+            ElementList.refresh();
+        }
+        // Handle explicit errors with a detailed popup message
+        else if (data.mStatus === "error") {
+            window.alert("The server replied with an error:\n" + data.echoMessage);
+            Login.hideMainPage();
+        }
+        // Handle other errors with a less-detailed popup message
+        else {
+            window.alert("Unspecified error");
+        }
     }
 }

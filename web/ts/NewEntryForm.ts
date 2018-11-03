@@ -7,7 +7,7 @@ class NewEntryForm {
     /**
      * The name of the DOM entry associated with NewEntryForm
      */
-    private static readonly NAME = "NewEntryForm";
+    public static readonly NAME = "NewEntryForm";
 
     /**
      * Track if the Singleton has been initialized
@@ -59,7 +59,7 @@ class NewEntryForm {
             type: "POST",
             url: "/messages",
             dataType: "json",
-            data: JSON.stringify({ mMessage: msg }),
+            data: JSON.stringify({ uid: user_id, key: session_key, mMessage: msg }),
             success: NewEntryForm.onSubmitResponse
         });
     }
@@ -71,15 +71,17 @@ class NewEntryForm {
      * @param data The object returned by the server
      */
     private static onSubmitResponse(data: any) {
-        // If we get an "ok" message, clear the form and refresh the main 
-        // listing of messages
+
+        console.log("NewEntryForm.onSubmitResponse: status = " + data.mStatus);
+
         if (data.mStatus === "ok") {
             ElementList.refresh();
             $("#" + NewEntryForm.NAME + "-message").val("");
         }
         // Handle explicit errors with a detailed popup message
         else if (data.mStatus === "error") {
-            window.alert("The server replied with an error:\n" + data.mMessage);
+            window.alert("The server replied with an error:\n" + data.echoMessage);
+            Login.hideMainPage();
         }
         // Handle other errors with a less-detailed popup message
         else {
