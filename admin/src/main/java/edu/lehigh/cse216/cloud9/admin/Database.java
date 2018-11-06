@@ -58,19 +58,19 @@ public class Database {
     private PreparedStatement uSelectOne;
     private PreparedStatement uDeleteOne;
     private PreparedStatement uInsertOne;
-    private PreparedStatement uUpdatePassword;
-    private PreparedStatement uSelectPassword;
-    private PreparedStatement uSelectSalt;
     private PreparedStatement uCreateTable;
     private PreparedStatement uDropTable;
     private PreparedStatement uUpdateProfile;
+    private PreparedStatement uUpdateUsername;
     private PreparedStatement uGetuId;
+    private PreparedStatement uGetuId2;
 
     // all prepared statment for Comment table
     private PreparedStatement cSelectAll;
     private PreparedStatement cSelectOne;
     private PreparedStatement cSelectMessage;
     private PreparedStatement cDeleteOne;
+    private PreparedStatement cDeleteAll;
     private PreparedStatement cInsertOne;
     private PreparedStatement cCreateTable;
     private PreparedStatement cDropTable;
@@ -82,18 +82,20 @@ public class Database {
     private PreparedStatement sInsertOne;
     private PreparedStatement sCreateTable;
     private PreparedStatement sDropTable;
+    private PreparedStatement sGetuId;
     private PreparedStatement sGetKey;
     // all prepared statment for Vote table
     private PreparedStatement vSelectAll;
     private PreparedStatement vSelectOne;
     private PreparedStatement vDeleteOne;
+    private PreparedStatement vDeleteAll;
     private PreparedStatement vInsertOne;
     private PreparedStatement vUpdateOne;
     private PreparedStatement vCreateTable;
     private PreparedStatement vDropTable;
 
     /* data structure for message */
-    public static class message_RowData {
+    public static class message_RowData /* implements Comparable<message_RowData> */ {
         /**
          * The ID of this message
          */
@@ -123,6 +125,11 @@ public class Database {
             mdislikeCount = dislikeCount;
             uId = uid;
         }
+
+        /*
+         * @Override public compareTo(message_RowData mRow){ if(this.mId > mRow.mId)
+         * return 1; else if (this.mId < mRow.mId) }
+         */
     }
 
     /* data structure for user table */
@@ -139,26 +146,20 @@ public class Database {
         String uRealname;
         // the comment on profile (user creates it themselves)
         String uProfile;
+
         // the email of the user
         String uEmail;
-        // the salt
-        String uSalt;
-        // the password after hashing
-        String uPassword;
 
         /**
          * Construct a RowData object by providing values for its fields
          */
 
-        public user_RowData(int uid, String username, String realname, String profile, String email, String salt,
-                String password) {
+        public user_RowData(int uid, String username, String realname, String profile, String email) {
             uId = uid;
             uUsername = username;
             uRealname = realname;
             uProfile = profile;
             uEmail = email;
-            uSalt = salt;
-            uPassword = password;
         }
     }
 
@@ -210,7 +211,7 @@ public class Database {
     /* data structure for session table */
     public static class session_RowData {
         // the key of the session
-        int key;
+        String key;
         /**
          * The ID of the user that comment
          */
@@ -220,7 +221,7 @@ public class Database {
          * Construct a RowData object by providing values for its fields
          */
 
-        public session_RowData(int sessionkey, int uid) {
+        public session_RowData(String sessionkey, int uid) {
             key = sessionkey;
             uId = uid;
         }
@@ -286,17 +287,17 @@ public class Database {
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
                     + "dislikeCount INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
-            db.uCreateTable = db.mConnection.prepareStatement(
-                    "CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, " + "username VARCHAR(100) NOT NULL, "
-                            + "realname VARCHAR(100) NOT NULL, " + "profile VARCHAR(200) NOT NULL, "
-                            + "email VARCHAR(50), " + "salt VARCHAR(200), " + "password VARCHAR(400))");
+            db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
+                    + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
+                    + "profile VARCHAR(200) NOT NULL," + "email VARCHAR(50) NOT NULL)");
             // create comment_table
             db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblComment (" + "cid SERIAL PRIMARY KEY, "
                     + "uid INT NOT NULL, " + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
                     + "FOREIGN KEY (mid) REFERENCES tblMessage(mid), " + "comment VARCHAR(200) NOT NULL)");
             // create session_table
-            db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession ("  
-                    + "key SERIAL PRIMARY KEY, " +"uid INT NOT NULL, "+ "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+            db.sCreateTable = db.mConnection
+                    .prepareStatement("CREATE TABLE tblSession (" + "key VARCHAR(100) SERIAL PRIMARY KEY, "
+                            + "uid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create vote_table
             db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "
                     + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
@@ -321,18 +322,18 @@ public class Database {
 
             // Standard CRUD operations for user_table
             db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblUser WHERE uid = ?");
-            db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO tblUser VALUES (default, ?, ?, ?, ?, ?, ?)");
-            db.uSelectPassword = db.mConnection.prepareStatement("SELECT password FROM tblUser WHERE uid=?");
-            db.uSelectSalt = db.mConnection.prepareStatement("SELECT salt FROM tblUser WHERE uid=?");
+            db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO tblUser VALUES (default, ?, ?, ?, ?)");
             db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM tblUser");
             db.uSelectOne = db.mConnection.prepareStatement("SELECT * from tblUser WHERE uid=?");
             db.uUpdateProfile = db.mConnection.prepareStatement("UPDATE tblUser SET profile = ? WHERE uid = ?");
-            db.uUpdatePassword = db.mConnection
-                    .prepareStatement("UPDATE tblUser SET password = ?, salt = ? WHERE uid = ?");
+            // db.uUpdateUsername = db.mAddLike.prepareStatement("UPDATE tblUser SET
+            // username = ? WHERE uid = ?")
             db.uGetuId = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE username=?");
+            db.uGetuId2 = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE email=?");
 
             // Standard CRUD operations for comment_table
             db.cDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE cid = ?");
+            db.cDeleteAll = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE mid = ?");
             db.cInsertOne = db.mConnection.prepareStatement("INSERT INTO tblComment VALUES (default, ?, ?, ?)");
             db.cSelectAll = db.mConnection.prepareStatement("SELECT cid , uid, mid, comment FROM tblComment");
             db.cSelectOne = db.mConnection.prepareStatement("SELECT * from tblComment WHERE cid=?");
@@ -342,13 +343,15 @@ public class Database {
 
             // Standard CRUD operations for session_table
             db.sDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblSession WHERE uid = ?");
-            db.sInsertOne = db.mConnection.prepareStatement("INSERT INTO tblSession VALUES (default, ?)");
+            db.sInsertOne = db.mConnection.prepareStatement("INSERT INTO tblSession VALUES (?, ?)");
             db.sSelectAll = db.mConnection.prepareStatement("SELECT key , uid FROM tblSession");
             db.sSelectOne = db.mConnection.prepareStatement("SELECT * from tblSession WHERE uid=?");
+            db.sGetuId = db.mConnection.prepareStatement("SELECT uid FROM tblSession WHERE key = ?");
             db.sGetKey = db.mConnection.prepareStatement("SELECT key FROM tblSession WHERE uid = ?");
 
             // Standard CRUD operations for Vote table
             db.vDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE uid = ? AND mid = ?");
+            db.vDeleteAll = db.mConnection.prepareStatement("DELETE FROM tblVote WHERE mid = ?");
             db.vInsertOne = db.mConnection.prepareStatement("INSERT INTO tblVote VALUES (?, ?, ?)");
             db.vSelectAll = db.mConnection.prepareStatement("SELECT uid , mid, vote FROM tblVote");
             db.vSelectOne = db.mConnection.prepareStatement("SELECT * from tblVote WHERE uid=? AND mid=?");
@@ -421,6 +424,8 @@ public class Database {
     int delete_messageRow(int mid) {
         int res = -1;
         try {
+            delete_commentAll(mid);
+            delete_voteAll(mid);
             mDeleteOne.setInt(1, mid);
             res = mDeleteOne.executeUpdate();
         } catch (SQLException e) {
@@ -571,52 +576,18 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insert_userRow(String username, String realname, String email, String password) {
+    int insert_userRow(String username, String name, String email) {
         int count = 0;
         try {
-            byte[] salt = getSalt();
-            uInsertOne.setString(1, username);
-            uInsertOne.setString(2, realname);
+            uInsertOne.setString(1, name);
+            uInsertOne.setString(2, name);
             uInsertOne.setString(3, " ");
             uInsertOne.setString(4, email);
-            uInsertOne.setString(5, salt.toString());
-            String Hash_password = get_SecurePassword(password, salt.toString());
-            uInsertOne.setString(6, Hash_password);
             count += uInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
         }
         return count;
-    }
-
-    private static byte[] getSalt() throws NoSuchAlgorithmException {
-        // Always use a SecureRandom generator
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        // Create array for salt
-        byte[] salt = new byte[16];
-        // Get a random salt
-        sr.nextBytes(salt);
-        // return salt
-        return salt;
-    }
-
-    private static String get_SecurePassword(String passwordToHash, String salt) {
-        String generatedPassword = null;
-        try {
-            MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(salt.getBytes());
-            byte[] bytes = md.digest(passwordToHash.getBytes());
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-            generatedPassword = sb.toString();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return generatedPassword;
     }
 
     /**
@@ -638,7 +609,7 @@ public class Database {
     }
 
     /**
-     * Get all data for a specific row, by ID
+     * Get all data for a specific row, by Username
      * 
      * @param username
      * 
@@ -648,6 +619,27 @@ public class Database {
         int res = -1;
         try {
             uGetuId.setString(1, username);
+            ResultSet rs = uGetuId.executeQuery();
+            if (rs.next()) {
+                res = rs.getInt("uid");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    /**
+     * Get user ID, by Email
+     * 
+     * @param email
+     * 
+     * @return The data for the requested row, or null if the ID was invalid
+     */
+    int get_userId2(String email) {
+        int res = -1;
+        try {
+            uGetuId.setString(1, email);
             ResultSet rs = uGetuId.executeQuery();
             if (rs.next()) {
                 res = rs.getInt("uid");
@@ -679,70 +671,6 @@ public class Database {
     }
 
     /**
-     * Update the profile for a row in the database
-     * 
-     * @param uid      The uid of the row to update
-     * @param password The new password
-     * 
-     * @return The number of rows that were updated. -1 indicates an error.
-     */
-    int update_userPassword(int uid, String password) {
-        int res = -1;
-        try {
-            byte[] salt = getSalt();
-            String Hash_password = get_SecurePassword(password, salt.toString());
-            uUpdatePassword.setString(1, Hash_password);
-            uUpdatePassword.setString(2, salt.toString());
-            uUpdatePassword.setInt(3, uid);
-            res = uUpdatePassword.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-        return res;
-    }
-
-    /**
-     * @uid
-     * 
-     * @return password
-     */
-    String get_Password(int uid) {
-        String password = null;
-        try {
-            uSelectPassword.setInt(1, uid);
-            ResultSet rs = uSelectPassword.executeQuery();
-            if(rs.next())
-                password = rs.getString("password");
-            return password;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    /**
-     * @uid
-     * 
-     * @return password
-     */
-    String generate_Password(int uid, String password) {
-        try {
-            uSelectSalt.setInt(1, uid);
-            ResultSet rs = uSelectSalt.executeQuery();
-            if (rs.next()) {
-                String salt = rs.getString("salt");
-                return get_SecurePassword(password, salt);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return null;
-    }
-
-    /**
      * Query the database for a list of all subjects and their IDs
      * 
      * @return All rows, as an ArrayList
@@ -754,8 +682,7 @@ public class Database {
             while (rs.next()) {
                 // need edit
                 res.add(new user_RowData(rs.getInt("uid"), rs.getString("username"), rs.getString("realname"),
-                        rs.getString("profile"), rs.getString("email"), rs.getString("password"),
-                        rs.getString("salt")));
+                        rs.getString("profile"), rs.getString("email")));
             }
             rs.close();
             return res;
@@ -779,7 +706,7 @@ public class Database {
             ResultSet rs = uSelectOne.executeQuery();
             if (rs.next()) {
                 res = new user_RowData(rs.getInt("uid"), rs.getString("username"), rs.getString("realname"),
-                        rs.getString("profile"), rs.getString("email"), rs.getString("password"), rs.getString("salt"));
+                        rs.getString("profile"), rs.getString("email"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -852,6 +779,24 @@ public class Database {
     }
 
     /**
+     * Delete a row by mid
+     * 
+     * @param mid The id of the row to delete
+     * 
+     * @return The number of rows that were deleted. -1 indicates an error.
+     */
+    int delete_commentAll(int mid) {
+        int res = -1;
+        try {
+            cDeleteAll.setInt(1, mid);
+            res = cDeleteAll.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    /**
      * Query the database for a list of all subjects and their IDs
      * 
      * @return All rows, as an ArrayList
@@ -907,7 +852,8 @@ public class Database {
             cSelectOne.setInt(1, cid);
             ResultSet rs = cSelectOne.executeQuery();
             if (rs.next()) {
-                res = new comment_RowData(rs.getInt("cid"), rs.getInt("uid"), rs.getInt("mid"), rs.getString("comment"));
+                res = new comment_RowData(rs.getInt("cid"), rs.getInt("uid"), rs.getInt("mid"),
+                        rs.getString("comment"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -948,10 +894,11 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insert_sessionRow(int uid) {
+    int insert_sessionRow(int uid, String key) {
         int count = 0;
         try {
-            sInsertOne.setInt(1, uid);
+            sInsertOne.setString(1, key);
+            sInsertOne.setInt(2, uid);
             count += sInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -971,6 +918,44 @@ public class Database {
             e.printStackTrace();
         }
         return key;
+    }
+
+    /**
+     * Gets the user Id given the session table
+     * 
+     * @param key the session key used to find the uId
+     * 
+     * @return the session key's uId
+     */
+    int get_uId_fromSession(String key) {
+        int uId = 0;
+        try {
+            sGetuId.setString(1, key);
+            ResultSet rs = sGetuId.executeQuery();
+            if (rs.next()) {
+                uId = rs.getInt("uId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return uId;
+    }
+
+    /**
+     * Check to see if a given session key is in table
+     * 
+     * @param givenKey the key to check
+     * @return The boolean result of the search
+     */
+    boolean check_sessionKey(String givenKey) {
+        boolean check = false;
+        ArrayList<session_RowData> sessions = select_sessionAll();
+        for (session_RowData session : sessions) {
+            if (session.key.equals(givenKey))
+                check = true;
+            break;
+        }
+        return check;
     }
 
     /**
@@ -1001,7 +986,7 @@ public class Database {
         try {
             ResultSet rs = sSelectAll.executeQuery();
             while (rs.next()) {
-                res.add(new session_RowData(rs.getInt("key"), rs.getInt("uid")));
+                res.add(new session_RowData(rs.getString("key"), rs.getInt("uid")));
             }
             rs.close();
             return res;
@@ -1024,7 +1009,7 @@ public class Database {
             sSelectOne.setInt(1, uid);
             ResultSet rs = sSelectOne.executeQuery();
             if (rs.next()) {
-                res = new session_RowData(rs.getInt("key"), rs.getInt("uid"));
+                res = new session_RowData(rs.getString("key"), rs.getInt("uid"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1069,6 +1054,24 @@ public class Database {
             vDeleteOne.setInt(1, uid);
             vDeleteOne.setInt(2, mid);
             res = vDeleteOne.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return res;
+    }
+
+    /**
+     * Delete a row by mid
+     * 
+     * @param uid The id of the row to delete
+     * 
+     * @return The number of rows that were deleted. -1 indicates an error.
+     */
+    int delete_voteAll(int mid) {
+        int res = -1;
+        try {
+            vDeleteAll.setInt(1, mid);
+            res = vDeleteAll.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
