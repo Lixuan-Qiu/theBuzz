@@ -22,7 +22,7 @@ cp index.html $TARGETFOLDER/$WEBFOLDERNAME
 # step 2: update our npm dependencies
 npm update
 
-# step 3: copy jQuery, Handlebars, and Bootstrap files
+# step 3: copy javascript files
 cp node_modules/jquery/dist/jquery.min.js $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/handlebars/dist/handlebars.min.js $TARGETFOLDER/$WEBFOLDERNAME
 cp node_modules/bootstrap/dist/js/bootstrap.min.js $TARGETFOLDER/$WEBFOLDERNAME
@@ -31,14 +31,17 @@ cp -R node_modules/bootstrap/dist/fonts $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 4: compile TypeScript files
 node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/app.js
-node_modules/typescript/bin/tsc ts/Message.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/Message.js
-node_modules/typescript/bin/tsc ts/EditMessage.ts --strict --outFile $TARGETFOLDER/$WEBFOLDERNAME/EditMessage.js
 
+# step 5: copy css files
+cat app.css css/ElementList.css css/EditEntryForm.css css/NewEntryForm.css css/Login.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css
 
-# # step 5: copy css files
-# cat app.css css/ElementList.css css/EditEntryForm.css css/NewEntryForm.css > $TARGETFOLDER/$WEBFOLDERNAME/app.css
+# strp 5.1: concat Javascript file
+# somehow it just wont concat if there's no intermediate
+cat $TARGETFOLDER/$WEBFOLDERNAME/app.js Login.js > $TARGETFOLDER/$WEBFOLDERNAME/app2.js
+cat $TARGETFOLDER/$WEBFOLDERNAME/app2.js > $TARGETFOLDER/$WEBFOLDERNAME/app.js
 
-# # step 6: compile handlebars templates to the deploy folder
-# node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-# node_modules/handlebars/bin/handlebars hb/EditEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
-# node_modules/handlebars/bin/handlebars hb/NewMessage.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+# step 6: compile handlebars templates to the deploy folder
+node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/EditEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/NewEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/Login.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js

@@ -1,12 +1,19 @@
 package edu.lehigh.cse216.cloud9.backend;
 
 import java.util.Map;
-
+import java.util.Arrays;
 // Import the Spark package
 import spark.Spark;
 
 // Import Google's JSON library
 import com.google.gson.*;
+
+import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
+//Import Googles TokenVerifier object
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 
 public class App {
     public static void main(String[] args) {
@@ -14,8 +21,21 @@ public class App {
         String db_url = env.get("DATABASE_URL");
 
         // gson turn JSON into objects, and objects into JSON
-
         final Gson gson = new Gson();
+
+        //Android Client ID
+        String CLIENT_ID_1 = "319649689632-7qvimdmkig66k3pd90rarf1enulobgjg.apps.googleusercontent.com";
+        
+        //Web Client ID
+        String CLIENT_ID_2 ="319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
+
+        final JacksonFactory jacksonFactory = new JacksonFactory();
+        //Build the verifier that will check ID Token's
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(UrlFetchTransport.getDefaultInstance(), jacksonFactory)
+            // Or, if multiple clients access the backend:
+            .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2))
+            .build();
+
 
         Database database = Database.getDatabase(db_url);// ,ip, port, user, pass);
         if (database == null)
@@ -39,16 +59,62 @@ public class App {
         /////////////////////////// LOGIN ///////////////////////////
         Spark.post("/login", (request, response) -> {
 
+            System.out.println("receive request to /login");
+            System.out.println("url: " + request.url());
+            System.out.println("request body: " + request.body());
+            System.out.println("attributes list: " + request.attributes());
+            System.out.println("contentType: " + request.contentType());
+            System.out.println("headers: " + request.headers());
+            System.out.println("params: " + request.params());
+            System.out.println("raw: " + request.raw());
+            System.out.println("requestMethod" + request.requestMethod());
+
             // parse request to FirstRequest
-            FirstRequest req = gson.fromJson(request.body(), FirstRequest.class);
+            String email = null;
+            String name = null;
+            String idTokenString = request.body();
             response.status(200);
             response.type("application/json");
 
-            // retrive all necessary variable
-            int uid = database.get_userId(req.username);
+            GoogleIdToken idToken = verifier.verify(idTokenString);
+            if (idToken != null) {
+            Payload payload = idToken.getPayload();
 
+            // Print user identifier
+            String userIdString = payload.getSubject();
+            System.out.println("User ID: " + userIdString);
+
+            // Get profile information from payload
+            email = payload.getEmail();
+            boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
+            name = (String) payload.get("name");
+            /*String locale = (String) payload.get("locale");
+            String familyName = (String) payload.get("family_name");
+            String givenName = (String) payload.get("given_name");*/
+
+            } else {
+            return gson.toJson(new FirstResponse("error", "login error: Invalid ID token.", -1, -1));
+            }
+
+            int uId = database.get_userId2(email);
+            if(uId == -1){
+                //If new user, then insert new row
+                 database.insert_userRow(name,name,email);
+
+            } else {
+                // retreive sessionData
+                Database.session_RowData sessionData = database.select_sessionOne(uId);
+                if(sessionData != null){ // if there is existing sessionData, delete old one
+                    database.delete_sessionRow(uId);
+                }
+            }
+
+            //Inset new session row
+            database.insert_sessionRow(uId,idTokenString);
             // send response back
-            // check the password if it is correct
+            return gson.toJson(new FirstResponse("ok", "session key for uid = " + uId + " is sent.",
+                        database.get_sessionKey(uId), uId));
+            /*// check the password if it is correct
             if (database.get_Password(uid).equals(database.generate_Password(uid, req.password))) {
                 // retreive sessionData
                 Database.session_RowData sessionData = database.select_sessionOne(uid);
@@ -62,7 +128,7 @@ public class App {
                         database.get_sessionKey(uid), uid));
             } else {
                 return gson.toJson(new FirstResponse("error", "login error: wrong password", -1, -1));
-            }
+            }*/
         });
 
         /////////////////////// "messages" CRUD operations ///////////////////////
@@ -70,16 +136,25 @@ public class App {
         // return all message_RowData on success
         Spark.get("/messages", (request, response) -> {
 
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            System.out.println("receive request to /messages");
+            System.out.println("url: " + request.url());
+            System.out.println("request body: " + request.headers("Authorization"));
+            System.out.println("request body: " + request.body());
+            System.out.println("attributes list: " + request.attributes());
+            System.out.println("contentType: " + request.contentType());
+            System.out.println("headers: " + request.headers());
+            System.out.println("params: " + request.params());
+            System.out.println("raw: " + request.raw());
+            System.out.println("requestMethod" + request.requestMethod());
+
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-            int key = req.key;
-            int uid = req.uid;
-            // session_key check
-            if (key == database.get_sessionKey(uid)) {
+    
+            if (database.check_sessionKey(key)) {
                 // return ArrayList<message_RowData> upon success
                 return gson.toJson(new StructuredResponse("ok", null, database.select_messageAll()));
 
@@ -91,16 +166,15 @@ public class App {
         // >> GET MESSAGE SINGLE ROW <<
         // return all message_RowData on success
         Spark.get("/messages/:id", (request, response) -> {
-
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            //String token = request.headers("Authorization");
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
                 Database.message_RowData data = database.select_messageOne(idx);
@@ -119,13 +193,14 @@ public class App {
         Spark.post("/messages", (request, response) -> {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int newId = database.insert_messageRow(req.mMessage, req.uid);
                 if (newId == -1) {
@@ -145,12 +220,14 @@ public class App {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
+
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
                 int result = database.update_messageOne(idx, req.mMessage);
@@ -171,17 +248,27 @@ public class App {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
+
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
                 // check if this guy already like/dislike or not
                 Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
-                if (Vote.vote != 1) { // user has not liked this message
+                if (Vote == null) {
+                    database.insert_voteRow(1, req.uid, idx); // insert new vote_RowData
+                    int result = database.addLike(idx, 1);
+                    if (result == -1) { // if failed to addLike
+                        return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
+                    } else {
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is liked.", result));
+                    }
+                } else if (Vote.vote != 1) { // user has not liked this message
 
                     if (Vote.vote == -1) { // user dislike this message before
 
@@ -215,16 +302,27 @@ public class App {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
+
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
                 Database.vote_RowData Vote = database.select_voteOne(req.uid, idx);
-
+                if (Vote == null) {
+                    database.insert_voteRow(-1, req.uid, idx); // insert new vote_RowData
+                    int result = database.addDislike(idx, 1);
+                    if (result == -1) { // if failed to addLike
+                        return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
+                    } else {
+                        return gson
+                                .toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                    }
+                }
                 if (Vote.vote != -1) { // user has not disliked this message before
 
                     if (Vote.vote == 1) { // user like this message before
@@ -255,15 +353,14 @@ public class App {
         // removing specified message_row
 
         Spark.delete("/messages/:id", (request, response) -> {
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
 
@@ -285,26 +382,24 @@ public class App {
 
         Spark.get("/profile", (request, response) -> {
 
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
-
-                Database.user_RowData data = database.select_userOne(req.uid);
+    
+            if (database.check_sessionKey(key)) {
+                int uid= database.get_uId_fromSession(key);
+                Database.user_RowData data = database.select_userOne(uid);
                 if (data == null) { // can't find user_RowData
-                    return gson.toJson(new StructuredResponse("error", "user_id: " + req.uid + " not found", null));
+                    return gson.toJson(new StructuredResponse("error", "user_id: " + uid + " not found", null));
                 } else {
 
                     // prepare return value
                     String profile = data.uProfile;
-                    String email = data.uEmail;
                     String realname = data.uRealname;
-                    String[] box = { realname, profile, email };
+                    String[] box = { realname, profile};
                     return gson.toJson(new StructuredResponse("ok", null, box));
                 }
             } else {
@@ -317,15 +412,14 @@ public class App {
 
         Spark.get("/profile/:id", (request, response) -> {
 
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
                 int idx = Integer.parseInt(request.params("id"));
                 Database.user_RowData data = database.select_userOne(idx);
                 if (data == null) {
@@ -334,9 +428,8 @@ public class App {
 
                     // prepare return value
                     String profile = data.uProfile;
-                    String email = data.uEmail;
                     String realname = data.uRealname;
-                    String[] box = { realname, profile, email };
+                    String[] box = { realname, profile };
                     return gson.toJson(new StructuredResponse("ok", null, box));
                 }
             } else {
@@ -352,12 +445,14 @@ public class App {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
+
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int result = database.update_userProfile(req.uid, req.mMessage);
                 if (result == -1) { // on update_userProfile fail
@@ -371,49 +466,20 @@ public class App {
             }
         });
 
-        // >> PUT PASSWORD <<
-        // update password
-
-        Spark.put("/newpassword/:id", (request, response) -> {
-
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
-
-            // ensure status 200 OK, with a MIME type of JSON
-            response.status(200);
-            response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
-
-                int result = database.update_userPassword(req.uid, req.mMessage);
-                if (result == -1) {
-
-                    return gson.toJson(new StructuredResponse("error", "unable to update row " + req.uid, null));
-
-                } else {
-                    return gson.toJson(
-                            new StructuredResponse("ok", "the password of uid: " + req.uid + " is updated.", result));
-                }
-            } else {
-                return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
-            }
-        });
 
         /////////////////////// "comment" CRUD operations ///////////////////////
 
         // >> GET comment <<
         Spark.get("/comment/:id", (request, response) -> {
 
-            // parse request to SimpleRequest
-            SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
 
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
                 return gson.toJson(new StructuredResponse("ok", null, database.select_messageComment(idx)));
@@ -429,12 +495,14 @@ public class App {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
+
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
                 int result = database.insert_commentRow(req.mMessage, req.uid, idx);
                 if (result == 0) { // on failure
                     return gson.toJson(new StructuredResponse("error", idx + " not found", null));
@@ -452,12 +520,15 @@ public class App {
             // parse request to SimpleRequest
             SimpleRequest req = gson.fromJson(request.body(), SimpleRequest.class);
 
+            // Get Session key from Authorization Header
+            String key  = request.headers("Authorization");
+
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
-
-            // session_key check
-            if (req.key == database.get_sessionKey(req.uid)) {
+    
+            if (database.check_sessionKey(key)) {
+                System.out.println("uid: " + req.uid + " key: " + key);
                 int result = database.delete_sessionRow(req.uid);
                 if (result == -1) { // on failure
                     return gson.toJson(new StructuredResponse("error", req.uid + " not found", null));
