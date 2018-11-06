@@ -1,7 +1,9 @@
 package edu.lehigh.cse216.cloud9.backend;
 
+import java.lang.String;
 import java.util.Map;
 import java.util.Arrays;
+import java.util.Collections;
 // Import the Spark package
 import spark.Spark;
 
@@ -9,6 +11,7 @@ import spark.Spark;
 import com.google.gson.*;
 
 import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.http.HttpTransport;
 import com.google.api.client.extensions.appengine.http.UrlFetchTransport;
 //Import Googles TokenVerifier object
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
@@ -30,8 +33,9 @@ public class App {
         String CLIENT_ID_2 ="319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
 
         final JacksonFactory jacksonFactory = new JacksonFactory();
+        final UrlFetchTransport urlFetchTransport = new UrlFetchTransport();
         //Build the verifier that will check ID Token's
-        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(UrlFetchTransport.getDefaultInstance(), jacksonFactory)
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(urlFetchTransport.getDefaultInstance(), jacksonFactory)
             // Or, if multiple clients access the backend:
             .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2))
             .build();
@@ -91,11 +95,13 @@ public class App {
             /*String locale = (String) payload.get("locale");
             String familyName = (String) payload.get("family_name");
             String givenName = (String) payload.get("given_name");*/
-
+                
             } else {
             return gson.toJson(new FirstResponse("error", "login error: Invalid ID token.", -1, -1));
             }
-
+            if(email.indexOf("@lehigh.edu") == -1){
+                return gson.toJson(new FirstResponse("error", "login error: Invalid Email, must be lehigh.edu", -1, -1));
+            }
             int uId = database.get_userId2(email);
             if(uId == -1){
                 //If new user, then insert new row
@@ -319,8 +325,7 @@ public class App {
                     if (result == -1) { // if failed to addLike
                         return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
                     } else {
-                        return gson
-                                .toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
                     }
                 }
                 if (Vote.vote != -1) { // user has not disliked this message before
@@ -339,8 +344,7 @@ public class App {
                     if (result == -1) { // if addDislike failed
                         return gson.toJson(new StructuredResponse("error", "unable to update row " + idx, null));
                     } else {
-                        return gson
-                                .toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
+                        return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is disliked.", result));
                     }
                 } else
                     return gson.toJson(new StructuredResponse("ok", "message id: " + idx + " is already disliked.", 0));
