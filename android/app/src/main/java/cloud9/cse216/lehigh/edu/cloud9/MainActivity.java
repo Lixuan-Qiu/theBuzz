@@ -1,182 +1,129 @@
 package cloud9.cse216.lehigh.edu.cloud9;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
 import android.view.View;
+
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class MainActivity extends AppCompatActivity {
 
-    /**
-     * messageArrayList holds the data we get from Volley
-     * volley is the VolleySingleton object
-     */
-    ArrayList<Message> messageArrayList = new ArrayList<>();
-    // Instantiate the VolleySingleton
+public class MainActivity extends Activity  {
+    Button logBtn, ccelBtn;
+    EditText uName,passWd;
     VolleySingleton volley;
+    TextView tx1;
+    int counter = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
+        setContentView(R.layout.activity_login);
         volley = new VolleySingleton(this);
-        getMessages();
+        logBtn= (Button)findViewById(R.id.button);
+        uName = (EditText)findViewById(R.id.editText);
+        passWd = (EditText)findViewById(R.id.editText2);
 
-
-        // The Send button gets the text from the input box and returns it to the calling activity
-        final EditText et = (EditText) findViewById(R.id.editText);
-        Button bSend = (Button) findViewById(R.id.sendButton);
-        bSend.setOnClickListener(new View.OnClickListener() {
+        ccelBtn= (Button)findViewById(R.id.button2);
+        tx1 = (TextView)findViewById(R.id.textView3);
+        tx1.setVisibility(View.GONE);
+        logBtn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
-                if (!et.getText().toString().equals("")) {
-                    pushMessage(et);
-                }
-            }
+            public void onClick(View v) {
+                String username = uName.getText().toString();
+                String password = passWd.getText().toString();
+                String url = "https://agile-plateau-21593.herokuapp.com/login";
+                Map<String, String> params = new HashMap<String,String>();
+                params.put("username", username);
+                params.put("password", password);
+                JSONObject request = new JSONObject(params);
+                JsonObjectRequest submitInfo = new JsonObjectRequest(
+                        Request.Method.POST, url,request, new Response.Listener<JSONObject>()
+                        {
+                            int key, uid;
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                // response
+                                Log.d("cpl220", response.toString());
+                                Log.d("cpl220", "Successful submission");
+                                try {
+                                    if (response.getString("mStatus").equals("error"))
+                                    {
+                                        tx1.setVisibility(View.VISIBLE);
+                                        tx1.setBackgroundColor(Color.RED);
+                                        counter--;
+                                        tx1.setText(Integer.toString(counter));
+                                        Toast.makeText(getApplicationContext(), "Wrong Credentials",Toast.LENGTH_SHORT).show();
+                                        if (counter <= 0) logBtn.setEnabled(false);
 
-        });
+                                        return;
+                                    }
+                                    key = response.getInt("sessionkey");
+                                    uid = response.getInt("uid");
+                                    Toast.makeText(getApplicationContext(),"Redirecting...",Toast.LENGTH_SHORT).show();
+                                } catch (final JSONException e) {
+                                    Log.d("cpl220", "Error parsing JSON file: " + e.getMessage());
+                                    return;
+                                }
+                                //save the session key using sharePreference, if there is no existing SP, it will create a new one;
+                                //if there is a existing one, the existing content will be overwritten
+                                SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = mySP.edit();
+                                editor.putInt("key",key);
+                                editor.putInt("uid",uid);
+                                editor.commit();
+                                Log.d("cpl220", "Key successfully saved");
+                                Log.d("cpl220",Integer.toString(key));
+                                Log.d("cpl220",Integer.toString(uid));
 
-    }
-
-    /**
-     * getMessages gets all of the current messages from the backend server
-     * */
-    public void getMessages(){
-        String url = "https://agile-plateau-21593.herokuapp.com/messages/all";
-
-        // Request a string response from the provided URL.
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        final ArrayList<String> myList = new ArrayList<>();
-                        populateListFromVolley(response);
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("cpl220", "That didn't work!");
-            }
-        });
-
-// Add the request to the RequestQueue.
-        volley.getRequestQueue().add(stringRequest);
-    }
-
-    /**
-     * pushMessage does a PUSH request to add a new message to the app.
-     * It creates a new JSON object mMessage -> <new message boy>
-     * Once the request is successful the array is cleared and a new getMessages is called to refresh all the messages.
-     * @param et is a final EditText where we grab the value of the new massage to send.
-     * */
-    public void pushMessage(final EditText et){
-        String url = "https://agile-plateau-21593.herokuapp.com/messages";
-        JSONObject request = new JSONObject();
-        try {
-            request.put("mMessage", et.getText().toString());
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        JsonObjectRequest newMessage = new JsonObjectRequest(Request.Method.POST, url,request,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // response
-                        Log.d("cpl220", "Successful post of new message");
-                        messageArrayList.clear();
-                        getMessages();
-                        et.getText().clear();
-                    }
-                },
+                                Log.d("cpl220", "Successful submission");
+                                Toast.makeText(getApplicationContext(), "Redirecting...",Toast.LENGTH_SHORT).show();
+                                //start the main activity
+                                Intent direct = new Intent(MainActivity.this, DisplayActivity.class);
+                                startActivity(direct);
+                            }
+                        },
                 new Response.ErrorListener()
                 {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
-                        Log.d("cpl220", "error:" + error.getMessage());
+                        Log.d("cpl220", "Login error:" + error.getMessage());
+                        error.printStackTrace();
+                        tx1.setVisibility(View.VISIBLE);
+                        tx1.setBackgroundColor(Color.RED);
+                        counter--;
+                        tx1.setText(Integer.toString(counter));
+                        Toast.makeText(getApplicationContext(), "Wrong Credentials",Toast.LENGTH_SHORT).show();
+                        if (counter <= 0) logBtn.setEnabled(false);
                     }
                 });
 
-        volley.getRequestQueue().add(newMessage);
-
-    }
-    /**
-     * putLike makes a PUT request to add one like to the message of specified ID. It sends an empty json object to the url.
-     * Once the request is successful the array is cleared and a new getMessages is called to refresh all the messages.
-     * @param m is a final message object that we are adding a like to
-     * */
-    public void putLikeCount(final Message m){
-        String url = "https://agile-plateau-21593.herokuapp.com/messages/" + m.mId + "/like";
-        JSONObject request = new JSONObject();
-        JsonObjectRequest putLike = new JsonObjectRequest(Request.Method.PUT, url,request,
-                new Response.Listener<JSONObject>()
-                {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // response
-                        Log.d("cpl220", "Successful post of new message");
-                        messageArrayList.clear();
-                        getMessages();
-                    }
-                },
-                new Response.ErrorListener()
-                {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // error
-                        Log.d("cpl220", "error:" + error.getMessage());
-                    }
-                });
-        volley.getRequestQueue().add(putLike);
-    }
-
-    public void populateListFromVolley(String response){
-        try {
-            int arrayStart= response.indexOf('[');
-            JSONArray json= new JSONArray(response.substring(arrayStart,response.length()-1));
-            for (int i = 0; i < json.length(); ++i) {
-                int num = json.getJSONObject(i).getInt("mId");
-                String str = json.getJSONObject(i).getString("mMessage");
-                int count = json.getJSONObject(i).getInt("mlikeCount");
-                messageArrayList.add(new Message(num, str, count));
+                volley.getRequestQueue().add(submitInfo);
             }
-        } catch (final JSONException e) {
-            Log.d("cpl220", "Error parsing JSON file: " + e.getMessage());
-            return;
-        }
-        Log.d("cpl220", "Successfully parsed JSON file.");
-        RecyclerView rv = (RecyclerView) findViewById(R.id.message_list_view);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-        ItemListAdapter adapter = new ItemListAdapter(this, messageArrayList,this);
-        rv.setAdapter(adapter);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
+        });
+         ccelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 }
+

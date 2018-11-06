@@ -12,12 +12,14 @@ import java.util.ArrayList;
 
 class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
-MainActivity mainActivity;
+DisplayActivity displayActivity;
 
     class ViewHolder extends RecyclerView.ViewHolder {
         TextView mMessage;
         TextView mLikeCount;
+        TextView mDislikeCount;
         Button like;
+        Button dislike;
         /**
          * View holder assigns each aspect of each list item to the appropriate view id
          * */
@@ -25,17 +27,19 @@ MainActivity mainActivity;
             super(itemView);
             this.mMessage = (TextView) itemView.findViewById(R.id.listItemText);
             this.mLikeCount = (TextView) itemView.findViewById(R.id.likeCount);
+            this.mDislikeCount = (TextView) itemView.findViewById(R.id.dislikeCount);
             this.like = (Button) itemView.findViewById(R.id.likeButton);
+            this.dislike = (Button) itemView.findViewById(R.id.dislikeButton);
         }
     }
 
     private ArrayList<Message> mData;
     private LayoutInflater mLayoutInflater;
 
-    ItemListAdapter(Context context, ArrayList<Message> data, MainActivity mainActivity) {
+    ItemListAdapter(Context context, ArrayList<Message> data, DisplayActivity displayActivity) {
         mData = data;
         mLayoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        this.mainActivity = mainActivity;
+        this.displayActivity = displayActivity;
     }
 
     @Override
@@ -61,12 +65,27 @@ MainActivity mainActivity;
         final Message d = mData.get(position);
         holder.mMessage.setText(d.mMessage);
         holder.mLikeCount.setText(Integer.toString(d.mLikeCount));
+        holder.mDislikeCount.setText(Integer.toString(d.mDislikeCount));
+
+        holder.mMessage.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                displayActivity.getComment(d);
+            }
+        });
+
         holder.like.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                mainActivity.putLikeCount(d);
+                displayActivity.putLikeCount(d);
             }
+        });
 
+        holder.dislike.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                displayActivity.putDislikeCount(d);
+            }
         });
     }
 
