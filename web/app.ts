@@ -7,13 +7,17 @@
 // "any", so that we can use it anywhere, and assume it has any fields or
 // methods, without the compiler producing an error.
 var $: any;
+var gapi: any;
+var id_token: any = null;
+var test: number = 0;
 
 /// This constant indicates the path to our backend server
 const backendUrl = "https://agile-plateau-21593.herokuapp.com";
 
 let Handlebars: any;
 let user_id: number = -1;
-let session_key: number = -1;
+let session_key: String = "";
+
 
 
 
@@ -26,9 +30,6 @@ $(document).ready(function () {
     NewEntryForm.refresh();
     EditEntryForm.refresh();
     Login.refresh();
-
-    Login.hideMainPage();
-
 
 });
 

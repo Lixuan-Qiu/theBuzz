@@ -45,6 +45,13 @@ class NewEntryForm {
      */
     private static submitForm() {
         
+        //check if user logout
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
         let msg = "" + $("#" + NewEntryForm.NAME + "-message").val();
@@ -59,7 +66,8 @@ class NewEntryForm {
             type: "POST",
             url: "/messages",
             dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key, mMessage: msg }),
+            headers: { "Authorization": session_key },
+            data: JSON.stringify({ uid: user_id, mMessage: msg }),
             success: NewEntryForm.onSubmitResponse
         });
     }

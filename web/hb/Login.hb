@@ -6,5 +6,8 @@
         <textarea class="Login-panel" id="Login-username" placeholder = "username"></textarea>
         <textarea class="Login-panel" id="Login-password" placeholder = "password"></textarea>
         <button type="button" class="Login-button" id="Login-Login">LOGIN</button>
+        <p>you can sign in with Google!</p>
+        
     </div>
 </div>
+

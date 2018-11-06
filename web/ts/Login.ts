@@ -22,8 +22,6 @@ class Login {
      */
     private static init() {
         if (!Login.isInit) {
-            $("body").append(Handlebars.templates[Login.NAME + ".hb"]());
-            $("#" + Login.NAME + "-Login").click(Login.submitForm);
             Login.isInit = true;
         }
     }
@@ -38,20 +36,6 @@ class Login {
     }
 
     /**
-     * Hide the Login.  Be sure to clear its fields first
-     */
-    private static hide() {
-        $("#" + Login.NAME + "-username").val("");
-        $("#" + Login.NAME + "-password").val("");
-        $("#" + Login.NAME).modal("hide");
-    }
-
-    public static show(data: any) {
-        console.log("Login: show is called.");
-        $("#" + Login.NAME).modal("show");
-    }
-
-    /**
      * Send data to submit the form only if the fields are both valid.  
      * Immediately hide the form when we send data, so that the user knows that 
      * their click was received.
@@ -59,10 +43,8 @@ class Login {
     private static submitForm() {
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
-        let username = "" + $("#" + Login.NAME + "-username").val();
-        let password = "" + $("#" + Login.NAME + "-password").val();
-        if (username === "" || password === "") {
-            window.alert("Error: username or password is not valid");
+        if (id_token === "" || id_token === null) {
+            window.alert("Error: id_token is not valid");
             return;
         }
         
@@ -73,7 +55,7 @@ class Login {
             type: "POST",
             url: backendUrl + "/login",
             dataType: "json",
-            data: JSON.stringify({ username: username, password: password }),
+            data: id_token,
             success: Login.onSubmitResponse
         });
     }
@@ -88,10 +70,10 @@ class Login {
         // If we get an "ok" message, clear the form and refresh the main 
         // listing of messages
         if (data.mStatus === "ok") {
-            console.log("Login: success, receive uid = " + data.uid + " key: " + data.sessionkey);
+            console.log("Login: success, key: " + data.sessionkey);
             user_id = data.uid;
             session_key = data.sessionkey;
-            
+
             ElementList.refresh();
             Login.callMainPage();
         }
@@ -108,15 +90,19 @@ class Login {
     private static callMainPage(){
 
         console.log("Login: call main page");
-        $("#" + Login.NAME).hide();
+        $("#" + Login.NAME + "-container").hide();
         $("#" + ElementList.NAME).show();
         $("#" + NewEntryForm.NAME).show();
     }
     public static hideMainPage() {
 
         console.log("Login: hide main page");
-        $("#" + Login.NAME).show();
+        $("#" + Login.NAME + "-container").show();
         $("#" + ElementList.NAME).hide();
         $("#" + NewEntryForm.NAME).hide();
     }
+
+    
+   
 }
+

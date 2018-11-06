@@ -14,10 +14,10 @@ class ElementList {
     private static isInit = false;
 
     /**
- * Initialize the ElementList singleton.  
- * This needs to be called from any public static method, to ensure that the 
- * Singleton is initialized before use.
- */
+    * Initialize the ElementList singleton.  
+    * This needs to be called from any public static method, to ensure that the 
+    * Singleton is initialized before use.
+    */
     private static init() {
         if (!ElementList.isInit) {
             ElementList.isInit = true;
@@ -30,6 +30,7 @@ class ElementList {
      */
     private static update(data: any) {
 
+        console.log("ElementList: update");
         // Remove the table of data, if it exists
         $("#" + ElementList.NAME).remove();
         // Use a template to re-generate the table, and then insert it
@@ -54,52 +55,70 @@ class ElementList {
         ElementList.init();
 
         //check if user logout
-        if(user_id === -1 || session_key === -1){
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
             Login.hideMainPage();
+            return;
         }
-        else {
-            // get message list
-            $.ajax({
-                type: "GET",
-                url: "/messages",
-                dataType: "json",
-                data: JSON.stringify({ uid: user_id, key: session_key }),
-                success: ElementList.update
-            });
-        }
+
+        // get message list
+        $.ajax({
+            type: "GET",
+            url: "/messages",
+            dataType: "json",
+            headers: { "Authorization": session_key },
+            success: ElementList.update
+        });
+
     }
 
     /**
      * clickDelete is the code we run in response to a click of a delete button
      */
     private static clickDelete() {
-        // for now, just print the ID that goes along with the data in the row
-        // whose "delete" button was clicked
+
+        //check if user logout
+        if (session_key === "") {
+            console.log("ElementList: clickDelete: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
         let id = $(this).data("value");
         $.ajax({
             type: "DELETE",
             url: "/messages/" + id,
             dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key }),
+            headers: { "Authorization": session_key },
+            data: JSON.stringify({ uid: user_id }),
             // TODO: we should really have a function that looks at the return
             //       value and possibly prints an error message.
             success: ElementList.onSubmitResponse
         });
+
+
     }
 
     /**
      * clickEdit is the code we run in response to a click of a delete button
      */
     private static clickEdit() {
-        // as in clickDelete, we need the ID of the row
+
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
         let id = $(this).data("value");
         $.ajax({
             type: "GET",
             url: "/messages/" + id,
             dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key }),
+            headers: { "Authorization": session_key },
             success: EditEntryForm.show
         });
+
     }
 
     /**
@@ -107,14 +126,22 @@ class ElementList {
      */
     private static clickLike() {
 
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
         let id = $(this).data("value");
         $.ajax({
             type: "PUT",
             url: "/messages/" + id + "/like",
             dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key }),
+            headers: { "Authorization": session_key },
+            data: JSON.stringify({ uid: user_id }),
             success: ElementList.onSubmitResponse
         });
+
     }
 
     /**
@@ -122,28 +149,32 @@ class ElementList {
      */
     private static clickDislike() {
 
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
         let id = $(this).data("value");
         $.ajax({
             type: "PUT",
             url: "/messages/" + id + "/dislike",
             dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key }),
+            headers: { "Authorization": session_key },
+            data: JSON.stringify({ uid: user_id }),
             success: ElementList.onSubmitResponse
         });
     }
 
     private static clickLogout() {
 
-        $.ajax({
-            type: "POST",
-            url: "/logout",
-            dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key }),
-            success: ElementList.onSubmitResponse
-        });
+        var auth2 = gapi.auth2.getAuthInstance();
+        auth2.signOut();
 
-        user_id = -1;
-        session_key = -1;
+        console.log('User signed out.');
+
+        test = -1;
+        session_key = "";
     }
 
     private static onSubmitResponse(data: any) {

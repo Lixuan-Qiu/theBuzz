@@ -68,24 +68,36 @@ class EditEntryForm {
      * their click was received.
      */
     private static submitForm() {
-        // get the values of the two fields, force them to be strings, and check 
-        // that neither is empty
+
+        //check if user logout
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
+        // get string from fields
+        // and check string not empty
         let msg = "" + $("#" + EditEntryForm.NAME + "-message").val();
-        if ( msg === "") {
+        if (msg === "") {
             window.alert("Error: title or message is not valid");
             return;
         }
+
+        // hide the modal
         EditEntryForm.hide();
         console.log("EditEntryForm: requesting put to " + backendUrl + "/messages/" + EditEntryForm.id);
-        // set up an AJAX post.  When the server replies, the result will go to
-        // onSubmitResponse
+        
+        // call PUT message to backend
         $.ajax({
             type: "PUT",
             url: backendUrl + "/messages/" + EditEntryForm.id,
             dataType: "json",
-            data: JSON.stringify({ uid: user_id, key: session_key, mMessage: msg }),
+            headers: { "Authorization": session_key },
+            data: JSON.stringify({ uid: user_id, mMessage: msg }),
             success: EditEntryForm.onSubmitResponse
         });
+
     }
 
     /**

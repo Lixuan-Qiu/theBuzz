@@ -18,7 +18,6 @@ mkdir $TARGETFOLDER/$WEBFOLDERNAME
 
 # there are many more steps to be done.  For now, we will just copy an HTML file
 cp index.html $TARGETFOLDER/$WEBFOLDERNAME
-cp login.html $TARGETFOLDER/$WEBFOLDERNAME
 
 # step 2: update our npm dependencies
 npm update
@@ -35,6 +34,11 @@ node_modules/typescript/bin/tsc app.ts --strict --outFile $TARGETFOLDER/$WEBFOLD
 
 # step 5: copy css files
 cat app.css css/ElementList.css css/EditEntryForm.css css/NewEntryForm.css css/Login.css> $TARGETFOLDER/$WEBFOLDERNAME/app.css
+
+# strp 5.1: concat Javascript file
+# somehow it just wont concat if there's no intermediate
+cat $TARGETFOLDER/$WEBFOLDERNAME/app.js Login.js > $TARGETFOLDER/$WEBFOLDERNAME/app2.js
+cat $TARGETFOLDER/$WEBFOLDERNAME/app2.js > $TARGETFOLDER/$WEBFOLDERNAME/app.js
 
 # step 6: compile handlebars templates to the deploy folder
 node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
