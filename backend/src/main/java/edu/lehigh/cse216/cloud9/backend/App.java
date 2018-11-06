@@ -1,6 +1,5 @@
 package edu.lehigh.cse216.cloud9.backend;
 
-import java.lang.String;
 import java.util.Map;
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,13 +94,11 @@ public class App {
             /*String locale = (String) payload.get("locale");
             String familyName = (String) payload.get("family_name");
             String givenName = (String) payload.get("given_name");*/
-                
+
             } else {
             return gson.toJson(new FirstResponse("error", "login error: Invalid ID token.", -1, -1));
             }
-            if(email.indexOf("@lehigh.edu") == -1){
-                return gson.toJson(new FirstResponse("error", "login error: Invalid Email, must be lehigh.edu", -1, -1));
-            }
+
             int uId = database.get_userId2(email);
             if(uId == -1){
                 //If new user, then insert new row
