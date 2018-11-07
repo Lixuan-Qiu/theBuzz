@@ -7,7 +7,6 @@ The following files have been resolved:
    aopalliance:aopalliance:jar:1.0:compile
    com.google.http-client:google-http-client-jackson2:jar:1.25.0:compile
    org.apache.maven.doxia:doxia-sink-api:jar:1.4:compile
-   org.apache.httpcomponents:httpclient:jar:4.5.5:compile
    javax.transaction:transaction-api:jar:1.1:compile
    com.google.http-client:google-http-client:jar:1.15.0-rc:compile
    org.apache.velocity:velocity-tools:jar:2.0:compile
@@ -88,6 +87,7 @@ The following files have been resolved:
    org.apache.maven:maven-builder-support:jar:3.5.0:compile
    org.apache.commons:commons-text:jar:1.3:compile
    com.google.inject:guice:jar:no_aop:4.0:compile
+   org.apache.httpcomponents:httpcore:jar:4.4.10:compile
    org.codehaus.plexus:plexus-velocity:jar:1.1.7:compile
    org.apache.struts:struts-taglib:jar:1.3.8:compile
    org.apache.maven.shared:file-management:jar:1.2.1:compile
@@ -107,7 +107,6 @@ The following files have been resolved:
    org.eclipse.jetty:jetty-server:jar:9.4.4.v20170414:compile
    org.apache.maven:maven-model:jar:3.5.0:compile
    com.google.code.gson:gson:jar:2.8.1:compile
-   org.apache.httpcomponents:httpcore:jar:4.4.9:compile
    org.iq80.snappy:snappy:jar:0.4:compile
    org.apache.maven.shared:maven-shared-utils:jar:3.1.0:compile
    org.eclipse.jetty.websocket:websocket-common:jar:9.4.4.v20170414:compile
@@ -133,6 +132,7 @@ The following files have been resolved:
    commons-collections:commons-collections:jar:3.2.2:compile
    org.apache.maven.shared:maven-common-artifact-filters:jar:3.0.1:compile
    javax.jdo:jdo2-api:jar:2.3-eb:compile
+   org.apache.httpcomponents:httpclient:jar:4.5.6:compile
    com.jcraft:jzlib:jar:1.1.1:compile
    org.apache.maven.reporting:maven-reporting-impl:jar:2.3:compile
    commons-validator:commons-validator:jar:1.3.1:compile
