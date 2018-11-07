@@ -458,7 +458,7 @@ public class App {
                 db.drop_sessionTable();
                 db.drop_messageTable();
                 db.drop_userTable();
-                safe = false;
+                break;
             } else if (action == 'n') {
                 break;
             }
