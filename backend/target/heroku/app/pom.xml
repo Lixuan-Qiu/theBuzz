@@ -63,6 +63,11 @@
             <artifactId>google-api-client-appengine</artifactId>
             <version>1.25.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.6</version>
+        </dependency>
     </dependencies>
     <!-- dependencies end -->
 

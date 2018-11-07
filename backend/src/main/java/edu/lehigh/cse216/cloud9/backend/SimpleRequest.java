@@ -13,10 +13,10 @@ public class SimpleRequest {
      */
     public int uid;
     // session key
-    public int key;
+    public String key;
 
     /**
      * The message being provided by the client.
      */
-    public String mMessage; 
+    public String mMessage;
 }
