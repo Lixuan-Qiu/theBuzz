@@ -95,7 +95,7 @@ public class Database {
     private PreparedStatement vDropTable;
 
     /* data structure for message */
-    public static class message_RowData {
+    public static class message_RowData /*implements Comparable<message_RowData>*/{
         /**
          * The ID of this message
          */
@@ -125,6 +125,12 @@ public class Database {
             mdislikeCount = dislikeCount;
             uId = uid;
         }
+
+        /*@Override
+        public compareTo(message_RowData mRow){
+            if(this.mId > mRow.mId) return 1;
+            else if (this.mId < mRow.mId)
+        }*/
     }
 
     /* data structure for user table */
@@ -149,8 +155,7 @@ public class Database {
          * Construct a RowData object by providing values for its fields
          */
 
-        public user_RowData(int uid, String username, String realname, String profile, String email, String salt,
-                String password) {
+        public user_RowData(int uid, String username, String realname, String profile, String email) {
             uId = uid;
             uUsername = username;
             uRealname = realname;
@@ -292,7 +297,7 @@ public class Database {
                     + "FOREIGN KEY (mid) REFERENCES tblMessage(mid), " + "comment VARCHAR(200) NOT NULL)");
             // create session_table
             db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession ("  
-                    + "key VARCHAR(100) SERIAL PRIMARY KEY, " +"uid INT NOT NULL, "+ "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "key VARCHAR(500) PRIMARY KEY, " +"uid INT NOT NULL, "+ "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create vote_table
             db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "
                     + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
@@ -317,7 +322,7 @@ public class Database {
 
             // Standard CRUD operations for user_table
             db.uDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblUser WHERE uid = ?");
-            db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO tblUser VALUES (default, ?, ?, ?, ?, ?, ?)");
+            db.uInsertOne = db.mConnection.prepareStatement("INSERT INTO tblUser VALUES (default, ?, ?, ?, ?)");
             db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM tblUser");
             db.uSelectOne = db.mConnection.prepareStatement("SELECT * from tblUser WHERE uid=?");
             db.uUpdateProfile = db.mConnection.prepareStatement("UPDATE tblUser SET profile = ? WHERE uid = ?");
@@ -679,8 +684,7 @@ public class Database {
             while (rs.next()) {
                 // need edit
                 res.add(new user_RowData(rs.getInt("uid"), rs.getString("username"), rs.getString("realname"),
-                        rs.getString("profile"), rs.getString("email"), rs.getString("password"),
-                        rs.getString("salt")));
+                        rs.getString("profile"), rs.getString("email")));
             }
             rs.close();
             return res;
@@ -704,7 +708,7 @@ public class Database {
             ResultSet rs = uSelectOne.executeQuery();
             if (rs.next()) {
                 res = new user_RowData(rs.getInt("uid"), rs.getString("username"), rs.getString("realname"),
-                        rs.getString("profile"), rs.getString("email"), rs.getString("password"), rs.getString("salt"));
+                        rs.getString("profile"), rs.getString("email"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

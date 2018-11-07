@@ -4,12 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".GoogleLogin">
+    tools:context=".GoogleLogin"
+    tools:layout_editor_absoluteY="25dp">
 
     <com.google.android.gms.common.SignInButton
         android:id="@+id/sign_in_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:layout_editor_absoluteX="137dp"
-        tools:layout_editor_absoluteY="259dp" />
+        android:layout_width="108dp"
+        android:layout_height="37dp"
+        android:layout_marginBottom="37dp"
+        app:layout_constraintBottom_toTopOf="@+id/bn_logout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/bn_logout"
+        android:layout_width="99dp"
+        android:layout_height="39dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="108dp"
+        android:text="Sign Out"
+        app:layout_constraintBottom_toBottomOf="@+id/bn_continue"
+        app:layout_constraintEnd_toStartOf="@+id/bn_continue"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/bn_continue" />
+
+
+    <Button
+        android:id="@+id/bn_continue"
+        android:layout_width="99dp"
+        android:layout_height="38dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="211dp"
+        android:text="Continue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/bn_logout" />
+
+
 </android.support.constraint.ConstraintLayout>
