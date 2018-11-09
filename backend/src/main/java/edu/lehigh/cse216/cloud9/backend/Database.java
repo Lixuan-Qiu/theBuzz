@@ -95,7 +95,7 @@ public class Database {
     private PreparedStatement vDropTable;
 
     /* data structure for message */
-    public static class message_RowData /*implements Comparable<message_RowData>*/{
+    public static class message_RowData /* implements Comparable<message_RowData> */ {
         /**
          * The ID of this message
          */
@@ -126,11 +126,10 @@ public class Database {
             uId = uid;
         }
 
-        /*@Override
-        public compareTo(message_RowData mRow){
-            if(this.mId > mRow.mId) return 1;
-            else if (this.mId < mRow.mId)
-        }*/
+        /*
+         * @Override public compareTo(message_RowData mRow){ if(this.mId > mRow.mId)
+         * return 1; else if (this.mId < mRow.mId) }
+         */
     }
 
     /* data structure for user table */
@@ -288,16 +287,17 @@ public class Database {
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
                     + "dislikeCount INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
-            db.uCreateTable = db.mConnection.prepareStatement(
-                    "CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, " + "username VARCHAR(100) NOT NULL, "
-                            + "realname VARCHAR(100) NOT NULL, " + "profile VARCHAR(200) NOT NULL,"+ "email VARCHAR(50) NOT NULL)");
+            db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
+                    + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
+                    + "profile VARCHAR(200) NOT NULL," + "email VARCHAR(50) NOT NULL)");
             // create comment_table
             db.cCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblComment (" + "cid SERIAL PRIMARY KEY, "
                     + "uid INT NOT NULL, " + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
                     + "FOREIGN KEY (mid) REFERENCES tblMessage(mid), " + "comment VARCHAR(200) NOT NULL)");
             // create session_table
-            db.sCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblSession ("  
-                    + "key VARCHAR(500) PRIMARY KEY, " +"uid INT NOT NULL, "+ "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+            db.sCreateTable = db.mConnection
+                    .prepareStatement("CREATE TABLE tblSession (" + "key VARCHAR(500) PRIMARY KEY, "
+                            + "uid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create vote_table
             db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "
                     + "mid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid), "
@@ -326,10 +326,10 @@ public class Database {
             db.uSelectAll = db.mConnection.prepareStatement("SELECT * FROM tblUser");
             db.uSelectOne = db.mConnection.prepareStatement("SELECT * from tblUser WHERE uid=?");
             db.uUpdateProfile = db.mConnection.prepareStatement("UPDATE tblUser SET profile = ? WHERE uid = ?");
-            //db.uUpdateUsername = db.mAddLike.prepareStatement("UPDATE tblUser SET username = ? WHERE uid = ?")
+            // db.uUpdateUsername = db.mAddLike.prepareStatement("UPDATE tblUser SET
+            // username = ? WHERE uid = ?")
             db.uGetuId = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE username=?");
-            db.uGetuId2 = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE email=?");
-            
+            db.uGetuId2 = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE email= ?");
 
             // Standard CRUD operations for comment_table
             db.cDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE cid = ?");
@@ -579,18 +579,16 @@ public class Database {
     int insert_userRow(String username, String name, String email) {
         int count = 0;
         try {
-            uInsertOne.setString(1, name);
+            uInsertOne.setString(1, username);
             uInsertOne.setString(2, name);
             uInsertOne.setString(3, " ");
             uInsertOne.setString(4, email);
             count += uInsertOne.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
         return count;
     }
-
-    
 
     /**
      * Delete a row by ID
@@ -641,8 +639,8 @@ public class Database {
     int get_userId2(String email) {
         int res = -1;
         try {
-            uGetuId.setString(1, email);
-            ResultSet rs = uGetuId.executeQuery();
+            uGetuId2.setString(1, email);
+            ResultSet rs = uGetuId2.executeQuery();
             if (rs.next()) {
                 res = rs.getInt("uid");
             }
@@ -854,7 +852,8 @@ public class Database {
             cSelectOne.setInt(1, cid);
             ResultSet rs = cSelectOne.executeQuery();
             if (rs.next()) {
-                res = new comment_RowData(rs.getInt("cid"), rs.getInt("uid"), rs.getInt("mid"), rs.getString("comment"));
+                res = new comment_RowData(rs.getInt("cid"), rs.getInt("uid"), rs.getInt("mid"),
+                        rs.getString("comment"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -907,19 +906,20 @@ public class Database {
         return count;
     }
 
-    int get_sessionKey(int uid) {
-        int key = 0;
+    String get_sessionKey(int uid) {
+        String key = "";
         try {
             sGetKey.setInt(1, uid);
             ResultSet rs = sGetKey.executeQuery();
             if (rs.next()) {
-                key = rs.getInt("key");
+                key = rs.getString("key");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return key;
     }
+
     /**
      * Gets the user Id given the session table
      * 
@@ -940,18 +940,20 @@ public class Database {
         }
         return uId;
     }
+
     /**
      * Check to see if a given session key is in table
+     * 
      * @param givenKey the key to check
      * @return The boolean result of the search
      */
-    boolean check_sessionKey(String givenKey){
+    boolean check_sessionKey(String givenKey) {
         boolean check = false;
         ArrayList<session_RowData> sessions = select_sessionAll();
-        for(session_RowData session : sessions){
+        for (session_RowData session : sessions) {
             if (session.key.equals(givenKey))
                 check = true;
-                break;
+            break;
         }
         return check;
     }
@@ -1075,7 +1077,6 @@ public class Database {
         }
         return res;
     }
-
 
     /**
      * Query the database for a list of all subjects and their IDs
