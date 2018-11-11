@@ -18,10 +18,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,42 +70,52 @@ public class DisplayActivity extends AppCompatActivity {
 
     /**
      * getMessages gets all of the current messages from the backend server
-     * */
-    public void getMessages(){
+     */
+    public void getMessages() {
         String url = "https://agile-plateau-21593.herokuapp.com/messages";
         //retrieve uid and key from local saved file
         SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-        int userId=-1,sKey=-1;
+        int userId = -1;
+        String sKey = "";
         userId = mySP.getInt("uid", userId);
-        sKey = mySP.getInt("key", sKey);
-        Log.d("cpl220", "getmessage uid: "+Integer.toString(userId));
-        Log.d("cpl220", "getmessage key: "+Integer.toString(sKey));
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        Log.d("cpl220", "getmessage uid: " + Integer.toString(userId));
+        Log.d("cpl220", "getmessage key: " + sKey);
 
-        if (userId==-1||sKey==-1)
+        if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in getMessage");
 
-        Map<String, Integer> params = new HashMap<String, Integer>();
-        params.put("uid", userId);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("uid", Integer.toString(userId));
         params.put("key", sKey);
         JSONObject request = new JSONObject(params);
-        JsonObjectRequest getReq = new JsonObjectRequest(Request.Method.GET, url,request,
-                new Response.Listener<JSONObject>()
-                {
+        JsonObjectRequest getReq = new JsonObjectRequest(Request.Method.GET, url, request,
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("cpl220", "getMessage response");
                         populateListFromVolley(response);
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
                         Log.d("cpl220", "error:" + error.getMessage());
                         error.printStackTrace();
                     }
-                });
+                }) {
+            /** Passing some request headers* */
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", Integer.toString(userid));
+                params.put("key", skey);
+                return params;
+            }
+        };
         // Add the request to the RequestQueue.
         volley.getRequestQueue().add(getReq);
     }
@@ -112,26 +124,29 @@ public class DisplayActivity extends AppCompatActivity {
      * pushMessage does a PUSH request to add a new message to the app.
      * It creates a new JSON object mMessage -> <new message boy>
      * Once the request is successful the array is cleared and a new getMessages is called to refresh all the messages.
+     *
      * @param et is a final EditText where we grab the value of the new massage to send.
-     * */
-    public void pushMessage(final EditText et){
+     */
+    public void pushMessage(final EditText et) {
         String url = "https://agile-plateau-21593.herokuapp.com/messages";
         //retrieve uid and key from local saved file
         SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-        int userId=-1,sKey=-1;
+        int userId = -1;
+        String sKey = "";
         userId = mySP.getInt("uid", userId);
-        sKey = mySP.getInt("key", sKey);
-        Map<String,String> params = new HashMap<String, String>();
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        Map<String, String> params = new HashMap<String, String>();
         params.put("uid", Integer.toString(userId));
-        params.put("key", Integer.toString(sKey));
-        params.put("mMessage",et.getText().toString());
+        params.put("key", sKey);
+        params.put("mMessage", et.getText().toString());
         JSONObject request = new JSONObject(params);
-        if (userId==-1||sKey==-1)
+        if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");
 
-        JsonObjectRequest newMessage = new JsonObjectRequest(Request.Method.POST, url,request,
-                new Response.Listener<JSONObject>()
-                {
+        JsonObjectRequest newMessage = new JsonObjectRequest(Request.Method.POST, url, request,
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         // response
@@ -141,14 +156,22 @@ public class DisplayActivity extends AppCompatActivity {
                         et.getText().clear();
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
                         Log.d("cpl220", "error:" + error.getMessage());
                     }
-                });
+                }) {
+            /** Passing some request headers* */
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", Integer.toString(userid));
+                params.put("key", skey);
+                return params;
+            }
+        };
 
         volley.getRequestQueue().add(newMessage);
 
@@ -157,24 +180,27 @@ public class DisplayActivity extends AppCompatActivity {
     /**
      * putLike makes a PUT request to add one like to the message of specified ID. It sends an empty json object to the url.
      * Once the request is successful the array is cleared and a new getMessages is called to refresh all the messages.
+     *
      * @param m is a final message object that we are adding a like to
-     * */
-    public void putLikeCount(final Message m){
+     */
+    public void putLikeCount(final Message m) {
         String url = "https://agile-plateau-21593.herokuapp.com/messages/" + m.mId + "/like";
         //retrieve uid and key from local saved file
         SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-        int userId=-1,sKey=-1;
+        int userId = -1;
+        String sKey = "";
         userId = mySP.getInt("uid", userId);
-        sKey = mySP.getInt("key", sKey);
-        if (userId==-1||sKey==-1)
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in putLikeCount");
-        Map<String, Integer> params = new HashMap<String, Integer>();
-        params.put("uid", userId);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("uid", Integer.toString(userId));
         params.put("key", sKey);
         JSONObject request = new JSONObject(params);
-        JsonObjectRequest putLike = new JsonObjectRequest(Request.Method.PUT, url,request,
-                new Response.Listener<JSONObject>()
-                {
+        JsonObjectRequest putLike = new JsonObjectRequest(Request.Method.PUT, url, request,
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         // response
@@ -183,38 +209,49 @@ public class DisplayActivity extends AppCompatActivity {
                         getMessages();
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
                         Log.d("cpl220", "error:" + error.getMessage());
                     }
-                });
+                }) {
+            /** Passing some request headers* */
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", Integer.toString(userid));
+                params.put("key", skey);
+                return params;
+            }
+        };
         volley.getRequestQueue().add(putLike);
     }
 
     /**
      * putDislike makes a PUT request to add one like to the message of specified ID. It sends an empty json object to the url.
      * Once the request is successful the array is cleared and a new getMessages is called to refresh all the messages.
+     *
      * @param m is a final message object that we are adding a like to
-     * */
-    public void putDislikeCount(final Message m){
+     */
+    public void putDislikeCount(final Message m) {
         String url = "https://agile-plateau-21593.herokuapp.com/messages/" + m.mId + "/dislike";
         //retrieve uid and key from local saved file
         SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-        int userId=-1,sKey=-1;
+        int userId = -1;
+        String sKey = "";
         userId = mySP.getInt("uid", userId);
-        sKey = mySP.getInt("key", sKey);
-        if (userId==-1||sKey==-1)
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in putDislikeCount");
-        Map<String, Integer> params = new HashMap<String, Integer>();
-        params.put("uid", userId);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("uid", Integer.toString(userId));
         params.put("key", sKey);
         JSONObject request = new JSONObject(params);
-        JsonObjectRequest putDislike = new JsonObjectRequest(Request.Method.PUT, url,request,
-                new Response.Listener<JSONObject>()
-                {
+        JsonObjectRequest putDislike = new JsonObjectRequest(Request.Method.PUT, url, request,
+                new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         // response
@@ -223,28 +260,36 @@ public class DisplayActivity extends AppCompatActivity {
                         getMessages();
                     }
                 },
-                new Response.ErrorListener()
-                {
+                new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         // error
                         Log.d("cpl220", "error:" + error.getMessage());
                     }
-                });
+                }) {
+            /** Passing some request headers* */
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", Integer.toString(userid));
+                params.put("key", skey);
+                return params;
+            }
+        };
         volley.getRequestQueue().add(putDislike);
     }
 
-    public void getComment(final Message m){
+    public void getComment(final Message m) {
         Intent in = new Intent(DisplayActivity.this, CommentActivity.class);
         in.putExtra("message", m);
         startActivity(in);
     }
 
 
-    public void populateListFromVolley(JSONObject response){
+    public void populateListFromVolley(JSONObject response) {
         try {
             JSONArray list = response.getJSONArray("mData");
-            for (int i = 0; i <list.length(); ++i) {
+            for (int i = 0; i < list.length(); ++i) {
                 //wait for response from Corey to see the correct form of variable names
                 int mId = list.getJSONObject(i).getInt("mId");
                 String msg = list.getJSONObject(i).getString("mMessage");
@@ -259,7 +304,7 @@ public class DisplayActivity extends AppCompatActivity {
         Log.d("cpl220", "Successfully parsed JSON file.");
         RecyclerView rv = (RecyclerView) findViewById(R.id.message_list_view);
         rv.setLayoutManager(new LinearLayoutManager(this));
-        ItemListAdapter adapter = new ItemListAdapter(this, messageArrayList,this);
+        ItemListAdapter adapter = new ItemListAdapter(this, messageArrayList, this);
         rv.setAdapter(adapter);
     }
 
@@ -272,39 +317,41 @@ public class DisplayActivity extends AppCompatActivity {
 
     /**
      * This function sets the behavior of menu on the toolbar.
-     * */
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         switch (item.getItemId()) {
             case R.id.action_settings:
-                Toast.makeText(getApplicationContext(),"Settings Option Selected",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Settings Option Selected", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.logout:
-                Toast.makeText(getApplicationContext(),"Logging out",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
 
                 String url = "https://agile-plateau-21593.herokuapp.com/logout";
                 final SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-                int userId=-1,sKey=-1;
+                int userId = -1;
+                String sKey = "";
                 userId = mySP.getInt("uid", userId);
-                sKey = mySP.getInt("key", sKey);
-                Map<String, Integer> params = new HashMap<String, Integer>();
-                params.put("uid", userId);
+                sKey = mySP.getString("key", sKey);
+                final int userid = userId;
+                final String skey = sKey;
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", Integer.toString(userId));
                 params.put("key", sKey);
                 JSONObject request = new JSONObject(params);
                 Log.d("cpl220", request.toString());
 
                 final JsonObjectRequest getReq = new JsonObjectRequest(Request.Method.POST, url, request,
-                        new Response.Listener<JSONObject>()
-                        {
+                        new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
-                                try{
+                                try {
                                     if (response.getString("mStatus").equals("error")) return;
-                                    else{
+                                    else {
                                         Log.d("cpl220", "Successfully log out with server status: " + response.getString("mStatus"));
                                         SharedPreferences.Editor editor = mySP.edit();
-                                        editor.putInt("sessionkey",-1);
+                                        editor.putInt("sessionkey", -1);
                                         editor.commit();
                                         Intent direct = new Intent(DisplayActivity.this, MainActivity.class);
                                         startActivity(direct);
@@ -316,16 +363,24 @@ public class DisplayActivity extends AppCompatActivity {
                                 populateListFromVolley(response);
                             }
                         },
-                        new Response.ErrorListener()
-                        {
+                        new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
                                 // error
                                 Log.d("cpl220", "error:" + error.getMessage());
                             }
-                        });
+                        }) {
+                    /** Passing some request headers* */
+                    @Override
+                    public Map getHeaders() throws AuthFailureError {
+                        Map<String, String> params = new HashMap<String, String>();
+                        params.put("uid", Integer.toString(userid));
+                        params.put("key", skey);
+                        return params;
+                    }
+                };
                 // Add the request to the RequestQueue.
-                Log.d("cpl220", "getReq: "+getReq.toString());
+                Log.d("cpl220", "getReq: " + getReq.toString());
 
                 volley.getRequestQueue().add(getReq);
                 return true;

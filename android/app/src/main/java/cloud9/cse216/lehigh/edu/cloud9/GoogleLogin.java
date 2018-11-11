@@ -21,38 +21,55 @@ import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+
+import java.io.BufferedOutputStream;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class GoogleLogin extends AppCompatActivity implements View.OnClickListener {
 
 
-        private GoogleSignInClient mGoogleSignInClient;
-        private TextView mTextView;
-        private static final String TAG = "SignInActivity";
-        private static final String token = "319649689632-m3hicm6vgscjqbmbun52522tjmtikj4m.apps.googleusercontent.com";
-        private static final int RC_SIGN_IN = 9001;
-        private Button SignOut, Continue;
-        private LinearLayout Prof_Section;
-        private TextView nameText, emailText, famName, givenName, id;
-        private ImageView pic;
+    private static final String TAG = "SignInActivity";
+    private static final String token = "319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
+    private static final int RC_SIGN_IN = 9001;
+    private GoogleSignInClient mGoogleSignInClient;
+    private TextView mTextView;
+    private Button SignOut, Continue;
+    private LinearLayout Prof_Section;
+    private TextView nameText, emailText, famName, givenName, id;
+    private ImageView pic;
 
-        @Override
-        protected void onCreate (Bundle savedInstanceState){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_login);
 
-        SignOut = (Button)findViewById(R.id.bn_logout);
-        Continue = (Button)findViewById(R.id.bn_continue);
-        nameText = (TextView)findViewById(R.id.Name);
-        emailText = (TextView)findViewById(R.id.Email);
-        famName = (TextView)findViewById(R.id.FamilyName);
-        givenName = (TextView)findViewById(R.id.GivenName);
-        id = (TextView)findViewById(R.id.ID);
-        pic = (ImageView)findViewById(R.id.photo);
+        SignOut = (Button) findViewById(R.id.bn_logout);
+        Continue = (Button) findViewById(R.id.bn_continue);
+        nameText = (TextView) findViewById(R.id.Name);
+        emailText = (TextView) findViewById(R.id.Email);
+        famName = (TextView) findViewById(R.id.FamilyName);
+        givenName = (TextView) findViewById(R.id.GivenName);
+        id = (TextView) findViewById(R.id.ID);
+        pic = (ImageView) findViewById(R.id.photo);
 
-        Prof_Section = (LinearLayout)findViewById(R.id.profSection);
+        Prof_Section = (LinearLayout) findViewById(R.id.profSection);
         Prof_Section.setVisibility(View.GONE);
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(token)
@@ -71,35 +88,33 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
 
     }
 
-        @Override
-        public void onActivityResult (int requestCode,int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
-                // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
-                if (requestCode == RC_SIGN_IN) {
-                    // The Task returned from this call is always completed, no need to attach
-                    // a listener.
-                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                    handleSignInResult(task);
-                }
-                if(data == null){
+        // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            // The Task returned from this call is always completed, no need to attach
+            // a listener.
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
 
-                }
-            }
+            handleSignInResult(task);
+        }
+    }
 
 
-        @Override
-        public void onStart () {
+    @Override
+    public void onStart() {
         super.onStart();
         // Check for existing Google Sign In account, if the user is already signed in
-// the GoogleSignInAccount will be non-null.
+        // the GoogleSignInAccount will be non-null.
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(this);
         updateUI(account);
 
     }
 
 
-        private void updateUI (GoogleSignInAccount account){
+    private void updateUI(GoogleSignInAccount account) {
 
         if (account != null) {
 
@@ -134,18 +149,19 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-        private void handleSignInResult (@NonNull Task < GoogleSignInAccount > completedTask) {
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
             // Signed in successfully, show authenticated UI.
+            /*
             HttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost("https://agile-plateau-21593.herokuapp.com/login");
 
 
-            /*This block right here is post request and is not working correctly.
+            //This block right here is post request and is not working correctly.
             try {
-                List nameValuePairs = new ArrayList(1);
+                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
                 nameValuePairs.add(new BasicNameValuePair("idToken", idToken));
                 httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
@@ -155,11 +171,30 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
                 Log.i(TAG, "Signed in as: " + responseBody);
             } catch (ClientProtocolException e) {
                 Log.e(TAG, "Error sending ID token to backend.", e);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
             } catch (IOException e) {
-                Log.e(TAG, "Error sending ID token to backend.", e);
+                e.printStackTrace();
             }
-            End of block that is not working correctly
+            //End of block that is not working correctly
             */
+            OutputStream out = null;
+            String urlString = "https://agile-plateau-21593.herokuapp.com/login";
+            try {
+                URL url = new URL(urlString);
+                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+                out = new BufferedOutputStream(urlConnection.getOutputStream());
+                Log.i("Logging in", "Signed in as: " + idToken);
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
+                writer.write(idToken);
+                writer.flush();
+                writer.close();
+                out.close();
+
+                urlConnection.connect();
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
 
             updateUI(account);
         } catch (ApiException e) {
@@ -169,33 +204,33 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             updateUI(null);
         }
     }
-        private void signIn (){
+
+    private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-        private void signOut(){
-            mGoogleSignInClient.signOut()
-                    .addOnCompleteListener(this, new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            updateUI(null);
+    private void signOut() {
+        mGoogleSignInClient.signOut()
+                .addOnCompleteListener(this, new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        updateUI(null);
 
-                        }
-                    });
+                    }
+                });
 
-        }
+    }
 
-        private void next(){
-           Intent direct = new Intent(GoogleLogin.this, DisplayActivity.class);
-            startActivity(direct);
+    private void next() {
+        Intent direct = new Intent(GoogleLogin.this, DisplayActivity.class);
+        startActivity(direct);
 
-        }
+    }
 
 
-
-        @Override
-        public void onClick (View v){
+    @Override
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
                 signIn();
@@ -211,7 +246,7 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             // ...
         }
     }
-   // }
+    // }
 
 
 }
