@@ -11,7 +11,9 @@ public class SimpleRequest {
     /**
      * The title being provided by the client.
      */
-    public String mTitle;
+    public int uid;
+    // session key
+    public String key;
 
     /**
      * The message being provided by the client.
