@@ -3,8 +3,11 @@ package cloud9.cse216.lehigh.edu.cloud9;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +44,7 @@ public class DisplayActivity extends AppCompatActivity {
     ArrayList<Message> messageArrayList = new ArrayList<>();
     // Instantiate the VolleySingleton
     VolleySingleton volley;
+    static final int REQUEST_IMAGE_CAPTURE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +70,28 @@ public class DisplayActivity extends AppCompatActivity {
 
         });
 
+    }
+    /*
+        function for Camera
+     */
+    public void Camera(View v){
+        dispatchTakePictureIntent();
+    }
+
+    private void dispatchTakePictureIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            Log.i("bitmap",imageBitmap.toString());
+        }
     }
 
     /**
@@ -326,6 +352,9 @@ public class DisplayActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Settings Option Selected", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.logout:
+                Intent intent = new Intent(getApplicationContext(), GoogleLogin.class);
+                startActivity(intent);
+                /*
                 Toast.makeText(getApplicationContext(), "Logging out", Toast.LENGTH_SHORT).show();
 
                 String url = "https://agile-plateau-21593.herokuapp.com/logout";
@@ -370,7 +399,6 @@ public class DisplayActivity extends AppCompatActivity {
                                 Log.d("cpl220", "error:" + error.getMessage());
                             }
                         }) {
-                    /** Passing some request headers* */
                     @Override
                     public Map getHeaders() throws AuthFailureError {
                         Map<String, String> params = new HashMap<String, String>();
@@ -384,6 +412,8 @@ public class DisplayActivity extends AppCompatActivity {
 
                 volley.getRequestQueue().add(getReq);
                 return true;
+                */
+
             default:
                 return super.onContextItemSelected(item);
         }

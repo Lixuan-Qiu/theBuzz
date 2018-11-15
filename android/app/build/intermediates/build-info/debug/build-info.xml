@@ -5,60 +5,68 @@
     build-mode="COLD"
     density="xxhdpi"
     format="10"
+    ir-eligibility="IMPLEMENTED_INTERFACES_CHANGE"
     plugin-version="3.2.1"
-    timestamp="1541976489259"
+    timestamp="1542306163936"
     token="-8256365000389108079"
     verifier="COLD_SWAP_REQUESTED" >
 
     <task
         name="javac"
-        duration="0" />
+        duration="582" />
     <task
         name="instant-run-dex"
         duration="0" />
     <task
         name="instant-run-transform"
-        duration="0" />
+        duration="62" />
     <task
         name="verifier"
-        duration="0" />
+        duration="18" />
+
+    <artifact
+        location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_5.apk"
+        type="SPLIT" />
+    <artifact
+        location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\instant-run-apk\debug\app-debug.apk"
+        type="SPLIT_MAIN" />
 
     <build
         build-mode="FULL"
-        timestamp="1541976461100"
+        timestamp="1542304385219"
         verifier="FULL_BUILD_REQUESTED" >
         <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_5.apk"
-            type="SPLIT" />
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\instant-run-apk\debug\app-debug.apk"
+            type="SPLIT_MAIN" />
         <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_7.apk"
-            type="SPLIT" />
-        <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_2.apk"
-            type="SPLIT" />
-        <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_1.apk"
-            type="SPLIT" />
-        <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_3.apk"
-            type="SPLIT" />
-        <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_0.apk"
-            type="SPLIT" />
-        <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_6.apk"
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_9.apk"
             type="SPLIT" />
         <artifact
             location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_8.apk"
             type="SPLIT" />
         <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_9.apk"
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_2.apk"
             type="SPLIT" />
         <artifact
-            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\instant-run-apk\debug\app-debug.apk"
-            type="SPLIT_MAIN" />
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_5.apk"
+            type="SPLIT" />
         <artifact
             location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_4.apk"
+            type="SPLIT" />
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_3.apk"
+            type="SPLIT" />
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_6.apk"
+            type="SPLIT" />
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_1.apk"
+            type="SPLIT" />
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_0.apk"
+            type="SPLIT" />
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_7.apk"
             type="SPLIT" />
         <artifact
             location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\dep\dependencies.apk"
@@ -66,7 +74,24 @@
     </build>
     <build
         build-mode="COLD"
-        timestamp="1541976489259"
-        verifier="COLD_SWAP_REQUESTED" />
+        ir-eligibility="COMPATIBLE"
+        timestamp="1542305239741"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\instant-run-apk\debug\app-debug.apk"
+            type="SPLIT_MAIN" />
+    </build>
+    <build
+        build-mode="COLD"
+        ir-eligibility="IMPLEMENTED_INTERFACES_CHANGE"
+        timestamp="1542306163936"
+        verifier="COLD_SWAP_REQUESTED" >
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\split-apk\debug\slices\slice_5.apk"
+            type="SPLIT" />
+        <artifact
+            location="C:\Users\DarkAres\cse216team_cloud9\android\app\build\intermediates\instant-run-apk\debug\app-debug.apk"
+            type="SPLIT_MAIN" />
+    </build>
 
 </instant-run>

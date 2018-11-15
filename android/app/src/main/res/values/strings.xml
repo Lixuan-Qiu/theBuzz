@@ -16,4 +16,7 @@
     </string>
     <string name="title_activity_comment">CommentActivity</string>
     <string name="title_activity_main2">Main2Activity</string>
+    <string name="CAM">CAM</string>
+    <string name="Send">Send</string>
+    <string name="Hint">Type your message here</string>
 </resources>
