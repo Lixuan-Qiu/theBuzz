@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -223,7 +224,59 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
 
                     }
                 });
+        /*
+        String url = "https://agile-plateau-21593.herokuapp.com/logout";
+        final SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
+        int userId = -1;
+        String sKey = "";
+        userId = mySP.getInt("uid", userId);
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("uid", Integer.toString(userId));
+        params.put("key", sKey);
+        JSONObject request = new JSONObject(params);
+        Log.d("cpl220", request.toString());
 
+        final JsonObjectRequest getReq = new JsonObjectRequest(Request.Method.POST, url, request,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getString("mStatus").equals("error")) return;
+                            else {
+                                Log.d("cpl220", "Successfully log out with server status: " + response.getString("mStatus"));
+                                SharedPreferences.Editor editor = mySP.edit();
+                                editor.putInt("sessionkey", -1);
+                                editor.commit();
+                            }
+                        } catch (final JSONException e) {
+                            Log.d("cpl220", "Error parsing JSON file: " + e.getMessage());
+                            return;
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // error
+                        Log.d("cpl220", "error:" + error.getMessage());
+                    }
+                }) {
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("uid", Integer.toString(userid));
+                params.put("key", skey);
+                return params;
+            }
+        };
+        // Add the request to the RequestQueue.
+        Log.d("cpl220", "getReq: " + getReq.toString());
+
+        volley.getRequestQueue().add(getReq);
+        */
     }
 
     private void next() {
