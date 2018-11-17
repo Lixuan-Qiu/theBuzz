@@ -355,6 +355,7 @@ public class DisplayActivity extends AppCompatActivity {
                 String msg = list.getJSONObject(i).getString("mMessage");
                 int like = list.getJSONObject(i).getInt("mlikeCount");
                 int dislike = list.getJSONObject(i).getInt("mdislikeCount");
+                //String img = list.getJSONObject(i).getString("img");
                 messageArrayList.add(new Message(mId, msg, like, dislike));
             }
         } catch (final JSONException e) {

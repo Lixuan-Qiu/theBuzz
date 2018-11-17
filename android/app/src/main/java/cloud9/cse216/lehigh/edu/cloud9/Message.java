@@ -23,6 +23,10 @@ public class Message implements Parcelable {
      * The current dislike count
      */
     int mDislikeCount;
+    /**
+     * The current image
+     */
+    //String mImage;
 
     /**
      * Construct a Datum by setting its index and text
@@ -37,6 +41,7 @@ public class Message implements Parcelable {
         mMessage = txt;
         mLikeCount = likeCount;
         mDislikeCount = dislikeCount;
+        //mImage = img;
     }
 
     public Message(Parcel in) {
@@ -46,6 +51,7 @@ public class Message implements Parcelable {
         this.mMessage = data[1];
         this.mLikeCount = Integer.parseInt(data[2]);
         this.mDislikeCount = Integer.parseInt(data[3]);
+        //this.mImage = data[2];
     }
 
     @Override
@@ -59,7 +65,7 @@ public class Message implements Parcelable {
                 Integer.toString(mId),
                 mMessage,
                 Integer.toString(mLikeCount),
-                Integer.toString(mDislikeCount)});
+                Integer.toString(mDislikeCount)/*mImage*/});
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
