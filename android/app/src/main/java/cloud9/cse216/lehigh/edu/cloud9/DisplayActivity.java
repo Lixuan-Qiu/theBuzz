@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,6 +33,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,6 +48,7 @@ public class DisplayActivity extends AppCompatActivity {
     // Instantiate the VolleySingleton
     VolleySingleton volley;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    String imageTosend = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +75,17 @@ public class DisplayActivity extends AppCompatActivity {
         });
 
     }
+
     /*
-        function for Camera
+        function for Camera button to call Camera intent
      */
-    public void Camera(View v){
+    public void Camera(View v) {
         dispatchTakePictureIntent();
     }
 
+    /*
+        function to call Camera intent
+     */
     private void dispatchTakePictureIntent() {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
@@ -85,12 +93,35 @@ public class DisplayActivity extends AppCompatActivity {
         }
     }
 
+    /*
+        code convert bitmaps to Base64 String from https://www.thepolyglotdeveloper.com/2015/06/from-bitmap-to-base64-and-back-with-native-android/
+     */
+    private String bitmapToBase64(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteArrayOutputStream);
+        byte[] byteArray = byteArrayOutputStream.toByteArray();
+        return Base64.encodeToString(byteArray, Base64.DEFAULT);
+    }
+
+    /*
+        code convert Base64 String to bitmaps from https://www.thepolyglotdeveloper.com/2015/06/from-bitmap-to-base64-and-back-with-native-android/
+     */
+    private Bitmap base64ToBitmap(String b64) {
+        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
+        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
+    }
+
+    /*
+        function for returning image to send to backend
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            Log.i("bitmap",imageBitmap.toString());
+            String imageString = bitmapToBase64(imageBitmap);
+            imageTosend = imageString;
+            Log.i("Base64 String", imageString);
         }
     }
 
@@ -137,8 +168,7 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("uid", Integer.toString(userid));
-                params.put("key", skey);
+                params.put("Authorization", skey);
                 return params;
             }
         };
@@ -167,6 +197,9 @@ public class DisplayActivity extends AppCompatActivity {
         params.put("uid", Integer.toString(userId));
         params.put("key", sKey);
         params.put("mMessage", et.getText().toString());
+        if(!imageTosend.equals("")){
+            params.put("image", imageTosend);
+        }
         JSONObject request = new JSONObject(params);
         if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");
@@ -176,7 +209,11 @@ public class DisplayActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONObject response) {
                         // response
-                        Log.d("cpl220", "Successful post of new message");
+                        try {
+                            Log.d("cpl220", "Successful post of new message: " + response.getString("echoMessage"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         messageArrayList.clear();
                         getMessages();
                         et.getText().clear();
@@ -193,8 +230,7 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("uid", Integer.toString(userid));
-                params.put("key", skey);
+                params.put("Authorization", skey);
                 return params;
             }
         };
@@ -246,8 +282,7 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("uid", Integer.toString(userid));
-                params.put("key", skey);
+                params.put("Authorization", skey);
                 return params;
             }
         };
@@ -297,8 +332,7 @@ public class DisplayActivity extends AppCompatActivity {
             @Override
             public Map getHeaders() throws AuthFailureError {
                 Map<String, String> params = new HashMap<String, String>();
-                params.put("uid", Integer.toString(userid));
-                params.put("key", skey);
+                params.put("Authorization", skey);
                 return params;
             }
         };

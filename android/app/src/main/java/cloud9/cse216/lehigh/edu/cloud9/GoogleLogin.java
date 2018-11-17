@@ -83,7 +83,6 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
         famName = (TextView) findViewById(R.id.FamilyName);
         givenName = (TextView) findViewById(R.id.GivenName);
         id = (TextView) findViewById(R.id.ID);
-        pic = (ImageView) findViewById(R.id.photo);
         volley = new VolleySingleton(this);
         Prof_Section = (LinearLayout) findViewById(R.id.profSection);
         Prof_Section.setVisibility(View.GONE);
@@ -140,14 +139,12 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             String personFamilyName = account.getFamilyName();
             String email = account.getEmail();
             String personId = account.getId();
-            Uri personPhoto = account.getPhotoUrl();
 
             nameText.setText(name);
             emailText.setText(email);
             famName.setText(personFamilyName);
             givenName.setText(personGivenName);
             id.setText(personId);
-            pic.setImageURI(personPhoto);
 
             findViewById(R.id.sign_in_button).setVisibility(View.GONE);
             SignOut.setVisibility(View.VISIBLE);
@@ -174,6 +171,7 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
             params.put("id_token", idToken);
             JSONObject request = new JSONObject(params);
             Log.i("key and uid","newmessage");
+            //sending JSONObject of id_token to login
             JsonObjectRequest getReq = new JsonObjectRequest(Request.Method.POST, url, request,
                     new Response.Listener<JSONObject>() {
                         @Override
@@ -203,64 +201,6 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
                     });
             volley.getRequestQueue().add(getReq);
             updateUI(account);
-            // Signed in successfully, show authenticated UI.
-            /*
-            HttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost("https://agile-plateau-21593.herokuapp.com/login");
-
-
-            //This block right here is post request and is not working correctly.
-            try {
-                List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-                nameValuePairs.add(new BasicNameValuePair("idToken", idToken));
-                httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-                HttpResponse response = httpClient.execute(httpPost);
-                int statusCode = response.getStatusLine().getStatusCode();
-                final String responseBody = EntityUtils.toString(response.getEntity());
-                Log.i(TAG, "Signed in as: " + responseBody);
-            } catch (ClientProtocolException e) {
-                Log.e(TAG, "Error sending ID token to backend.", e);
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            //End of block that is not working correctly
-            Log.i("Response","checking");
-            OutputStream out = null;
-            String response = "";
-            String urlString = "https://agile-plateau-21593.herokuapp.com/login";
-            try {
-                URL url = new URL(urlString);
-                HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
-                out = new BufferedOutputStream(urlConnection.getOutputStream());
-                Log.i("Logging in", "Signed in as: " + idToken);
-                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out, "UTF-8"));
-                writer.write(idToken);
-                writer.flush();
-                writer.close();
-                out.close();
-
-                //urlConnection.connect();
-                int responseCode = urlConnection.getResponseCode();
-                if (responseCode == HttpsURLConnection.HTTP_OK) {
-                    String line;
-                    BufferedReader br=new BufferedReader(new InputStreamReader(urlConnection.getInputStream()));
-                    while ((line=br.readLine()) != null) {
-                        response+=line;
-                    }
-                }
-                else {
-                    response="";
-                }
-                Log.i("Response",response);
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-            Log.i("Response",response);
-            updateUI(account);
-            */
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
