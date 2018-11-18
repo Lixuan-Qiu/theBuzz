@@ -104,14 +104,6 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     /*
-        code convert Base64 String to bitmaps from https://www.thepolyglotdeveloper.com/2015/06/from-bitmap-to-base64-and-back-with-native-android/
-     */
-    private Bitmap base64ToBitmap(String b64) {
-        byte[] imageAsBytes = Base64.decode(b64.getBytes(), Base64.DEFAULT);
-        return BitmapFactory.decodeByteArray(imageAsBytes, 0, imageAsBytes.length);
-    }
-
-    /*
         function for returning image to send to backend
      */
     @Override

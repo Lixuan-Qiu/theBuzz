@@ -11,8 +11,8 @@
         android:id="@+id/likeButton"
         android:layout_width="65dp"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="10dp"
         android:layout_marginStart="213dp"
+        android:layout_marginEnd="10dp"
         android:text="up"
         android:visibility="visible"
         app:layout_constraintEnd_toStartOf="@+id/likes"
@@ -35,15 +35,16 @@
 
     <TextView
         android:id="@+id/listItemText"
-        android:layout_width="190dp"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:layout_marginEnd="12dp"
+        android:layout_width="125dp"
+        android:layout_height="35dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="92dp"
+        android:layout_marginBottom="16dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/likeButton"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.54" />
 
     <TextView
         android:id="@+id/likes"
@@ -88,6 +89,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/likeCount" />
+
+    <ImageView
+        android:id="@+id/image_message"
+        android:layout_width="67dp"
+        android:layout_height="65dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/dislikeButton"
+        app:layout_constraintStart_toEndOf="@+id/listItemText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@color/common_google_signin_btn_text_dark_default" />
 
 
 </android.support.constraint.ConstraintLayout>

@@ -69,7 +69,6 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
     private Button SignOut, Continue;
     private LinearLayout Prof_Section;
     private TextView nameText, emailText, famName, givenName, id;
-    private ImageView pic;
     VolleySingleton volley;
 
     @Override

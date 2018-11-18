@@ -1172,6 +1172,7 @@ id icon_group
 id icon_only
 id ifRoom
 id image
+id image_message
 id info
 id invisible
 id italic
@@ -1213,7 +1214,6 @@ id parent
 id parentPanel
 id parent_matrix
 id percent
-id photo
 id pin
 id profSection
 id progress_circular

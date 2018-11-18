@@ -35,6 +35,7 @@ public class Message implements Parcelable {
      * @param txt The string contents of this message
      * @param likeCount The like count of this message
      * @param dislikeCount The dislike count of this message
+     * @param img The string for img
      */
     Message(int idx, String txt, int likeCount, int dislikeCount, String img) {
         mId = idx;
