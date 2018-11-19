@@ -1,15 +1,29 @@
 package edu.lehigh.cse216.cloud9.admin;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
+import java.security.GeneralSecurityException;
 import java.io.IOException;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import com.diogonunes.jcdp.color.ColoredPrinter;
 import com.diogonunes.jcdp.color.api.Ansi.Attribute;
 import com.diogonunes.jcdp.color.api.Ansi.BColor;
 import com.diogonunes.jcdp.color.api.Ansi.FColor;
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
+
 import com.sendgrid.*;
 
 // check https://github.com/dialex/JCDP/blob/master/README.md for information on colorprinter
@@ -31,8 +45,10 @@ public class App {
         cp.println("  [C] Access Comment Table");
         cp.println("  [S] Access Session Key Table");
         cp.println("  [V] Acces Vote Table");
+        cp.println("  [+] Make All Tables");
         cp.println("  [D] Drop All Tables");
         cp.println("  [q] Quit Program");
+        cp.println("  [L] List files");
 
         cp.clear();
     }
@@ -306,7 +322,7 @@ public class App {
                 id = getInt(in, "Eneter the User ID");
                 if (id == -1 || message.equals(""))
                     continue;
-                result = db.insert_messageRow(message, id);
+                result = db.insert_messageRow(message, id, "");
 
                 cp.println(result + " rows added");
                 break;
@@ -552,6 +568,21 @@ public class App {
         }
     }
 
+    static void makeAll(Database db, BufferedReader in) {
+
+        cp.println("\nMaking user table");
+        db.create_userTable();
+        cp.println("\nMaking message table");
+        db.create_messageTable();
+        cp.println("\nMaking session table");
+        db.create_sessionTable();
+        cp.println("\nMaking comment table");
+        db.create_commentTable();
+        cp.println("\nMaking vote table");
+        db.create_voteTable();
+
+    }
+
     static void sessionMenu(Database db, BufferedReader in) {
         print_sessionMenu();
         while (true) {
@@ -747,7 +778,7 @@ public class App {
             //
             // NB: for better testability, each action should be a separate
             // function call
-            char action = prompt(in, "MUCSVDq?");
+            char action = prompt(in, "MUCSVDq?+L");
             if (action == 'q') {
                 break;
             } else if (action == 'M') {
@@ -762,6 +793,10 @@ public class App {
                 sessionMenu(db, in);
             } else if (action == 'D') {
                 clearAll(db, in);
+            } else if (action == '+') {
+                makeAll(db, in);
+            } else if (action == 'L') {
+                list_file(db, in);
             }
             print_main_menu();
         }
@@ -789,5 +824,80 @@ public class App {
         cp.println("///////////////" + filler + "////////////////");
         cp.clear();
         cp.println("");
+    }
+
+    /**
+     * @param db : input database
+     * @param in : buffer reader
+     */
+    static void list_file(Database db, BufferedReader in) {
+
+        // System.out.println("Working Directory = " + System.getProperty("user.dir"));
+        try {
+
+            // parameter setup for service builder
+            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
+            // add scope authorization here
+            Collection<String> SCOPES = new ArrayList<String>();
+            SCOPES.add("https://www.googleapis.com/auth/drive");
+
+            // build google credential from local json file
+            // see https://cloud.google.com/iam/docs/creating-managing-service-account-keys
+            // in section "Creating service account keys" for more info
+            GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream("cse216-buzzapp-key.json"))
+                    .createScoped(SCOPES);
+
+            // setup application's name
+            String applicationName = "cse216-buzzapp";
+
+            // initialize google drive service
+            Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
+                    .setApplicationName(applicationName).build();
+
+            // List all files
+            String pageToken = null;
+            do {
+                // Search for files that are not folders
+                // get List of files
+                FileList result = service.files().list().setQ("mimeType != 'application/vnd.google-apps.folder'")
+                        .setSpaces("drive").setFields("nextPageToken, files(id, name)").setPageToken(pageToken)
+                        .execute();
+
+                // print those files's name and ID
+                int count = 1;
+                for (File file : result.getFiles()) {
+                    cp.println("");
+                    cp.println("File #" + count, Attribute.NONE, FColor.MAGENTA, BColor.BLACK);
+                    cp.println("\tfilename:\t" + file.getName());
+                    cp.println("\tfile ID:\t" + file.getId());
+
+                    // System.out.printf("File %d: \n\tfilename:\t%s \n\tfile ID:\t%s\n", count,
+                    // file.getName(),
+                    // file.getId());
+                    cp.clear();
+                    count++;
+                }
+                pageToken = result.getNextPageToken();
+            } while (pageToken != null);
+            // done printing
+
+            // print 'About' info
+            // About about = service.about().get().setFields("user,
+            // storageQuota").execute();
+            // System.out.println(about.toPrettyString());
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
     }
 }

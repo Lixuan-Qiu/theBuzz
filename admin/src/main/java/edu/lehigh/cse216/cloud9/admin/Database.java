@@ -117,16 +117,20 @@ public class Database {
         // Username related to the uId
         String username;
 
+        String mimage;
+
         /**
          * Construct a RowData object by providing values for its fields
          */
 
-        public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid, String username) {
+        public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid, String username,
+                String image) {
             mId = mid;
             mMessage = message;
             mlikeCount = likeCount;
             mdislikeCount = dislikeCount;
             uId = uid;
+            mimage = image;
             this.username = username;
         }
 
@@ -290,7 +294,7 @@ public class Database {
             db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblMessage (" + "mid SERIAL PRIMARY KEY, "
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
                     + "dislikeCount INT NOT NULL, " + "username VARCHAR(100) NOT NULL,"
-                    + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "image VARCHAR(500) NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
             db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
                     + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
@@ -317,9 +321,10 @@ public class Database {
 
             // Standard CRUD operations for message_table
             db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblMessage WHERE mid = ?");
-            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?)");
-            db.mSelectAll = db.mConnection
-                    .prepareStatement("SELECT mid , message, likeCount, dislikeCount, uid, username FROM tblMessage");
+            db.mInsertOne = db.mConnection
+                    .prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?, ?)");
+            db.mSelectAll = db.mConnection.prepareStatement(
+                    "SELECT mid , message, likeCount, dislikeCount, uid, username, image FROM tblMessage");
             db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblMessage WHERE mid=?");
             db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblMessage SET message = ? WHERE mid = ?");
             db.mAddLike = db.mConnection.prepareStatement("UPDATE tblMessage SET likeCount = ? WHERE mid = ?");
@@ -446,13 +451,15 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insert_messageRow(String message, int uid) {
+    int insert_messageRow(String message, int uid, String image) {
         int count = 0;
         try {
+
             mInsertOne.setInt(1, uid);
             mInsertOne.setString(2, message);
             String username = select_userOne(uid).uUsername;
             mInsertOne.setString(3, username);
+            mInsertOne.setString(4, image);
             count += mInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -471,7 +478,7 @@ public class Database {
             ResultSet rs = mSelectAll.executeQuery();
             while (rs.next()) {
                 res.add(new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
-                        rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username")));
+                        rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image")));
             }
             rs.close();
             return res;
@@ -495,7 +502,7 @@ public class Database {
             ResultSet rs = mSelectOne.executeQuery();
             if (rs.next()) {
                 res = new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
-                        rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"));
+                        rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

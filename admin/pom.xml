@@ -37,6 +37,25 @@
             <artifactId>JCDP</artifactId>
             <version>2.0.3.1</version>
         </dependency>
+        <!-- spark java framework  -->
+        <dependency>
+            <groupId>com.sparkjava</groupId>
+            <artifactId>spark-core</artifactId>
+            <version>2.7.2</version>
+        </dependency>
+        <!--this is for google drive -->
+        <dependency>
+            <groupId>com.google.apis</groupId>
+            <artifactId>google-api-services-drive</artifactId>
+            <version>v3-rev136-1.25.0</version>
+        </dependency>
+        
+        <!-- https://mvnrepository.com/artifact/com.google.api-client/google-api-client -->
+        <dependency>
+            <groupId>com.google.api-client</groupId>
+            <artifactId>google-api-client</artifactId>
+            <version>1.27.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
