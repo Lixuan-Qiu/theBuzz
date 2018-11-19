@@ -45,10 +45,13 @@ public class App {
         cp.println("  [C] Access Comment Table");
         cp.println("  [S] Access Session Key Table");
         cp.println("  [V] Acces Vote Table");
+
         cp.println("  [+] Make All Tables");
-        cp.println("  [D] Drop All Tables");
-        cp.println("  [q] Quit Program");
+        cp.println("  [-] Drop All Tables");
+
         cp.println("  [L] List files");
+        cp.println("  [D] Delete a file by ID");
+        cp.println("  [q] Quit Program");
 
         cp.clear();
     }
@@ -196,49 +199,6 @@ public class App {
             }
             cp.println("Invalid Command");
         }
-    }
-
-    /**
-     * Ask the user to enter a String message
-     * 
-     * @param in      A BufferedReader, for reading from the keyboard
-     * @param message A message to display when asking for input
-     * 
-     * @return The string that the user provided. May be "".
-     */
-    static String getString(BufferedReader in, String message) {
-        String s;
-        try {
-            cp.print(message + " :> ");
-            System.out.flush();
-            s = in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
-        return s;
-    }
-
-    /**
-     * Ask the user to enter an integer
-     * 
-     * @param in      A BufferedReader, for reading from the keyboard
-     * @param message A message to display when asking for input
-     * 
-     * @return The integer that the user provided. On error, it will be -1
-     */
-    static int getInt(BufferedReader in, String message) {
-        int i = -1;
-        try {
-            cp.print(message + " :> ");
-            System.out.flush();
-            i = Integer.parseInt(in.readLine());
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
-        return i;
     }
 
     // interaction with message
@@ -449,32 +409,6 @@ public class App {
         }
     }
 
-    /**
-     * Runs the insert_userRow method to insert a new row
-     * 
-     * @param db       the current database
-     * @param username the new user's username
-     * @param realname the new user's real name
-     * @param email    the new user's email
-     * @return the number of rows added
-     */
-    static int addUser(Database db, String username, String realname, String email) {
-        int res = db.insert_userRow(username, realname, email);
-        return res;
-    }
-
-    /**
-     * Gets one user's info from the database
-     * 
-     * @param db  the current database
-     * @param uId the Id of the user who's information we are getting
-     * @return the user's information in a user_RowData
-     */
-    static Database.user_RowData getOneUser(Database db, int uId) {
-        Database.user_RowData res = db.select_userOne(uId);
-        return res;
-    }
-
     static void commentMenu(Database db, BufferedReader in) {
         print_commentMenu();
         while (true) {
@@ -546,41 +480,6 @@ public class App {
                * -1) continue; cp.println("  " + res + " rows updated"); }
                */
         }
-    }
-
-    static void clearAll(Database db, BufferedReader in) {
-        boolean safe = true;
-        while (safe) {
-            char action = prompt(in,
-                    "Good afternoon, Mr. Hunt. Your mission, should you choose to accept it, involves the elimination of all current data. (y/n)");
-            if (action == 'y') {
-                cp.println(
-                        "As always, should you or any of your Force be caught or killed, the Secretary will disavow any knowledge of your actions. These data tables will self-destruct in one second. Good luck");
-                db.drop_voteTable();
-                db.drop_commentTable();
-                db.drop_sessionTable();
-                db.drop_messageTable();
-                db.drop_userTable();
-                break;
-            } else if (action == 'n') {
-                break;
-            }
-        }
-    }
-
-    static void makeAll(Database db, BufferedReader in) {
-
-        cp.println("\nMaking user table");
-        db.create_userTable();
-        cp.println("\nMaking message table");
-        db.create_messageTable();
-        cp.println("\nMaking session table");
-        db.create_sessionTable();
-        cp.println("\nMaking comment table");
-        db.create_commentTable();
-        cp.println("\nMaking vote table");
-        db.create_voteTable();
-
     }
 
     static void sessionMenu(Database db, BufferedReader in) {
@@ -709,6 +608,123 @@ public class App {
     }
 
     /**
+     * @param db : input database
+     * @param in : buffer reader
+     */
+    static void list_file(BufferedReader in) {
+
+        // System.out.println("Working Directory = " + System.getProperty("user.dir"));
+
+        // List all files
+        try {
+            String pageToken = null;
+            do {
+                // Search for files that are not folders
+                // get List of files
+                FileList result = service.files().list().setQ("mimeType != 'application/vnd.google-apps.folder'")
+                        .setSpaces("drive").setFields("nextPageToken, files(id, name)").setPageToken(pageToken)
+                        .execute();
+
+                // print those files's name and ID
+                int count = 1;
+                for (File file : result.getFiles()) {
+                    cp.println("");
+                    cp.println("File #" + count, Attribute.NONE, FColor.MAGENTA, BColor.BLACK);
+                    cp.println("\tfilename:\t" + file.getName());
+                    cp.println("\tfile ID:\t" + file.getId());
+
+                    // System.out.printf("File %d: \n\tfilename:\t%s \n\tfile ID:\t%s\n", count,
+                    // file.getName(),
+                    // file.getId());
+                    cp.clear();
+                    count++;
+                }
+                pageToken = result.getNextPageToken();
+            } while (pageToken != null);
+            // done printing
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        // print 'About' info
+        // About about = service.about().get().setFields("user,
+        // storageQuota").execute();
+        // System.out.println(about.toPrettyString());
+
+    }
+
+    static void delete_file(BufferedReader in) {
+        String fileId = getString(in, "Please enter file ID");
+        try {
+            service.files().delete(fileId).execute().toString();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Runs the insert_userRow method to insert a new row
+     * 
+     * @param db       the current database
+     * @param username the new user's username
+     * @param realname the new user's real name
+     * @param email    the new user's email
+     * @return the number of rows added
+     */
+    static int addUser(Database db, String username, String realname, String email) {
+        int res = db.insert_userRow(username, realname, email);
+        return res;
+    }
+
+    /**
+     * Gets one user's info from the database
+     * 
+     * @param db  the current database
+     * @param uId the Id of the user who's information we are getting
+     * @return the user's information in a user_RowData
+     */
+    static Database.user_RowData getOneUser(Database db, int uId) {
+        Database.user_RowData res = db.select_userOne(uId);
+        return res;
+    }
+
+    static void clearAll(Database db, BufferedReader in) {
+        boolean safe = true;
+        while (safe) {
+            char action = prompt(in,
+                    "Good afternoon, Mr. Hunt. Your mission, should you choose to accept it, involves the elimination of all current data. (y/n)");
+            if (action == 'y') {
+                cp.println(
+                        "As always, should you or any of your Force be caught or killed, the Secretary will disavow any knowledge of your actions. These data tables will self-destruct in one second. Good luck");
+                db.drop_voteTable();
+                db.drop_commentTable();
+                db.drop_sessionTable();
+                db.drop_messageTable();
+                db.drop_userTable();
+                break;
+            } else if (action == 'n') {
+                break;
+            }
+        }
+    }
+
+    static void makeAll(Database db, BufferedReader in) {
+
+        cp.println("\nMaking user table");
+        db.create_userTable();
+        cp.println("\nMaking message table");
+        db.create_messageTable();
+        cp.println("\nMaking session table");
+        db.create_sessionTable();
+        cp.println("\nMaking comment table");
+        db.create_commentTable();
+        cp.println("\nMaking vote table");
+        db.create_voteTable();
+
+    }
+
+    /**
      * Sends an email to the new user containing their password and username
      * 
      * @param toEmail  the address of where the email is going
@@ -750,6 +766,10 @@ public class App {
         }
     }
 
+    ///////////////////////////////////////////////////////////////////////////
+    ////////////////////////////// MAIN FUNCTION //////////////////////////////
+    ///////////////////////////////////////////////////////////////////////////
+
     /**
      * The main routine runs a loop that gets a request from the user and processes
      * it
@@ -769,6 +789,9 @@ public class App {
         // set up color printer
         cp = new ColoredPrinter.Builder(1, false).foreground(FColor.WHITE).background(BColor.BLACK).build();
 
+        // setup google drive service
+        setupService();
+
         print_main_menu();
         // Start our basic command-line interpreter:
         BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -778,7 +801,7 @@ public class App {
             //
             // NB: for better testability, each action should be a separate
             // function call
-            char action = prompt(in, "MUCSVDq?+L");
+            char action = prompt(in, "MUCSVq?+-LD");
             if (action == 'q') {
                 break;
             } else if (action == 'M') {
@@ -791,12 +814,14 @@ public class App {
                 voteMenu(db, in);
             } else if (action == 'S') {
                 sessionMenu(db, in);
-            } else if (action == 'D') {
+            } else if (action == '-') {
                 clearAll(db, in);
             } else if (action == '+') {
                 makeAll(db, in);
             } else if (action == 'L') {
-                list_file(db, in);
+                list_file(in);
+            } else if (action == 'D') {
+                delete_file(in);
             }
             print_main_menu();
         }
@@ -806,6 +831,48 @@ public class App {
     }
 
     // beyond this are helper function
+    static NetHttpTransport HTTP_TRANSPORT;
+    static JsonFactory JSON_FACTORY;
+    static Collection<String> SCOPES;
+    static GoogleCredential credential;
+    static String applicationName;
+    static Drive service;
+
+    private static void setupService() {
+
+        try {
+            // parameter setup for service builder
+            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
+            // add scope authorization here
+            SCOPES = new ArrayList<String>();
+            SCOPES.add("https://www.googleapis.com/auth/drive");
+
+            // build google credential from local json file
+            // see https://cloud.google.com/iam/docs/creating-managing-service-account-keys
+            // in section "Creating service account keys" for more info
+            credential = GoogleCredential.fromStream(new FileInputStream("cse216-buzzapp-key.json"))
+                    .createScoped(SCOPES);
+
+            // setup application's name
+            applicationName = "cse216-buzzapp";
+
+            // initialize google drive service
+            service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(applicationName)
+                    .build();
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
 
     // print header (menu)
     private static void print_header(String header) {
@@ -827,77 +894,46 @@ public class App {
     }
 
     /**
-     * @param db : input database
-     * @param in : buffer reader
+     * Ask the user to enter a String message
+     * 
+     * @param in      A BufferedReader, for reading from the keyboard
+     * @param message A message to display when asking for input
+     * 
+     * @return The string that the user provided. May be "".
      */
-    static void list_file(Database db, BufferedReader in) {
-
-        // System.out.println("Working Directory = " + System.getProperty("user.dir"));
+    static String getString(BufferedReader in, String message) {
+        String s;
         try {
-
-            // parameter setup for service builder
-            final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
-            JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
-
-            // add scope authorization here
-            Collection<String> SCOPES = new ArrayList<String>();
-            SCOPES.add("https://www.googleapis.com/auth/drive");
-
-            // build google credential from local json file
-            // see https://cloud.google.com/iam/docs/creating-managing-service-account-keys
-            // in section "Creating service account keys" for more info
-            GoogleCredential credential = GoogleCredential.fromStream(new FileInputStream("cse216-buzzapp-key.json"))
-                    .createScoped(SCOPES);
-
-            // setup application's name
-            String applicationName = "cse216-buzzapp";
-
-            // initialize google drive service
-            Drive service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential)
-                    .setApplicationName(applicationName).build();
-
-            // List all files
-            String pageToken = null;
-            do {
-                // Search for files that are not folders
-                // get List of files
-                FileList result = service.files().list().setQ("mimeType != 'application/vnd.google-apps.folder'")
-                        .setSpaces("drive").setFields("nextPageToken, files(id, name)").setPageToken(pageToken)
-                        .execute();
-
-                // print those files's name and ID
-                int count = 1;
-                for (File file : result.getFiles()) {
-                    cp.println("");
-                    cp.println("File #" + count, Attribute.NONE, FColor.MAGENTA, BColor.BLACK);
-                    cp.println("\tfilename:\t" + file.getName());
-                    cp.println("\tfile ID:\t" + file.getId());
-
-                    // System.out.printf("File %d: \n\tfilename:\t%s \n\tfile ID:\t%s\n", count,
-                    // file.getName(),
-                    // file.getId());
-                    cp.clear();
-                    count++;
-                }
-                pageToken = result.getNextPageToken();
-            } while (pageToken != null);
-            // done printing
-
-            // print 'About' info
-            // About about = service.about().get().setFields("user,
-            // storageQuota").execute();
-            // System.out.println(about.toPrettyString());
-
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            cp.print(message + " :> ");
+            System.out.flush();
+            s = in.readLine();
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (GeneralSecurityException e) {
-            // TODO Auto-generated catch block
+            return "";
+        }
+        return s;
+    }
+
+    /**
+     * Ask the user to enter an integer
+     * 
+     * @param in      A BufferedReader, for reading from the keyboard
+     * @param message A message to display when asking for input
+     * 
+     * @return The integer that the user provided. On error, it will be -1
+     */
+    static int getInt(BufferedReader in, String message) {
+        int i = -1;
+        try {
+            cp.print(message + " :> ");
+            System.out.flush();
+            i = Integer.parseInt(in.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
-
+        return i;
     }
+
 }
