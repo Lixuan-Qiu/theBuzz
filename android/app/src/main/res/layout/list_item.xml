@@ -38,13 +38,13 @@
         android:layout_width="125dp"
         android:layout_height="35dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="92dp"
+        android:layout_marginEnd="76dp"
         android:layout_marginBottom="16dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/likeButton"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.54" />
+        app:layout_constraintVertical_bias="0.621" />
 
     <TextView
         android:id="@+id/likes"
