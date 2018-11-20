@@ -191,6 +191,7 @@ public class DisplayActivity extends AppCompatActivity {
         params.put("mMessage", et.getText().toString());
         params.put("img", imageTosend);
         imageTosend = "";
+        params.put("mfileID", "");
         JSONObject request = new JSONObject(params);
         if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");

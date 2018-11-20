@@ -1144,7 +1144,6 @@ id direct
 id disableHome
 id dislikeButton
 id dislikeCount
-id dislikes
 id editText
 id editText2
 id edit_query
@@ -1183,7 +1182,6 @@ id left
 id light
 id likeButton
 id likeCount
-id likes
 id line1
 id line3
 id linearLayout
