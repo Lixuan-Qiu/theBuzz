@@ -25,18 +25,25 @@ public class App {
         // gson turn JSON into objects, and objects into JSON
         final Gson gson = new Gson();
 
-        // Android Client ID
+        // Neal Android Client ID
         String CLIENT_ID_1 = "319649689632-7qvimdmkig66k3pd90rarf1enulobgjg.apps.googleusercontent.com";
 
+        // Kop Android Client ID
+        String CLIENT_ID_2 = "319649689632-qnpeij8911do79nb3brgi15s2dpg8k26.apps.googleusercontent.com";
+
+        // Ron Android Client ID
+        // String CLIENT_ID_3 =
+        // "319649689632-7qvimdmkig66k3pd90rarf1enulobgjg.apps.googleusercontent.com";
+
         // Web Client ID
-        String CLIENT_ID_2 = "319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
+        String CLIENT_ID_4 = "319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
 
         final JacksonFactory jacksonFactory = new JacksonFactory();
         NetHttpTransport transport = new NetHttpTransport();
         // Build the verifier that will check ID Token's
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
                 // Or, if multiple clients access the backend:
-                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2)).build();
+                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_4)).build();
 
         Database database = Database.getDatabase(db_url);// ,ip, port, user, pass);
         if (database == null)
@@ -69,12 +76,13 @@ public class App {
             System.out.println("params: " + request.params());
             System.out.println("raw: " + request.raw());
             System.out.println("requestMethod" + request.requestMethod());
-
+            
+            FirstRequest req = gson.fromJson(request.body(), FirstRequest.class);
             // parse request to FirstRequest
             String email = null;
             String name = null;
-            String sub = null;
-            String idTokenString = request.body();
+            String exp = null;
+            String idTokenString = req.id_token;
             response.status(200);
             response.type("application/json");
 
@@ -90,7 +98,7 @@ public class App {
                 email = payload.getEmail();
                 boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
                 name = (String) payload.get("name");
-                sub = (String) payload.get("sub");
+                exp = payload.get("exp").toString();
                 /*
                  * String locale = (String) payload.get("locale"); String familyName = (String)
                  * payload.get("family_name"); String givenName = (String)
@@ -119,9 +127,9 @@ public class App {
                 }
             }
 
-            sub = sub + uId;
+            exp = exp + uId;
             // Inset new session row
-            database.insert_sessionRow(uId, sub);
+            database.insert_sessionRow(uId, exp);
             // send response back
             return gson.toJson(new FirstResponse("ok", "session key for uid = " + uId + " is sent.",
                     database.get_sessionKey(uId), uId));
@@ -210,13 +218,23 @@ public class App {
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
+            //String image = null;
+
+            
+
+
 
             if (database.check_sessionKey(key)) {
-
-                int newId = database.insert_messageRow(req.mMessage, req.uid);
+                    int newId = database.insert_messageRow(req.mMessage, req.uid, req.img);
+                //return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
+                /*if(!request.getParameter("image")){
+                    int newId = database.insert_messageRow(req.mMessage, req.uid);
+                }*/
                 if (newId == -1) {
                     return gson.toJson(new StructuredResponse("error", "error performing insertion", null));
-                } else {
+                } 
+                else {
+                     newId = database.insert_messageRow(req.mMessage, req.uid, req.img);
                     return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
                 }
             } else {
@@ -374,7 +392,7 @@ public class App {
             if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
-
+                
                 int result = database.delete_messageRow(idx);
                 if (result == -1) {
                     return gson.toJson(new StructuredResponse("error", "unable to delete row " + idx, null));
@@ -507,13 +525,15 @@ public class App {
 
             // Get Session key from Authorization Header
             String key = request.headers("Authorization");
-
+            //String image = request.params("uploadType");
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
 
             if (database.check_sessionKey(key)) {
                 int result = database.insert_commentRow(req.mMessage, req.uid, idx);
+                
+
                 if (result == 0) { // on failure
                     return gson.toJson(new StructuredResponse("error", idx + " not found", null));
 
@@ -553,6 +573,7 @@ public class App {
 
     }
 
+   
     /**
      * Get an integer environment varible if it exists, and otherwise return the
      * default value.
