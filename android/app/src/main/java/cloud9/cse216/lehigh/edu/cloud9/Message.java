@@ -37,12 +37,12 @@ public class Message implements Parcelable {
      * @param dislikeCount The dislike count of this message
      * @param img The string for img
      */
-    Message(int idx, String txt, int likeCount, int dislikeCount, String img) {
+    Message(int idx, String txt, int likeCount, int dislikeCount, String mimage) {
         mId = idx;
         mMessage = txt;
         mLikeCount = likeCount;
         mDislikeCount = dislikeCount;
-        mImage = img;
+        this.mImage = mimage;
     }
 
     public Message(Parcel in) {

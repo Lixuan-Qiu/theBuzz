@@ -113,7 +113,7 @@ public class DisplayActivity extends AppCompatActivity {
             Bitmap imageBitmap = (Bitmap) extras.get("data");
             String imageString = bitmapToBase64(imageBitmap);
             imageTosend = imageString;
-            Log.i("Base64 String", imageString);
+            Log.i("Base64 String", "" + imageString.length());
         }
     }
 
@@ -189,9 +189,8 @@ public class DisplayActivity extends AppCompatActivity {
         params.put("uid", Integer.toString(userId));
         params.put("key", sKey);
         params.put("mMessage", et.getText().toString());
-        if(!imageTosend.equals("")){
-            params.put("image", imageTosend);
-        }
+        params.put("img", imageTosend);
+        imageTosend = "";
         JSONObject request = new JSONObject(params);
         if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");
@@ -341,20 +340,22 @@ public class DisplayActivity extends AppCompatActivity {
     public void populateListFromVolley(JSONObject response) {
         try {
             JSONArray list = response.getJSONArray("mData");
+            Log.d("cpl220", list.toString());
             for (int i = 0; i < list.length(); ++i) {
                 //wait for response from Corey to see the correct form of variable names
                 int mId = list.getJSONObject(i).getInt("mId");
                 String msg = list.getJSONObject(i).getString("mMessage");
                 int like = list.getJSONObject(i).getInt("mlikeCount");
                 int dislike = list.getJSONObject(i).getInt("mdislikeCount");
-                String img = list.getJSONObject(i).getString("img");
+                String img = list.getJSONObject(i).getString("mimage");
+                Log.d("cpl220 mid", ""+mId);
                 messageArrayList.add(new Message(mId, msg, like, dislike, img));
             }
         } catch (final JSONException e) {
             Log.d("cpl220", "Error parsing JSON file: " + e.getMessage());
             return;
         }
-        Log.d("cpl220", "Successfully parsed JSON file.");
+        Log.d("cpl220", "Successfully parsed JSON file .");
         RecyclerView rv = (RecyclerView) findViewById(R.id.message_list_view);
         rv.setLayoutManager(new LinearLayoutManager(this));
         ItemListAdapter adapter = new ItemListAdapter(this, messageArrayList, this);

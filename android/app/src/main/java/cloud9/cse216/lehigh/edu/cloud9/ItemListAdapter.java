@@ -80,7 +80,9 @@ DisplayActivity displayActivity;
         holder.mMessage.setText(d.mMessage);
         holder.mLikeCount.setText(Integer.toString(d.mLikeCount));
         holder.mDislikeCount.setText(Integer.toString(d.mDislikeCount));
-        holder.image.setImageBitmap(base64ToBitmap(d.mImage));
+        if(!d.mImage.equals("")) {
+            holder.image.setImageBitmap(base64ToBitmap(d.mImage));
+        }
         holder.mMessage.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {

@@ -187,6 +187,7 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
                                 editor.putInt("uid",uId);
                                 editor.commit();
                             } catch (JSONException e) {
+                                Log.e("error","error");
                                 e.printStackTrace();
                             }
 
