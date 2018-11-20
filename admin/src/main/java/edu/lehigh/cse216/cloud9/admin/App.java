@@ -247,7 +247,17 @@ public class App {
                 if (res != null) {
                     cp.println("User Id: " + res.uId + ", Message Id: " + res.mId);
                     cp.println("Content: \"" + res.mMessage + "\"");
-                    cp.println("Like: " + res.mlikeCount + "\tDislike: " + res.mdislikeCount);
+
+                    if (!res.mimage.equals("")) {
+                        // if image not null
+                        cp.print("Image : ");
+                        cp.println("there is image!", Attribute.NONE, FColor.GREEN, BColor.BLACK);
+                    } else {
+                        cp.print("Image : ");
+                        cp.println("no image...", Attribute.NONE, FColor.RED, BColor.BLACK);
+                    }
+
+                    cp.println("Like: " + res.mlikeCount + "\tDislike: " + res.mdislikeCount + "\n");
                 }
                 break;
 
@@ -256,12 +266,22 @@ public class App {
                 ArrayList<Database.message_RowData> messageList = db.select_messageAll();
                 if (messageList == null)
                     continue;
-                cp.println("  Current Message Database Contents");
-                cp.println("  -------------------------");
+                cp.println("\n  Current Message Database Contents");
+                cp.println("  -------------------------\n");
                 for (Database.message_RowData row : messageList) {
-                    cp.println("User Id: " + row.uId + ", Message Id: " + row.mId);
-                    cp.println("Content: \"" + row.mMessage + "\"");
-                    cp.println("Like: " + row.mlikeCount + "\tDislike: " + row.mdislikeCount);
+                    cp.println(" User Id: " + row.uId + ", Message Id: " + row.mId);
+                    cp.println(" Content: \"" + row.mMessage + "\"");
+
+                    if (!row.mimage.equals("")) {
+                        // if image not null
+                        cp.print(" Image : ");
+                        cp.println(" there is image!", Attribute.NONE, FColor.GREEN, BColor.BLACK);
+                    } else {
+                        cp.print(" Image : ");
+                        cp.println(" no image...", Attribute.NONE, FColor.RED, BColor.BLACK);
+                    }
+
+                    cp.println(" Like: " + row.mlikeCount + "\tDislike: " + row.mdislikeCount + "\n");
                 }
                 break;
 
@@ -702,6 +722,7 @@ public class App {
                 db.drop_sessionTable();
                 db.drop_messageTable();
                 db.drop_userTable();
+                cp.println("(╯ಥ益ಥ）╯︵ ┻━┻  ---  and so... the table is dropped");
                 break;
             } else if (action == 'n') {
                 break;
@@ -721,6 +742,7 @@ public class App {
         db.create_commentTable();
         cp.println("\nMaking vote table");
         db.create_voteTable();
+        cp.println("(づ｡◕‿‿◕｡)づ --- go forth my tables");
 
     }
 

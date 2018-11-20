@@ -294,7 +294,7 @@ public class Database {
             db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblMessage (" + "mid SERIAL PRIMARY KEY, "
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
                     + "dislikeCount INT NOT NULL, " + "username VARCHAR(100) NOT NULL,"
-                    + "image VARCHAR(500) NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "image VARCHAR(100000) NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
             db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
                     + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
