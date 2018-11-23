@@ -7,7 +7,7 @@
         <tbody>
             {{#each mData}}
             <tr>
-                <td>{{this.mId}}</td>
+                <td>{{this.username}}</td>
                 <td>{{this.mMessage}}</td>
                 <td><button class="ElementList-editbtn" data-value="{{this.mId}}">Edit</button></td>
                 <td><button class="ElementList-delbtn" data-value="{{this.mId}}">Delete</button></td>
@@ -17,6 +17,10 @@
                         <button class="ElementList-dislikebtn" data-value="{{this.mId}}">Dislike</button>
                     </div>
                 </td>
+            </tr>
+            <tr>
+                <td><img src="data:image/jpeg,{{this.mimage}}" alt= "None"> </td>
+                
             </tr>
             
             {{/each}}

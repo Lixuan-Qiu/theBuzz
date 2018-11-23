@@ -73,7 +73,7 @@ var EditEntryForm = /** @class */ (function () {
             url: backendUrl + "/messages/" + EditEntryForm.id,
             dataType: "json",
             headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, mMessage: msg }),
+            data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "" }),
             success: EditEntryForm.onSubmitResponse
         });
     };
@@ -123,6 +123,7 @@ var NewEntryForm = /** @class */ (function () {
     NewEntryForm.init = function () {
         if (!NewEntryForm.isInit) {
             $("body").append(Handlebars.templates[NewEntryForm.NAME + ".hb"]());
+            //$("#" + "Upload").click(NewEntryForm.submitForm);
             $("#" + NewEntryForm.NAME + "-OK").click(NewEntryForm.submitForm);
             NewEntryForm.isInit = true;
         }
@@ -141,11 +142,24 @@ var NewEntryForm = /** @class */ (function () {
      * their click was received.
      */
     NewEntryForm.submitForm = function () {
+        var stringFile;
+        var fileName = "";
+        var key = 0;
         //check if user logout
         if (session_key === "") {
             console.log("ElementList: refresh: user isn't logged in");
             Login.hideMainPage();
             return;
+        }
+        function onChange(event) {
+            var file = event.target.files[0];
+            fileName = file.name;
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                // The file's text will be printed here
+                console.log(event.target.result.toString().split(",")[1]);
+            };
+            reader.readAsDataURL(file);
         }
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
@@ -153,6 +167,9 @@ var NewEntryForm = /** @class */ (function () {
         if (msg === "") {
             window.alert("Error: title or message is not valid");
             return;
+        }
+        if ($("#Upload")[0].files.length === 1) {
+            var stringName = $("#Upload")[0];
         }
         console.log("NewEntryForm: submitting form with msg = " + msg);
         // set up an AJAX post.  When the server replies, the result will go to
@@ -162,7 +179,7 @@ var NewEntryForm = /** @class */ (function () {
             url: "/messages",
             dataType: "json",
             headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, mMessage: msg }),
+            data: JSON.stringify({ uid: user_id, key: key, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile }),
             success: NewEntryForm.onSubmitResponse
         });
     };
@@ -407,7 +424,7 @@ var Login = /** @class */ (function () {
             type: "POST",
             url: backendUrl + "/login",
             dataType: "json",
-            data: id_token,
+            data: JSON.stringify({ id_token: id_token }),
             success: Login.onSubmitResponse
         });
     };
@@ -447,6 +464,7 @@ var Login = /** @class */ (function () {
         $("#" + Login.NAME + "-container").show();
         $("#" + ElementList.NAME).hide();
         $("#" + NewEntryForm.NAME).hide();
+        session_key = "";
     };
     /**
      * The name of the DOM entry associated with Login
@@ -484,15 +502,15 @@ $(document).ready(function () {
 function onSignIn(googleUser) {
 
     var profile = googleUser.getBasicProfile();
-    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
-    console.log('Name: ' + profile.getName());
-    console.log('Image URL: ' + profile.getImageUrl());
-    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+    // console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    // console.log('Name: ' + profile.getName());
+    // console.log('Image URL: ' + profile.getImageUrl());
+    // console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
 
     id_token = googleUser.getAuthResponse().id_token;
-    console.log("ID Token: " + id_token);
-    console.log("test: " + test);
-    test = 1;
-    console.log("test: " + test);
+    // console.log("ID Token: " + id_token);
+    // console.log("test: " + test);
+    // test = 1;
+    // console.log("test: " + test);
     Login.submitForm();
 }

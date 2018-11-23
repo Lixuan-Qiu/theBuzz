@@ -4,6 +4,7 @@
  */
 class NewEntryForm {
 
+
     /**
      * The name of the DOM entry associated with NewEntryForm
      */
@@ -22,6 +23,7 @@ class NewEntryForm {
     private static init() {
         if (!NewEntryForm.isInit) {
             $("body").append(Handlebars.templates[NewEntryForm.NAME + ".hb"]());
+            //$("#" + "Upload").click(NewEntryForm.submitForm);
             $("#" + NewEntryForm.NAME + "-OK").click(NewEntryForm.submitForm);
             NewEntryForm.isInit = true;
         }
@@ -44,13 +46,27 @@ class NewEntryForm {
      * their click was received.
      */
     private static submitForm() {
-        
+        var stringFile;
+        var fileName = "";
+        var key = 0;
         //check if user logout
         if (session_key === "") {
             console.log("ElementList: refresh: user isn't logged in");
             Login.hideMainPage();
             return;
         }
+
+        function onChange(event) {
+            var file = event.target.files[0];
+            fileName = file.name;
+            var reader = new FileReader();
+            reader.onload = function(e:any) {
+              // The file's text will be printed here
+              console.log(event.target.result.toString().split(",")[1])
+            };
+          
+            reader.readAsDataURL(file);
+          }
 
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
@@ -59,6 +75,10 @@ class NewEntryForm {
             window.alert("Error: title or message is not valid");
             return;
         }
+        if($("#Upload")[0].files.length === 1){
+            var stringName = $("#Upload")[0];
+            
+            }
         console.log("NewEntryForm: submitting form with msg = " + msg);
         // set up an AJAX post.  When the server replies, the result will go to
         // onSubmitResponse
@@ -67,7 +87,7 @@ class NewEntryForm {
             url: "/messages",
             dataType: "json",
             headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, mMessage: msg }),
+            data: JSON.stringify({ uid: user_id, key:key, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile}),
             success: NewEntryForm.onSubmitResponse
         });
     }

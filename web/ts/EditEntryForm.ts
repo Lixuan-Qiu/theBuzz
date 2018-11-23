@@ -94,7 +94,7 @@ class EditEntryForm {
             url: backendUrl + "/messages/" + EditEntryForm.id,
             dataType: "json",
             headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, mMessage: msg }),
+            data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "" }),
             success: EditEntryForm.onSubmitResponse
         });
 

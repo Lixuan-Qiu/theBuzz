@@ -19,4 +19,14 @@ public class SimpleRequest {
      * The message being provided by the client.
      */
     public String mMessage;
+
+    public String img;
+
+    public String file;
+
+    public String fileName;
+    
+    public String mfileID;
+
+
 }

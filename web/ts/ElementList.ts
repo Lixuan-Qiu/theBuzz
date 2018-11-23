@@ -29,7 +29,6 @@ class ElementList {
      * ElementList
      */
     private static update(data: any) {
-
         console.log("ElementList: update");
         // Remove the table of data, if it exists
         $("#" + ElementList.NAME).remove();

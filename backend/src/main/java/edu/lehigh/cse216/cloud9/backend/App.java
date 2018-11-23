@@ -2,41 +2,130 @@ package edu.lehigh.cse216.cloud9.backend;
 
 import java.lang.String;
 import java.util.Map;
+import java.util.HashMap;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Collection;
+import java.io.InputStream;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.io.FileNotFoundException;
+
+//import java.io.File;
 // Import the Spark package
 import spark.Spark;
 
 // Import Google's JSON library
 import com.google.gson.*;
 
-import com.google.api.client.json.jackson.JacksonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.client.http.javanet.NetHttpTransport;
 //Import Googles TokenVerifier object
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+//Import Google Drive functions
+import com.google.api.client.auth.oauth2.Credential;
+import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
+import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
+import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
+import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
+import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.services.drive.Drive;
+import com.google.api.services.drive.DriveScopes;
+import com.google.api.services.drive.model.File;
+import com.google.api.services.drive.model.FileList;
+import com.google.api.client.http.FileContent;
+import com.google.api.services.drive.model.Permission;
+import java.util.Base64;
+import java.security.GeneralSecurityException;
 
 public class App {
+    // beyond this are helper function
+    static NetHttpTransport HTTP_TRANSPORT;
+    static JsonFactory JSON_FACTORY;
+    static Collection<String> SCOPES;
+    static GoogleCredential credential;
+    static String applicationName;
+    static Drive service; 
+
+    private static void setupService() {
+
+        try {
+            // parameter setup for service builder
+            HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
+            JSON_FACTORY = JacksonFactory.getDefaultInstance();
+
+            // add scope authorization here
+            SCOPES = new ArrayList<String>();
+            SCOPES.add("https://www.googleapis.com/auth/drive");
+
+            // build google credential from local json file
+            // see https://cloud.google.com/iam/docs/creating-managing-service-account-keys
+            // in section "Creating service account keys" for more info
+            credential = GoogleCredential.fromStream(new FileInputStream("credentials.json"))
+                    .createScoped(SCOPES);
+
+            // setup application's name
+            applicationName = "cse216-buzzapp";
+
+            // initialize google drive service
+            service = new Drive.Builder(HTTP_TRANSPORT, JSON_FACTORY, credential).setApplicationName(applicationName)
+                    .build();
+
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (GeneralSecurityException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+
+    //Service Account Google Drive Set Up
+    // Build a new authorized API client service.
+    
+
     public static void main(String[] args) {
         Map<String, String> env = System.getenv();
         String db_url = env.get("DATABASE_URL");
 
+        Map<String, String> fileURLs = new HashMap<>();
+
         // gson turn JSON into objects, and objects into JSON
         final Gson gson = new Gson();
 
-        // Android Client ID
+        // Neal Android Client ID
         String CLIENT_ID_1 = "319649689632-7qvimdmkig66k3pd90rarf1enulobgjg.apps.googleusercontent.com";
 
+        // Kop Android Client ID
+        String CLIENT_ID_2 = "319649689632-qnpeij8911do79nb3brgi15s2dpg8k26.apps.googleusercontent.com";
+
+        // Ron Android Client ID
+        // String CLIENT_ID_3 =
+        // "319649689632-7qvimdmkig66k3pd90rarf1enulobgjg.apps.googleusercontent.com";
+
         // Web Client ID
-        String CLIENT_ID_2 = "319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
+        String CLIENT_ID_4 = "319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
 
         final JacksonFactory jacksonFactory = new JacksonFactory();
         NetHttpTransport transport = new NetHttpTransport();
         // Build the verifier that will check ID Token's
         GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jacksonFactory)
                 // Or, if multiple clients access the backend:
-                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2)).build();
+                .setAudience(Arrays.asList(CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_4)).build();
+        
+        //Set up service account
+        setupService();
 
         Database database = Database.getDatabase(db_url);// ,ip, port, user, pass);
         if (database == null)
@@ -69,12 +158,13 @@ public class App {
             System.out.println("params: " + request.params());
             System.out.println("raw: " + request.raw());
             System.out.println("requestMethod" + request.requestMethod());
-
+            
+            FirstRequest req = gson.fromJson(request.body(), FirstRequest.class);
             // parse request to FirstRequest
             String email = null;
             String name = null;
-            String sub = null;
-            String idTokenString = request.body();
+            String exp = null;
+            String idTokenString = req.id_token;
             response.status(200);
             response.type("application/json");
 
@@ -90,7 +180,7 @@ public class App {
                 email = payload.getEmail();
                 boolean emailVerified = Boolean.valueOf(payload.getEmailVerified());
                 name = (String) payload.get("name");
-                sub = (String) payload.get("sub");
+                exp = payload.get("exp").toString();
                 /*
                  * String locale = (String) payload.get("locale"); String familyName = (String)
                  * payload.get("family_name"); String givenName = (String)
@@ -119,26 +209,12 @@ public class App {
                 }
             }
 
-            sub = sub + uId;
+            exp = exp + uId;
             // Inset new session row
-            database.insert_sessionRow(uId, sub);
+            database.insert_sessionRow(uId, exp);
             // send response back
             return gson.toJson(new FirstResponse("ok", "session key for uid = " + uId + " is sent.",
                     database.get_sessionKey(uId), uId));
-            /*
-             * // check the password if it is correct if
-             * (database.get_Password(uid).equals(database.generate_Password(uid,
-             * req.password))) { // retreive sessionData Database.session_RowData
-             * sessionData = database.select_sessionOne(uid); if (sessionData == null) { //
-             * if there's no existing sessionData insert new one
-             * database.insert_sessionRow(uid); } else { // if there is existing
-             * sessionData, delete old one, then insert new one
-             * database.delete_sessionRow(uid); database.insert_sessionRow(uid); } return
-             * gson.toJson(new FirstResponse("ok", "session key for uid = " + uid +
-             * " is sent.", database.get_sessionKey(uid), uid)); } else { return
-             * gson.toJson(new FirstResponse("error", "login error: wrong password", -1,
-             * -1)); }
-             */
         });
 
         /////////////////////// "messages" CRUD operations ///////////////////////
@@ -198,6 +274,35 @@ public class App {
             }
         });
 
+        // >> GET MESSAGE ROW FILE<<
+        // return file on success
+        Spark.get("/messages/:id/file", (request, response) -> {
+            // String token = request.headers("Authorization");
+            // Get Session key from Authorization Header
+            String key = request.headers("Authorization");
+
+            // ensure status 200 OK, with a MIME type of JSON
+            response.status(200);
+            response.type("application/json");
+
+            if (database.check_sessionKey(key)) {
+
+                int idx = Integer.parseInt(request.params("id"));
+                Database.message_RowData data = database.select_messageOne(idx);
+                if (data == null) {
+                    return gson.toJson(new StructuredResponse("error", idx + " not found", null));
+                } else {
+                    String fileId = data.mfileid;
+                    System.out.println("File Id:" + fileId);
+                    String link = fileURLs.get(fileId);
+                    return gson.toJson(new StructuredResponse("ok", null, link));
+                }
+                
+            } else {
+                return gson.toJson(new StructuredResponse("error", "login error: wrong sessionkey", null));
+            }
+        });
+
         // >> POST MESSAGE <<
         //
         Spark.post("/messages", (request, response) -> {
@@ -210,13 +315,45 @@ public class App {
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
+            //String image = null;
+            String mfileID = req.mfileID;
+            String webLink = "";
 
             if (database.check_sessionKey(key)) {
-
-                int newId = database.insert_messageRow(req.mMessage, req.uid);
+                if(!req.fileName.equals("")){
+                    String fileName = req.fileName;
+                    String filepath = fileName +".pdf";
+                    System.out.println("Filename:" + req.fileName);
+                    System.out.println("File:" + req.file);
+                    FileOutputStream fos = new FileOutputStream(filepath);
+                    fos.write(Base64.getDecoder().decode(req.file));
+                    fos.close();
+                    File fileMetadata = new File();
+                    fileMetadata.setName(fileName);
+                    java.io.File filePathf = new java.io.File(filepath);
+                    FileContent mediaContent = new FileContent("application/pdf", filePathf);
+                    File file = service.files().create(fileMetadata, mediaContent)
+                        .setFields("id, webContentLink")
+                        .execute();
+                    mfileID = file.getId();
+                    webLink = file.getWebContentLink();
+                    fileURLs.put(mfileID, webLink);
+                    Permission userPermission = new Permission()
+                        .setType("anyone")
+                        .setRole("reader");
+                    service.permissions().create(mfileID, userPermission)
+                    .execute();
+                    filePathf.delete();
+                }
+                    int newId = database.insert_messageRow(req.mMessage, req.uid, req.img, mfileID);
+                //return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
+                /*if(!request.getParameter("image")){
+                    int newId = database.insert_messageRow(req.mMessage, req.uid);
+                }*/
                 if (newId == -1) {
                     return gson.toJson(new StructuredResponse("error", "error performing insertion", null));
-                } else {
+                } 
+                else {
                     return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
                 }
             } else {
@@ -374,7 +511,7 @@ public class App {
             if (database.check_sessionKey(key)) {
 
                 int idx = Integer.parseInt(request.params("id"));
-
+                
                 int result = database.delete_messageRow(idx);
                 if (result == -1) {
                     return gson.toJson(new StructuredResponse("error", "unable to delete row " + idx, null));
@@ -507,13 +644,15 @@ public class App {
 
             // Get Session key from Authorization Header
             String key = request.headers("Authorization");
-
+            //String image = request.params("uploadType");
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
 
             if (database.check_sessionKey(key)) {
                 int result = database.insert_commentRow(req.mMessage, req.uid, idx);
+                
+
                 if (result == 0) { // on failure
                     return gson.toJson(new StructuredResponse("error", idx + " not found", null));
 
@@ -553,6 +692,7 @@ public class App {
 
     }
 
+   
     /**
      * Get an integer environment varible if it exists, and otherwise return the
      * default value.
