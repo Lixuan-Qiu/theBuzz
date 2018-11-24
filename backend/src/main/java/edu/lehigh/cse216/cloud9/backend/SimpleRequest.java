@@ -22,7 +22,11 @@ public class SimpleRequest {
 
     public String img;
 
-    public String fileID;
+    public String file;
+
+    public String fileName;
+    
+    public String mfileID;
 
 
 }
