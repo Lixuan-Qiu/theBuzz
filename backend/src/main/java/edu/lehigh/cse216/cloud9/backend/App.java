@@ -225,7 +225,7 @@ public class App {
 
 
             if (database.check_sessionKey(key)) {
-                    int newId = database.insert_messageRow(req.mMessage, req.uid, req.img);
+                    int newId = database.insert_messageRow(req.mMessage, req.uid, req.img, req.mfileID);
                 //return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
                 /*if(!request.getParameter("image")){
                     int newId = database.insert_messageRow(req.mMessage, req.uid);
@@ -234,7 +234,6 @@ public class App {
                     return gson.toJson(new StructuredResponse("error", "error performing insertion", null));
                 } 
                 else {
-                     newId = database.insert_messageRow(req.mMessage, req.uid, req.img);
                     return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
                 }
             } else {
