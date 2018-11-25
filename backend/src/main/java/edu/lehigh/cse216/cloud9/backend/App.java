@@ -68,7 +68,7 @@ public class App {
             // build google credential from local json file
             // see https://cloud.google.com/iam/docs/creating-managing-service-account-keys
             // in section "Creating service account keys" for more info
-            credential = GoogleCredential.fromStream(new FileInputStream("credentials.json"))
+            credential = GoogleCredential.fromStream(new FileInputStream(ClassLoader.getSystemResource("credentials.json").getPath()))
                     .createScoped(SCOPES);
 
             // setup application's name

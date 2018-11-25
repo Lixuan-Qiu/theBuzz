@@ -19,7 +19,9 @@
                 </td>
             </tr>
             <tr>
-                <td><img src="data:image/jpeg,{{this.mimage}}" alt= "None"> </td>
+            {{#if this.mimage}}
+                <td><img src="data:image/jpeg;base64,{{this.mimage}}" height="100" alt= "None"> </td>
+            {{/if}}
                 
             </tr>
             

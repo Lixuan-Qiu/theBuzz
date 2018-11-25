@@ -1,7 +1,7 @@
 (function() {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
 templates['ElementList.hb'] = template({"1":function(container,depth0,helpers,partials,data) {
-    var alias1=container.lambda, alias2=container.escapeExpression;
+    var stack1, alias1=container.lambda, alias2=container.escapeExpression;
 
   return "            <tr>\r\n                <td>"
     + alias2(alias1((depth0 != null ? depth0.username : depth0), depth0))
@@ -15,9 +15,13 @@ templates['ElementList.hb'] = template({"1":function(container,depth0,helpers,pa
     + alias2(alias1((depth0 != null ? depth0.mId : depth0), depth0))
     + "\">Like</button>\r\n                        <button class=\"ElementList-dislikebtn\" data-value=\""
     + alias2(alias1((depth0 != null ? depth0.mId : depth0), depth0))
-    + "\">Dislike</button>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n                <td><img src=\"data:image/jpeg,"
-    + alias2(alias1((depth0 != null ? depth0.mimage : depth0), depth0))
-    + "\" alt= \"None\"> </td>\r\n                \r\n            </tr>\r\n            \r\n";
+    + "\">Dislike</button>\r\n                    </div>\r\n                </td>\r\n            </tr>\r\n            <tr>\r\n"
+    + ((stack1 = helpers["if"].call(depth0 != null ? depth0 : (container.nullContext || {}),(depth0 != null ? depth0.mimage : depth0),{"name":"if","hash":{},"fn":container.program(2, data, 0),"inverse":container.noop,"data":data})) != null ? stack1 : "")
+    + "                \r\n            </tr>\r\n            \r\n";
+},"2":function(container,depth0,helpers,partials,data) {
+    return "                <td><img src=\"data:image/jpeg;base64,"
+    + container.escapeExpression(container.lambda((depth0 != null ? depth0.mimage : depth0), depth0))
+    + "\" height=\"100\" alt= \"None\"> </td>\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1;
 
@@ -39,7 +43,7 @@ templates['EditEntryForm.hb'] = template({"compiler":[7,">= 4.0.0"],"main":funct
 (function() {
   var template = Handlebars.template, templates = Handlebars.templates = Handlebars.templates || {};
 templates['NewEntryForm.hb'] = template({"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
-    return "<nav class=\"navbar navbar-default navbar-fixed-bottom\" id=\"NewEntryForm\">\r\n  <div class=\"container\">\r\n    <table class = \"NewEntryForm-table\">\r\n        <tr>\r\n            <td><textarea class=\"form-control\" id=\"NewEntryForm-message\" placeholder = \"write a message :D\"></textarea></td>\r\n            <td><input id=\"Upload\" type=\"file\" accept=\"application/pdf\" onchange=\"onChange(event)\"/></td>\r\n            <td><button type=\"button\" class=\"btn btn-default\" id=\"NewEntryForm-OK\">OK</button></td>\r\n\r\n        </tr>\r\n    \r\n    \r\n  </div>\r\n</nav>";
+    return "<nav class=\"navbar navbar-default navbar-fixed-bottom\" id=\"NewEntryForm\">\r\n  <div class=\"container\">\r\n    <table class = \"NewEntryForm-table\">\r\n        <tr>\r\n            <td><textarea class=\"form-control\" id=\"NewEntryForm-message\" placeholder = \"write a message :D\"></textarea></td>\r\n            <td><input id=\"Upload\" type=\"file\" accept=\"application/pdf\" /></td>\r\n            <td><button type=\"button\" class=\"btn btn-default\" id=\"NewEntryForm-OK\">OK</button></td>\r\n\r\n        </tr>\r\n    \r\n    \r\n  </div>\r\n</nav>";
 },"useData":true});
 })();
 (function() {

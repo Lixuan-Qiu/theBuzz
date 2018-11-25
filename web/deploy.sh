@@ -45,3 +45,6 @@ node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFO
 node_modules/handlebars/bin/handlebars hb/EditEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 node_modules/handlebars/bin/handlebars hb/NewEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 node_modules/handlebars/bin/handlebars hb/Login.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+
+# step 7: Add credentials.json to resources
+cat credentials.json >> $TARGETFOLDER/credentials.json

@@ -151,16 +151,6 @@ var NewEntryForm = /** @class */ (function () {
             Login.hideMainPage();
             return;
         }
-        function onChange(event) {
-            var file = event.target.files[0];
-            fileName = file.name;
-            var reader = new FileReader();
-            reader.onload = function (e) {
-                // The file's text will be printed here
-                console.log(event.target.result.toString().split(",")[1]);
-            };
-            reader.readAsDataURL(file);
-        }
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
         var msg = "" + $("#" + NewEntryForm.NAME + "-message").val();
@@ -168,20 +158,42 @@ var NewEntryForm = /** @class */ (function () {
             window.alert("Error: title or message is not valid");
             return;
         }
-        if ($("#Upload")[0].files.length === 1) {
-            var stringName = $("#Upload")[0];
-        }
         console.log("NewEntryForm: submitting form with msg = " + msg);
-        // set up an AJAX post.  When the server replies, the result will go to
-        // onSubmitResponse
-        $.ajax({
-            type: "POST",
-            url: "/messages",
-            dataType: "json",
-            headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, key: key, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile }),
-            success: NewEntryForm.onSubmitResponse
-        });
+        if ($("#Upload")[0].files.length === 1) {
+            var file = $("#Upload")[0].files[0];
+            fileName = file.name;
+            var reader = new FileReader();
+            reader.onload = function () {
+                //console.log(reader.result);
+                stringFile = reader.result.toString().split(",")[1];
+                // set up an AJAX post.  When the server replies, the result will go to
+                // onSubmitResponse
+                $.ajax({
+                    type: "POST",
+                    url: "/messages",
+                    dataType: "json",
+                    headers: { "Authorization": session_key },
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile }),
+                    success: NewEntryForm.onSubmitResponse
+                });
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+            reader.readAsDataURL(file);
+        }
+        else {
+            // set up an AJAX post.  When the server replies, the result will go to
+            // onSubmitResponse
+            $.ajax({
+                type: "POST",
+                url: "/messages",
+                dataType: "json",
+                headers: { "Authorization": session_key },
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: "", file: "" }),
+                success: NewEntryForm.onSubmitResponse
+            });
+        }
     };
     /**
      * onSubmitResponse runs when the AJAX call in submitForm() returns a
@@ -486,6 +498,7 @@ var Login = /** @class */ (function () {
 var $;
 var gapi;
 var id_token = null;
+var stringFile = "";
 var test = 0;
 /// This constant indicates the path to our backend server
 var backendUrl = "https://agile-plateau-21593.herokuapp.com";
@@ -499,6 +512,21 @@ $(document).ready(function () {
     EditEntryForm.refresh();
     Login.refresh();
 });
+var callback = function (fileData) {
+    stringFile = fileData;
+    console.log("File", stringFile);
+};
+function uploadFile() {
+    var file = $("#Upload")[0].files[0];
+    var reader = new FileReader();
+    reader.addEventListener("load", function () {
+        stringFile = reader.result.toString().split(",")[1];
+        callback(reader.result.toString().split(",")[1]);
+    }, false);
+    if (file) {
+        reader.readAsDataURL(file);
+    }
+}
 function onSignIn(googleUser) {
 
     var profile = googleUser.getBasicProfile();

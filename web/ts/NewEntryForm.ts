@@ -1,7 +1,7 @@
-
 /**
  * NewEntryForm encapsulates all of the code for the form for adding an entry
  */
+
 class NewEntryForm {
 
 
@@ -38,7 +38,7 @@ class NewEntryForm {
         NewEntryForm.init();
     }
 
-
+    
 
     /**
      * Send data to submit the form only if the fields are both valid.  
@@ -56,18 +56,6 @@ class NewEntryForm {
             return;
         }
 
-        function onChange(event) {
-            var file = event.target.files[0];
-            fileName = file.name;
-            var reader = new FileReader();
-            reader.onload = function(e:any) {
-              // The file's text will be printed here
-              console.log(event.target.result.toString().split(",")[1])
-            };
-          
-            reader.readAsDataURL(file);
-          }
-
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
         let msg = "" + $("#" + NewEntryForm.NAME + "-message").val();
@@ -75,21 +63,42 @@ class NewEntryForm {
             window.alert("Error: title or message is not valid");
             return;
         }
-        if($("#Upload")[0].files.length === 1){
-            var stringName = $("#Upload")[0];
-            
-            }
         console.log("NewEntryForm: submitting form with msg = " + msg);
-        // set up an AJAX post.  When the server replies, the result will go to
-        // onSubmitResponse
-        $.ajax({
-            type: "POST",
-            url: "/messages",
-            dataType: "json",
-            headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, key:key, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile}),
-            success: NewEntryForm.onSubmitResponse
-        });
+        if($("#Upload")[0].files.length === 1){
+            var file = $("#Upload")[0].files[0];
+            fileName = file.name;
+            var reader = new FileReader();
+            reader.onload = function () {
+                //console.log(reader.result);
+                stringFile = reader.result!.toString().split(",")[1];
+                // set up an AJAX post.  When the server replies, the result will go to
+                // onSubmitResponse
+                $.ajax({
+                    type: "POST",
+                    url: "/messages",
+                    dataType: "json",
+                    headers: { "Authorization": session_key },
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile}),
+                    success: NewEntryForm.onSubmitResponse
+                });
+              };
+              reader.onerror = function (error) {
+                console.log('Error: ', error);
+              };
+            reader.readAsDataURL(file);
+            }
+        else{
+            // set up an AJAX post.  When the server replies, the result will go to
+            // onSubmitResponse
+            $.ajax({
+                type: "POST",
+                url: "/messages",
+                dataType: "json",
+                headers: { "Authorization": session_key },
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: "", file: ""}),
+                success: NewEntryForm.onSubmitResponse
+            });
+        }
     }
 
     /**
