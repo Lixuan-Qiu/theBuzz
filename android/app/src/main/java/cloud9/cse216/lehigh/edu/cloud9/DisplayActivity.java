@@ -59,8 +59,6 @@ public class DisplayActivity extends AppCompatActivity {
 
         volley = new VolleySingleton(this);
         getMessages();
-
-
         // The Send button gets the text from the input box and returns it to the calling activity
         final EditText et = (EditText) findViewById(R.id.editText);
         Button bSend = (Button) findViewById(R.id.sendButton);
@@ -194,6 +192,7 @@ public class DisplayActivity extends AppCompatActivity {
         params.put("mfileID", "");
         params.put("fileName", "");
         params.put("file", "");
+        params.put("mlink", "");
         JSONObject request = new JSONObject(params);
         if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");
