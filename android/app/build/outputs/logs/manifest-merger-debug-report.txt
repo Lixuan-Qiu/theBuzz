@@ -1,0 +1,297 @@
+-- Merging decision tree log ---
+manifest
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+MERGED from [com.android.support:design:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\design-28.0.0.aar\513d9e356c4966b654c16d3968271132\AndroidManifest.xml:17:1-24:12
+MERGED from [com.android.support:recyclerview-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-28.0.0.aar\68e7d855d672ff456792cb150975cffc\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:appcompat-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\appcompat-v7-28.0.0.aar\3b5295bc5ebadd8918abb126232ad6da\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.1.3.aar\ea8a6a618ce5be746d5301005c41f38c\AndroidManifest.xml:2:1-11:12
+MERGED from [com.android.support:transition:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\transition-28.0.0.aar\9489fbe51e7377134ec60710b5ba67be\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:cardview-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\cardview-v7-28.0.0.aar\4cf9d5dc083879af991b5c825c520a80\AndroidManifest.xml:17:1-22:12
+MERGED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:17:1-39:12
+MERGED from [com.google.android.gms:play-services-auth-api-phone:16.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-api-phone-16.0.0.aar\071262241a6a9ea739d55dedaf35886a\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-auth-base:16.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-base-16.0.0.aar\808b08b7e168da43a4416731d12dfe8e\AndroidManifest.xml:2:1-7:12
+MERGED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:17:1-29:12
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-tasks-16.0.1.aar\2e57abba820b1114f865f641a690db2d\AndroidManifest.xml:2:1-9:12
+MERGED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:17:1-28:12
+MERGED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:17:1-31:12
+MERGED from [com.android.support:support-fragment:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-fragment-28.0.0.aar\6d3084f113fc8b4cacb0d94f13697dd5\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-28.0.0.aar\d1a0e93fe9b05741ed4c4b6f084df6e7\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-ui:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-core-ui-28.0.0.aar\813ba4ccefb83aff411907bcb359b0b9\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-core-utils:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-core-utils-28.0.0.aar\ece0fb005a74639828784420c890f32b\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:documentfile:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\documentfile-28.0.0.aar\069d92c50ca9ebdf659cc16a5161128d\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:loader:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\loader-28.0.0.aar\809a430220905f289611c7c73a5f43a1\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\localbroadcastmanager-28.0.0.aar\73c64a629b5f6c38e4bbc4257ff375ce\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:print:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\print-28.0.0.aar\2f761e8673138b3609e15ddfcf2c12ae\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\viewmodel-1.1.1.aar\9a52bdc2336312d706e2038476ed4daa\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\livedata-1.1.1.aar\786b3a784ce38b9e2318b5de38b17dd7\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\livedata-core-1.1.1.aar\6d98096aac1fc236110d67846ca77b51\AndroidManifest.xml:17:1-22:12
+MERGED from [android.arch.core:runtime:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\runtime-1.1.1.aar\b23be2f3cce2c0fd72d127a2bd1e1317\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:viewpager:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\viewpager-28.0.0.aar\af402018d2da8ce5f3bd329ce2651f11\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:coordinatorlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\coordinatorlayout-28.0.0.aar\17febf8f0da6408c8041c2630743bdf7\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:drawerlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\drawerlayout-28.0.0.aar\f4d039e14486ac42a31a06b01bcbfc18\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:slidingpanelayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\slidingpanelayout-28.0.0.aar\d85faf38617fe8c1167ad3485a018ae6\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:customview:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\customview-28.0.0.aar\7d724c3c195e9d71274e31a54c27d274\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\swiperefreshlayout-28.0.0.aar\0eb8a52bd879790a644c3ea8549ddc50\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\asynclayoutinflater-28.0.0.aar\48c2448c75208baf98d32ed1592180f1\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-vector-drawable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-28.0.0.aar\56f567d1854e46785e45150a32c6f1ee\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:support-compat:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-compat-28.0.0.aar\d7ab34b75f0b35ec3b1079a14a4e7a47\AndroidManifest.xml:17:1-24:12
+MERGED from [android.arch.lifecycle:runtime:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\runtime-1.1.1.aar\6f6b2d79c1399f630d4209ec5fef0e80\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:versionedparcelable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\versionedparcelable-28.0.0.aar\278ec165dca6031e9b859e05e4f51a2f\AndroidManifest.xml:17:1-25:12
+MERGED from [com.android.support:cursoradapter:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\cursoradapter-28.0.0.aar\37e9afb36212542abc6aed2b0e0689aa\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.support:interpolator:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\interpolator-28.0.0.aar\9ef7ab76cf18083acaab18361126d2dc\AndroidManifest.xml:17:1-22:12
+MERGED from [com.android.volley:volley:1.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\volley-1.1.0.aar\cf2da80d397cfb0a9e96822055ae6bfd\AndroidManifest.xml:2:1-11:12
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+	package
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:4:5-46
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+	android:versionName
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+	xmlns:tools
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:3:5-51
+	android:versionCode
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:1-45:12
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+	xmlns:android
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:2:11-69
+uses-permission#android.permission.INTERNET
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:6:5-67
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:6:22-64
+uses-feature#android.hardware.camera.any
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:8:5-10:35
+	android:required
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:10:9-32
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:9:9-51
+uses-feature#android.hardware.camera.autofocus
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:11:5-13:36
+	android:required
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:13:9-33
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:12:9-57
+uses-permission#android.permission.WRITE_EXTERNAL_STORAGE
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:14:5-81
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:14:22-78
+application
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:16:5-43:19
+MERGED from [com.android.support:design:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\design-28.0.0.aar\513d9e356c4966b654c16d3968271132\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support:design:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\design-28.0.0.aar\513d9e356c4966b654c16d3968271132\AndroidManifest.xml:22:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.1.3.aar\ea8a6a618ce5be746d5301005c41f38c\AndroidManifest.xml:9:5-20
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.1.3.aar\ea8a6a618ce5be746d5301005c41f38c\AndroidManifest.xml:9:5-20
+MERGED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:22:5-37:19
+MERGED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:22:5-37:19
+MERGED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:22:5-27:19
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-tasks-16.0.1.aar\2e57abba820b1114f865f641a690db2d\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-tasks-16.0.1.aar\2e57abba820b1114f865f641a690db2d\AndroidManifest.xml:7:5-20
+MERGED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:22:5-26:19
+MERGED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:22:5-26:19
+MERGED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:25:5-29:19
+MERGED from [com.android.support:support-compat:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-compat-28.0.0.aar\d7ab34b75f0b35ec3b1079a14a4e7a47\AndroidManifest.xml:22:5-94
+MERGED from [com.android.support:support-compat:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-compat-28.0.0.aar\d7ab34b75f0b35ec3b1079a14a4e7a47\AndroidManifest.xml:22:5-94
+MERGED from [com.android.support:versionedparcelable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\versionedparcelable-28.0.0.aar\278ec165dca6031e9b859e05e4f51a2f\AndroidManifest.xml:22:5-23:19
+MERGED from [com.android.support:versionedparcelable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\versionedparcelable-28.0.0.aar\278ec165dca6031e9b859e05e4f51a2f\AndroidManifest.xml:22:5-23:19
+MERGED from [com.android.volley:volley:1.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\volley-1.1.0.aar\cf2da80d397cfb0a9e96822055ae6bfd\AndroidManifest.xml:9:5-20
+MERGED from [com.android.volley:volley:1.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\volley-1.1.0.aar\cf2da80d397cfb0a9e96822055ae6bfd\AndroidManifest.xml:9:5-20
+	android:appComponentFactory
+		ADDED from [com.android.support:support-compat:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-compat-28.0.0.aar\d7ab34b75f0b35ec3b1079a14a4e7a47\AndroidManifest.xml:22:18-91
+	android:supportsRtl
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:21:9-35
+	android:label
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:19:9-41
+	android:roundIcon
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:20:9-54
+	android:icon
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:18:9-43
+	android:allowBackup
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:17:9-35
+	android:theme
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:22:9-40
+activity#cloud9.cse216.lehigh.edu.cloud9.GoogleLogin
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:23:9-33:20
+	android:screenOrientation
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:26:13-49
+	android:label
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:25:13-45
+	android:theme
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:27:13-56
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:24:13-40
+intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:28:13-32:29
+action#android.intent.action.MAIN
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:29:17-69
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:29:25-66
+category#android.intent.category.LAUNCHER
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:31:17-77
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:31:27-74
+activity#cloud9.cse216.lehigh.edu.cloud9.CommentActivity
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:34:9-41:20
+	android:parentActivityName
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:37:13-58
+	android:label
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:36:13-59
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:35:13-44
+meta-data#android.support.PARENT_ACTIVITY
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:38:13-40:83
+	android:value
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:40:17-80
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:39:17-63
+activity#cloud9.cse216.lehigh.edu.cloud9.DisplayActivity
+ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:42:9-62
+	android:name
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml:42:19-50
+uses-sdk
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+MERGED from [com.android.support:design:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\design-28.0.0.aar\513d9e356c4966b654c16d3968271132\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:design:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\design-28.0.0.aar\513d9e356c4966b654c16d3968271132\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-28.0.0.aar\68e7d855d672ff456792cb150975cffc\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:recyclerview-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\recyclerview-v7-28.0.0.aar\68e7d855d672ff456792cb150975cffc\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\appcompat-v7-28.0.0.aar\3b5295bc5ebadd8918abb126232ad6da\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:appcompat-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\appcompat-v7-28.0.0.aar\3b5295bc5ebadd8918abb126232ad6da\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.1.3.aar\ea8a6a618ce5be746d5301005c41f38c\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support.constraint:constraint-layout:1.1.3] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\constraint-layout-1.1.3.aar\ea8a6a618ce5be746d5301005c41f38c\AndroidManifest.xml:5:5-7:41
+MERGED from [com.android.support:transition:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\transition-28.0.0.aar\9489fbe51e7377134ec60710b5ba67be\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:transition:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\transition-28.0.0.aar\9489fbe51e7377134ec60710b5ba67be\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\cardview-v7-28.0.0.aar\4cf9d5dc083879af991b5c825c520a80\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cardview-v7:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\cardview-v7-28.0.0.aar\4cf9d5dc083879af991b5c825c520a80\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:16.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-api-phone-16.0.0.aar\071262241a6a9ea739d55dedaf35886a\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-api-phone:16.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-api-phone-16.0.0.aar\071262241a6a9ea739d55dedaf35886a\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:16.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-base-16.0.0.aar\808b08b7e168da43a4416731d12dfe8e\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-auth-base:16.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-base-16.0.0.aar\808b08b7e168da43a4416731d12dfe8e\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-tasks-16.0.1.aar\2e57abba820b1114f865f641a690db2d\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-tasks:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-tasks-16.0.1.aar\2e57abba820b1114f865f641a690db2d\AndroidManifest.xml:5:5-44
+MERGED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:20:5-44
+MERGED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:21:5-23:54
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:21:5-23:63
+MERGED from [com.android.support:support-fragment:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-fragment-28.0.0.aar\6d3084f113fc8b4cacb0d94f13697dd5\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-fragment:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-fragment-28.0.0.aar\6d3084f113fc8b4cacb0d94f13697dd5\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-28.0.0.aar\d1a0e93fe9b05741ed4c4b6f084df6e7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:animated-vector-drawable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\animated-vector-drawable-28.0.0.aar\d1a0e93fe9b05741ed4c4b6f084df6e7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-core-ui-28.0.0.aar\813ba4ccefb83aff411907bcb359b0b9\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-ui:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-core-ui-28.0.0.aar\813ba4ccefb83aff411907bcb359b0b9\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-core-utils-28.0.0.aar\ece0fb005a74639828784420c890f32b\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-core-utils:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-core-utils-28.0.0.aar\ece0fb005a74639828784420c890f32b\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\documentfile-28.0.0.aar\069d92c50ca9ebdf659cc16a5161128d\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:documentfile:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\documentfile-28.0.0.aar\069d92c50ca9ebdf659cc16a5161128d\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\loader-28.0.0.aar\809a430220905f289611c7c73a5f43a1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:loader:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\loader-28.0.0.aar\809a430220905f289611c7c73a5f43a1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\localbroadcastmanager-28.0.0.aar\73c64a629b5f6c38e4bbc4257ff375ce\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:localbroadcastmanager:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\localbroadcastmanager-28.0.0.aar\73c64a629b5f6c38e4bbc4257ff375ce\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\print-28.0.0.aar\2f761e8673138b3609e15ddfcf2c12ae\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:print:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\print-28.0.0.aar\2f761e8673138b3609e15ddfcf2c12ae\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\viewmodel-1.1.1.aar\9a52bdc2336312d706e2038476ed4daa\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:viewmodel:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\viewmodel-1.1.1.aar\9a52bdc2336312d706e2038476ed4daa\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\livedata-1.1.1.aar\786b3a784ce38b9e2318b5de38b17dd7\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\livedata-1.1.1.aar\786b3a784ce38b9e2318b5de38b17dd7\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\livedata-core-1.1.1.aar\6d98096aac1fc236110d67846ca77b51\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:livedata-core:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\livedata-core-1.1.1.aar\6d98096aac1fc236110d67846ca77b51\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\runtime-1.1.1.aar\b23be2f3cce2c0fd72d127a2bd1e1317\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.core:runtime:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\runtime-1.1.1.aar\b23be2f3cce2c0fd72d127a2bd1e1317\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\viewpager-28.0.0.aar\af402018d2da8ce5f3bd329ce2651f11\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:viewpager:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\viewpager-28.0.0.aar\af402018d2da8ce5f3bd329ce2651f11\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\coordinatorlayout-28.0.0.aar\17febf8f0da6408c8041c2630743bdf7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:coordinatorlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\coordinatorlayout-28.0.0.aar\17febf8f0da6408c8041c2630743bdf7\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\drawerlayout-28.0.0.aar\f4d039e14486ac42a31a06b01bcbfc18\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:drawerlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\drawerlayout-28.0.0.aar\f4d039e14486ac42a31a06b01bcbfc18\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\slidingpanelayout-28.0.0.aar\d85faf38617fe8c1167ad3485a018ae6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:slidingpanelayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\slidingpanelayout-28.0.0.aar\d85faf38617fe8c1167ad3485a018ae6\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\customview-28.0.0.aar\7d724c3c195e9d71274e31a54c27d274\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:customview:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\customview-28.0.0.aar\7d724c3c195e9d71274e31a54c27d274\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\swiperefreshlayout-28.0.0.aar\0eb8a52bd879790a644c3ea8549ddc50\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:swiperefreshlayout:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\swiperefreshlayout-28.0.0.aar\0eb8a52bd879790a644c3ea8549ddc50\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\asynclayoutinflater-28.0.0.aar\48c2448c75208baf98d32ed1592180f1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:asynclayoutinflater:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\asynclayoutinflater-28.0.0.aar\48c2448c75208baf98d32ed1592180f1\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-28.0.0.aar\56f567d1854e46785e45150a32c6f1ee\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-vector-drawable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-vector-drawable-28.0.0.aar\56f567d1854e46785e45150a32c6f1ee\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-compat-28.0.0.aar\d7ab34b75f0b35ec3b1079a14a4e7a47\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:support-compat:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-compat-28.0.0.aar\d7ab34b75f0b35ec3b1079a14a4e7a47\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\runtime-1.1.1.aar\6f6b2d79c1399f630d4209ec5fef0e80\AndroidManifest.xml:20:5-44
+MERGED from [android.arch.lifecycle:runtime:1.1.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\runtime-1.1.1.aar\6f6b2d79c1399f630d4209ec5fef0e80\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\versionedparcelable-28.0.0.aar\278ec165dca6031e9b859e05e4f51a2f\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:versionedparcelable:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\versionedparcelable-28.0.0.aar\278ec165dca6031e9b859e05e4f51a2f\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\cursoradapter-28.0.0.aar\37e9afb36212542abc6aed2b0e0689aa\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:cursoradapter:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\cursoradapter-28.0.0.aar\37e9afb36212542abc6aed2b0e0689aa\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\interpolator-28.0.0.aar\9ef7ab76cf18083acaab18361126d2dc\AndroidManifest.xml:20:5-44
+MERGED from [com.android.support:interpolator:28.0.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\interpolator-28.0.0.aar\9ef7ab76cf18083acaab18361126d2dc\AndroidManifest.xml:20:5-44
+MERGED from [com.android.volley:volley:1.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\volley-1.1.0.aar\cf2da80d397cfb0a9e96822055ae6bfd\AndroidManifest.xml:7:5-43
+MERGED from [com.android.volley:volley:1.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\volley-1.1.0.aar\cf2da80d397cfb0a9e96822055ae6bfd\AndroidManifest.xml:7:5-43
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+	tools:overrideLibrary
+		ADDED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:23:9-51
+	android:targetSdkVersion
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		ADDED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+		INJECTED from C:\Users\DarkAres\cse216team_cloud9\android\app\src\main\AndroidManifest.xml
+activity#com.google.android.gms.auth.api.signin.internal.SignInHubActivity
+ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:23:9-27:75
+	android:excludeFromRecents
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:25:13-46
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:26:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:27:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:24:13-93
+service#com.google.android.gms.auth.api.signin.RevocationBoundService
+ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:33:9-36:110
+	android:exported
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:35:13-36
+	android:permission
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:36:13-107
+	android:name
+		ADDED from [com.google.android.gms:play-services-auth:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-auth-16.0.1.aar\469b29398e3b3659685c3de9353eaa50\AndroidManifest.xml:34:13-89
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:23:9-26:75
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:25:13-37
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:26:13-72
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-base-16.0.1.aar\e1c0f31b69ac4358ddff38b07ffa194c\AndroidManifest.xml:24:13-79
+meta-data#com.google.android.gms.version
+ADDED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:23:9-25:69
+	android:value
+		ADDED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:25:13-66
+	android:name
+		ADDED from [com.google.android.gms:play-services-basement:16.0.1] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\play-services-basement-16.0.1.aar\d91baf1d5358d7e239e67eaac3398121\AndroidManifest.xml:24:13-58
+meta-data#android.support.VERSION
+ADDED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:26:9-28:38
+MERGED from [com.android.support:support-media-compat:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-media-compat-26.1.0.aar\fb93d1c543f7eb147d01f4cbd76b8fa9\AndroidManifest.xml:26:9-28:38
+	android:value
+		ADDED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:28:13-35
+	android:name
+		ADDED from [com.android.support:support-v4:26.1.0] C:\Users\DarkAres\.gradle\caches\transforms-1\files-1.1\support-v4-26.1.0.aar\c59e460056b68b45ad9436e3daa05926\AndroidManifest.xml:27:13-51

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -22,6 +23,8 @@ import org.json.JSONObject;
 import org.w3c.dom.Comment;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CommentActivity extends Activity {
 
@@ -64,14 +67,15 @@ public class CommentActivity extends Activity {
         JSONObject request = new JSONObject();
         //retrieve uid and key from local saved file
         SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-        int userId=-1,sKey=-1;
+        int userId = -1;
+        String sKey = "";
         userId = mySP.getInt("uid", userId);
-        sKey = mySP.getInt("key", sKey);
-        if (userId==-1||sKey==-1)
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        if (userId==-1||sKey=="")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in putLikeCount");
         try {
-            request.put("uId", userId);
-            request.put("key", sKey);
             request.put("mMessage", content.getText().toString());
         }catch (Exception e){
             e.printStackTrace();
@@ -94,7 +98,15 @@ public class CommentActivity extends Activity {
                         // error
                         Log.d("cpl220", "error:" + error.getMessage());
                     }
-                });
+                }){
+            /** Passing some request headers* */
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", skey);
+                return params;
+            }
+        };
         volley.getRequestQueue().add(postComment);
     }
 
@@ -106,10 +118,13 @@ public class CommentActivity extends Activity {
         JSONObject request = new JSONObject();
         //retrieve uid and key from local saved file
         SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
-        int userId=-1,sKey=-1;
+        int userId = -1;
+        String sKey = "";
         userId = mySP.getInt("uid", userId);
-        sKey = mySP.getInt("key", sKey);
-        if (userId==-1||sKey==-1)
+        sKey = mySP.getString("key", sKey);
+        final int userid = userId;
+        final String skey = sKey;
+        if (userId==-1||sKey=="")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");
 
         try {
@@ -135,7 +150,15 @@ public class CommentActivity extends Activity {
                         // error
                         Log.d("cpl220", "error:" + error.getMessage());
                     }
-                });
+                }){
+            /** Passing some request headers* */
+            @Override
+            public Map getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", skey);
+                return params;
+            }
+        };
         // Add the request to the RequestQueue.
         volley.getRequestQueue().add(getReq);
     }
