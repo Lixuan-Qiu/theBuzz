@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="description" content="Front-End for Bootstrap Tutorial" />
+    <meta name="author" content="CSE 216 Student Name Goes Here" />
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8" />
+    <!-- client ID, we need in order to call the sign-in API -->
+    <meta name="google-signin-client_id" content="319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com">
+
+    <title>Cloud 9 App</title>
+
+    <script src="jquery.min.js"></script>
+    <script src="handlebars.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="templates.js"></script>
+    <script src="app.js"></script>
+
+    <!-- Google Platform Library that web pages need for Google Sign-In -->
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
+    <link rel="stylesheet" href="app.css" />
+    <link href="bootstrap.min.css" rel="stylesheet">
+
+    
+</head>
+
+<body role="document">
+    <div id = "Login-container">
+        <div class="g-signin2" data-onsuccess="onSignIn"></div>
+    </div>
+    
+</body>
+
+</html>
+
