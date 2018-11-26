@@ -25,6 +25,7 @@
                     <td><img src="data:image/jpeg;base64,{{this.mimage}}" height="100" alt= "None"> </td>
                 {{/if}}
                 {{#if this.mfileid}}
+                    <td><a id="{{this.mId}}filelink" href=""></a><td>
                     <td><button class="ElementList-getFilebtn" data-value="{{this.mId}}">Get File</button></td>
                 {{/if}}
             </tr>

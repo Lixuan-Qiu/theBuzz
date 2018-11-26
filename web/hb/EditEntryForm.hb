@@ -8,6 +8,8 @@
                 
                 <label for="EditEntryForm-message">Message</label>
                 <textarea class="form-control" id="EditEntryForm-message">{{data.mMessage}}</textarea>
+                <td><p>Link to message:</p></td>
+                <td><input id="EditEntryForm-link" type="number" name="quantity" size="5" min="1" max="200" />{{data.mList}}</td>
                 <td><input id="Edit-Upload" type="file" accept="application/pdf" /></td>
             </div>
             <div class="modal-footer">

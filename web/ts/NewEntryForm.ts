@@ -97,7 +97,7 @@ class NewEntryForm {
                 url: "/messages",
                 dataType: "json",
                 headers: { "Authorization": session_key },
-                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:"", mfileID: "", fileName: "", file: ""}),
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:link, mfileID: "", fileName: "", file: ""}),
                 success: NewEntryForm.onSubmitResponse
             });
         }

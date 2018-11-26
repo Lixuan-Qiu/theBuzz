@@ -79,6 +79,7 @@ class EditEntryForm {
         // get string from fields
         // and check string not empty
         let msg = "" + $("#" + EditEntryForm.NAME + "-message").val();
+        let link = "" + $("#" + EditEntryForm.NAME + "-link").val();
         if (msg === "") {
             window.alert("Error: title or message is not valid");
             return;
@@ -102,7 +103,7 @@ class EditEntryForm {
                     url: backendUrl + "/messages/" + EditEntryForm.id,
                     dataType: "json",
                     headers: { "Authorization": session_key },
-                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", mlink:"",fileName: fileName, file: stringFile }),
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", mlink:link,fileName: fileName, file: stringFile }),
                     success: EditEntryForm.onSubmitResponse
                 });
               };
@@ -118,7 +119,7 @@ class EditEntryForm {
                 url: backendUrl + "/messages/" + EditEntryForm.id,
                 dataType: "json",
                 headers: { "Authorization": session_key },
-                data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:"",img: "", mfileID: "", fileName:"", file:"" }),
+                data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link,img: "", mfileID: "", fileName:"", file:"" }),
                 success: EditEntryForm.onSubmitResponse
             });
         }

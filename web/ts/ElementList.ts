@@ -188,8 +188,12 @@ class ElementList {
             url: "/messages/" + id + "/file",
             dataType: "json",
             headers: { "Authorization": session_key },
-            success: function(r:any){
-                $("#"+ id + "fileLink").attr("href", r.data);
+            success: function(data:any){
+                console.log(data); 
+                var response = JSON.parse(data);
+                $("#"+ id + "fileLink").attr("href", response.mData);
+                //console.log("Link: ", response[0].mData);
+                console.log("Link: ", response.mData);
             },
         });
 
