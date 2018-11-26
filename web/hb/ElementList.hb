@@ -6,9 +6,13 @@
     <table class="table">
         <tbody>
             {{#each mData}}
-            <tr>
+            <tr  id = "{{this.mId}}">
+                <td>{{this.username}}</td>
                 <td>{{this.mId}}</td>
                 <td>{{this.mMessage}}</td>
+                {{#if this.mLink}}
+                <td><a href="#{{this.mLink}}">@{{this.mLink}}</a></td>
+                {{/if}}
                 <td><button class="ElementList-editbtn" data-value="{{this.mId}}">Edit</button></td>
                 <td><button class="ElementList-delbtn" data-value="{{this.mId}}">Delete</button></td>
                 <td>
@@ -17,8 +21,14 @@
                         <button class="ElementList-dislikebtn" data-value="{{this.mId}}">Dislike</button>
                     </div>
                 </td>
+                {{#if this.mimage}}
+                    <td><img src="data:image/jpeg;base64,{{this.mimage}}" height="100" alt= "None"> </td>
+                {{/if}}
+                {{#if this.mfileid}}
+                    <td><a id="{{this.mId}}filelink" href=""></a><td>
+                    <td><button class="ElementList-getFilebtn" data-value="{{this.mId}}">Get File</button></td>
+                {{/if}}
             </tr>
-            
             {{/each}}
         </tbody>
     </table>

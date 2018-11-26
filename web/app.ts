@@ -9,6 +9,7 @@
 var $: any;
 var gapi: any;
 var id_token: any = null;
+var stringFile: any = "";
 var test: number = 0;
 
 /// This constant indicates the path to our backend server
@@ -32,5 +33,25 @@ $(document).ready(function () {
     Login.refresh();
 
 });
+
+var callback = function(fileData:any){
+    stringFile = fileData;
+    console.log("File",stringFile);
+}
+
+function uploadFile() {
+    var file = $("#Upload")[0].files[0];
+    var reader  = new FileReader();
+    
+    reader.addEventListener("load", function () {
+      stringFile = reader.result!.toString().split(",")[1];
+      callback(reader.result!.toString().split(",")[1]);
+      
+    }, false);
+
+    if (file) {
+      reader.readAsDataURL(file);
+    }
+  }
 
 
