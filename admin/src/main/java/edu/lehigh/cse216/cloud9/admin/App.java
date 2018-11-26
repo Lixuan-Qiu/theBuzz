@@ -314,7 +314,7 @@ public class App {
                 id = getInt(in, "Eneter the User ID");
                 if (id == -1 || message.equals(""))
                     continue;
-                result = db.insert_messageRow(message, id, "", "");
+                result = db.insert_messageRow(message, id, "", "", "");
 
                 cp.println(result + " rows added");
                 break;
@@ -734,7 +734,7 @@ public class App {
                 db.drop_sessionTable();
                 db.drop_messageTable();
                 db.drop_userTable();
-                // cp.println("(╯ಥ益ಥ）╯︵ ┻━┻  ---  and so... the     ;     
+                // cp.println("(╯ಥ益ಥ）╯︵ ┻━┻ --- and so... the ;
                 //
                 //
                 break;
