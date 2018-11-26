@@ -28,5 +28,6 @@ public class SimpleRequest {
     
     public String mfileID;
 
+    public String mlink;
 
 }

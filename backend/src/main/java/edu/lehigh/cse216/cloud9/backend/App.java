@@ -13,6 +13,11 @@ import java.io.FileOutputStream;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.FileNotFoundException;
+import net.spy.memcached.AddrUtil;
+import net.spy.memcached.MemcachedClient;
+import net.spy.memcached.ConnectionFactoryBuilder;
+import net.spy.memcached.auth.PlainCallbackHandler;
+import net.spy.memcached.auth.AuthDescriptor;
 
 //import java.io.File;
 // Import the Spark package
@@ -46,6 +51,7 @@ import java.util.Base64;
 import java.security.GeneralSecurityException;
 
 public class App {
+    private static MemcachedClient mc;
     // beyond this are helper function
     static NetHttpTransport HTTP_TRANSPORT;
     static JsonFactory JSON_FACTORY;
@@ -68,7 +74,7 @@ public class App {
             // build google credential from local json file
             // see https://cloud.google.com/iam/docs/creating-managing-service-account-keys
             // in section "Creating service account keys" for more info
-            credential = GoogleCredential.fromStream(new FileInputStream("credentials.json"))
+            credential = GoogleCredential.fromStream(App.class.getResourceAsStream("/credentials.json"))
                     .createScoped(SCOPES);
 
             // setup application's name
@@ -98,6 +104,7 @@ public class App {
     public static void main(String[] args) {
         Map<String, String> env = System.getenv();
         String db_url = env.get("DATABASE_URL");
+        
 
         Map<String, String> fileURLs = new HashMap<>();
 
@@ -126,6 +133,9 @@ public class App {
         
         //Set up service account
         setupService();
+        
+        //create the memcachier client 
+        //createMemCachierClient();
 
         Database database = Database.getDatabase(db_url);// ,ip, port, user, pass);
         if (database == null)
@@ -280,7 +290,7 @@ public class App {
             // String token = request.headers("Authorization");
             // Get Session key from Authorization Header
             String key = request.headers("Authorization");
-
+            int x;
             // ensure status 200 OK, with a MIME type of JSON
             response.status(200);
             response.type("application/json");
@@ -291,11 +301,25 @@ public class App {
                 Database.message_RowData data = database.select_messageOne(idx);
                 if (data == null) {
                     return gson.toJson(new StructuredResponse("error", idx + " not found", null));
-                } else {
+                } 
+                /*if(mc.get(data.mfileid) == ""){
+                    return gson.toJson(new StructuredResponse("error", idx + " not found", null));
+                }*/
+                
+                else {
+                    x = 2;
                     String fileId = data.mfileid;
                     System.out.println("File Id:" + fileId);
-                    String link = fileURLs.get(fileId);
+                    //String link = fileURLs.get(fileId);
+                    String link = createMemCachierClient(fileId,"", 2);
+
+                    if(link != ""){
                     return gson.toJson(new StructuredResponse("ok", null, link));
+                    }
+
+                    else{
+                        return gson.toJson(new StructuredResponse("error", "no link found for the file", null));
+                    }
                 }
                 
             } else {
@@ -318,13 +342,12 @@ public class App {
             //String image = null;
             String mfileID = req.mfileID;
             String webLink = "";
-
+            int x;
             if (database.check_sessionKey(key)) {
                 if(!req.fileName.equals("")){
                     String fileName = req.fileName;
                     String filepath = fileName +".pdf";
                     System.out.println("Filename:" + req.fileName);
-                    System.out.println("File:" + req.file);
                     FileOutputStream fos = new FileOutputStream(filepath);
                     fos.write(Base64.getDecoder().decode(req.file));
                     fos.close();
@@ -337,7 +360,34 @@ public class App {
                         .execute();
                     mfileID = file.getId();
                     webLink = file.getWebContentLink();
-                    fileURLs.put(mfileID, webLink);
+                    
+                    //set the webLink for the appropriate fileID and put it in the cache
+                    System.out.println(mfileID);
+                    System.out.println(webLink);
+                    x = 1;
+                    String result = createMemCachierClient(mfileID, webLink, x);
+
+                    if(result.equals("error")){
+                        return gson.toJson(new StructuredResponse("error", "unexpected cache error", null));
+                    }
+                    /*AuthDescriptor ad = new AuthDescriptor(
+            new String[] { "PLAIN" },
+            new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+                                     System.getenv("MEMCACHIER_PASSWORD")));
+            try {
+          MemcachedClient mc = new MemcachedClient(
+              new ConnectionFactoryBuilder()
+                  .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
+                  .setAuthDescriptor(ad).build(),
+              AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
+              mc.set(mfileID,3600,webLink);
+          
+        } catch (IOException ioe) {
+          System.err.println("Couldn't create a connection to MemCachier: \nIOException "
+                  + ioe.getMessage());
+        }
+         */           
+                    //fileURLs.put(mfileID, webLink);
                     Permission userPermission = new Permission()
                         .setType("anyone")
                         .setRole("reader");
@@ -345,7 +395,7 @@ public class App {
                     .execute();
                     filePathf.delete();
                 }
-                    int newId = database.insert_messageRow(req.mMessage, req.uid, req.img, mfileID);
+                    int newId = database.insert_messageRow(req.mMessage, req.uid, req.img, mfileID, req.mlink);
                 //return gson.toJson(new StructuredResponse("ok", "executeUpdate() return: " + newId, null));
                 /*if(!request.getParameter("image")){
                     int newId = database.insert_messageRow(req.mMessage, req.uid);
@@ -692,6 +742,36 @@ public class App {
 
     }
 
+    private static String createMemCachierClient(String mfileID, String webLink, int x){
+
+        AuthDescriptor ad = new AuthDescriptor(
+            new String[] { "PLAIN" },
+            new PlainCallbackHandler(System.getenv("MEMCACHIER_USERNAME"),
+                                     System.getenv("MEMCACHIER_PASSWORD")));
+            try {
+          MemcachedClient mc = new MemcachedClient(
+              new ConnectionFactoryBuilder()
+                  .setProtocol(ConnectionFactoryBuilder.Protocol.BINARY)
+                  .setAuthDescriptor(ad).build(),
+              AddrUtil.getAddresses(System.getenv("MEMCACHIER_SERVERS")));
+              
+              if(x == 1){
+              mc.set(mfileID,3600,webLink);
+              return "ok";
+              }
+
+              if(x == 2){
+                  String link = (String) mc.get(mfileID);
+                  return link;
+              }
+          //mc.set("foo", 0, "bar");
+          //System.out.println(mc.get("foo"));
+        } catch (IOException ioe) {
+          System.err.println("Couldn't create a connection to MemCachier: \nIOException "
+                  + ioe.getMessage());
+        }
+        return "";
+    }
    
     /**
      * Get an integer environment varible if it exists, and otherwise return the

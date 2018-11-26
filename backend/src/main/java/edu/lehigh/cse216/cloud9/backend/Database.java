@@ -123,11 +123,13 @@ public class Database {
         //fileID variable for upload
         String mfileid;
 
+        String mLink;
+
         /**
          * Construct a RowData object by providing values for its fields
          */
 
-        public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid, String username, String image, String fileid) {
+        public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid, String username, String image, String fileid, String link) {
             mId = mid;
             mMessage = message;
             mlikeCount = likeCount;
@@ -135,6 +137,7 @@ public class Database {
             uId = uid;
             mimage = image;
             mfileid = fileid;
+            mLink = link;
             this.username = username;
         }
 
@@ -298,7 +301,7 @@ public class Database {
             db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblMessage (" + "mid SERIAL PRIMARY KEY, "
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
                     + "dislikeCount INT NOT NULL, " + "username VARCHAR(100) NOT NULL," + "image VARCHAR(100000) NOT NULL, "
-                    + "fileid VARCHAR(500) NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "fileid VARCHAR(500) NOT NULL, " + "link VARCHAR(500) NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
             db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
                     + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
@@ -325,7 +328,7 @@ public class Database {
 
             // Standard CRUD operations for message_table
             db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblMessage WHERE mid = ?");
-            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?, ?, ?)");
+            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?, ?, ?,?)");
             db.mSelectAll = db.mConnection.prepareStatement("SELECT * FROM tblMessage");
             db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblMessage WHERE mid=?");
             db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblMessage SET message = ? WHERE mid = ?");
@@ -453,7 +456,7 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insert_messageRow(String message, int uid, String image, String fileid) {
+    int insert_messageRow(String message, int uid, String image, String fileid, String link) {
         int count = 0;
         try {
             
@@ -463,6 +466,7 @@ public class Database {
             mInsertOne.setString(3, username);
             mInsertOne.setString(4, image);
             mInsertOne.setString(5, fileid);
+            mInsertOne.setString(6, link);
             count += mInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -482,7 +486,7 @@ public class Database {
             while (rs.next()) {
                 res.add(new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
                         rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"), 
-                        rs.getString("fileid")));
+                        rs.getString("fileid"), rs.getString("link")));
             }
             rs.close();
             return res;
@@ -507,7 +511,7 @@ public class Database {
             if (rs.next()) {
                 res = new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
                         rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"), 
-                        rs.getString("fileid"));
+                        rs.getString("fileid"), rs.getString("link"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
