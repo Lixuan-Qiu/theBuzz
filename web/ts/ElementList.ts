@@ -190,10 +190,10 @@ class ElementList {
             headers: { "Authorization": session_key },
             success: function(data:any){
                 console.log(data); 
-                var response = JSON.parse(data);
-                $("#"+ id + "fileLink").attr("href", response.mData);
-                //console.log("Link: ", response[0].mData);
-                console.log("Link: ", response.mData);
+                var link = document.getElementById(id + "filelink");
+                link!.innerHTML = "Dowload Link";
+                link!.setAttribute('href', data.mData);
+                console.log("Link: ", data.mData);
             },
         });
 
