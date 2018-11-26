@@ -59,6 +59,8 @@ class NewEntryForm {
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
         let msg = "" + $("#" + NewEntryForm.NAME + "-message").val();
+        let link = "" + $("#" + NewEntryForm.NAME + "-link").val();
+        console.log("Link: ",link);
         if ( msg === "") {
             window.alert("Error: title or message is not valid");
             return;
@@ -78,7 +80,7 @@ class NewEntryForm {
                     url: "/messages",
                     dataType: "json",
                     headers: { "Authorization": session_key },
-                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile}),
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link, img: "", mfileID: "", fileName: fileName, file: stringFile}),
                     success: NewEntryForm.onSubmitResponse
                 });
               };
@@ -95,7 +97,7 @@ class NewEntryForm {
                 url: "/messages",
                 dataType: "json",
                 headers: { "Authorization": session_key },
-                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: "", file: ""}),
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:"", mfileID: "", fileName: "", file: ""}),
                 success: NewEntryForm.onSubmitResponse
             });
         }

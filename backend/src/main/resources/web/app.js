@@ -67,15 +67,41 @@ var EditEntryForm = /** @class */ (function () {
         // hide the modal
         EditEntryForm.hide();
         console.log("EditEntryForm: requesting put to " + backendUrl + "/messages/" + EditEntryForm.id);
+        if ($("#Edit-Upload")[0].files.length === 1) {
+            var file = $("#Edit-Upload")[0].files[0];
+            var fileName = file.name;
+            var reader = new FileReader();
+            reader.onload = function () {
+                //console.log(reader.result);
+                stringFile = reader.result.toString().split(",")[1];
+                // set up an AJAX post.  When the server replies, the result will go to
+                // onSubmitResponse
+                console.log('Edit message with file');
+                $.ajax({
+                    type: "PUT",
+                    url: backendUrl + "/messages/" + EditEntryForm.id,
+                    dataType: "json",
+                    headers: { "Authorization": session_key },
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", mlink: "", fileName: fileName, file: stringFile }),
+                    success: EditEntryForm.onSubmitResponse
+                });
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+            reader.readAsDataURL(file);
+        }
         // call PUT message to backend
-        $.ajax({
-            type: "PUT",
-            url: backendUrl + "/messages/" + EditEntryForm.id,
-            dataType: "json",
-            headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "" }),
-            success: EditEntryForm.onSubmitResponse
-        });
+        else {
+            $.ajax({
+                type: "PUT",
+                url: backendUrl + "/messages/" + EditEntryForm.id,
+                dataType: "json",
+                headers: { "Authorization": session_key },
+                data: JSON.stringify({ uid: user_id, mMessage: msg, mlink: "", img: "", mfileID: "", fileName: "", file: "" }),
+                success: EditEntryForm.onSubmitResponse
+            });
+        }
     };
     /**
      * onSubmitResponse runs when the AJAX call in submitForm() returns a
@@ -154,6 +180,8 @@ var NewEntryForm = /** @class */ (function () {
         // get the values of the two fields, force them to be strings, and check 
         // that neither is empty
         var msg = "" + $("#" + NewEntryForm.NAME + "-message").val();
+        var link = "" + $("#" + NewEntryForm.NAME + "-link").val();
+        console.log("Link: ", link);
         if (msg === "") {
             window.alert("Error: title or message is not valid");
             return;
@@ -173,7 +201,7 @@ var NewEntryForm = /** @class */ (function () {
                     url: "/messages",
                     dataType: "json",
                     headers: { "Authorization": session_key },
-                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: fileName, file: stringFile }),
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, mlink: link, img: "", mfileID: "", fileName: fileName, file: stringFile }),
                     success: NewEntryForm.onSubmitResponse
                 });
             };
@@ -190,7 +218,7 @@ var NewEntryForm = /** @class */ (function () {
                 url: "/messages",
                 dataType: "json",
                 headers: { "Authorization": session_key },
-                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", fileName: "", file: "" }),
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink: "", mfileID: "", fileName: "", file: "" }),
                 success: NewEntryForm.onSubmitResponse
             });
         }
@@ -263,6 +291,8 @@ var ElementList = /** @class */ (function () {
         // Find all of the Edit buttons, and set their behavior
         $("." + ElementList.NAME + "-dislikebtn").click(ElementList.clickDislike);
         $("#" + ElementList.NAME + "-logoutbtn").click(ElementList.clickLogout);
+        $("." + ElementList.NAME + "-linkbtn").click(ElementList.clickLink);
+        $("." + ElementList.NAME + "-getFilebtn").click(ElementList.clickGetFile);
     };
     ElementList.refresh = function () {
         console.log("ElementList: refresh");
@@ -359,6 +389,29 @@ var ElementList = /** @class */ (function () {
             headers: { "Authorization": session_key },
             data: JSON.stringify({ uid: user_id }),
             success: ElementList.onSubmitResponse
+        });
+    };
+    ElementList.clickLink = function () {
+    };
+    /**
+     * clickLike is the code we run in response to a click of a like button
+     */
+    ElementList.clickGetFile = function () {
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+        console.log("Getting File");
+        var id = $(this).data("value");
+        $.ajax({
+            type: "GET",
+            url: "/messages/" + id + "/file",
+            dataType: "json",
+            headers: { "Authorization": session_key },
+            success: function (r) {
+                $("#" + id + "fileLink").attr("href", r.data);
+            }
         });
     };
     ElementList.clickLogout = function () {

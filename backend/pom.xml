@@ -83,6 +83,11 @@
             <artifactId>google-api-services-drive</artifactId>
             <version>v3-rev110-1.23.0</version>
         </dependency>
+        <dependency>
+  <groupId>net.spy</groupId>
+  <artifactId>spymemcached</artifactId>
+  <version>2.12.3</version>
+</dependency>
 
     </dependencies>
     <!-- dependencies end -->
@@ -145,3 +150,4 @@
     <!-- build end -->
 
 </project>
+

@@ -45,6 +45,9 @@ class ElementList {
 
         $("#" + ElementList.NAME + "-logoutbtn").click(ElementList.clickLogout);
 
+        $("." + ElementList.NAME + "-linkbtn").click(ElementList.clickLink);
+
+        $("." + ElementList.NAME + "-getFilebtn").click(ElementList.clickGetFile);
 
     }
 
@@ -163,6 +166,35 @@ class ElementList {
             data: JSON.stringify({ uid: user_id }),
             success: ElementList.onSubmitResponse
         });
+    }
+    private static clickLink(){
+
+    }
+    /**
+     * clickLike is the code we run in response to a click of a like button
+     */
+    private static clickGetFile() {
+
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
+        console.log("Getting File");    
+        let id = $(this).data("value");
+        $.ajax({
+            type: "GET",
+            url: "/messages/" + id + "/file",
+            dataType: "json",
+            headers: { "Authorization": session_key },
+            success: function(r:any){
+                $("#"+ id + "fileLink").attr("href", r.data);
+            },
+        });
+
+        
+
     }
 
     private static clickLogout() {
