@@ -1,0 +1,79 @@
+<?xml version = "1.0" encoding = "utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".GoogleLogin">
+
+
+    <LinearLayout
+        android:id="@+id/profSection"
+        android:layout_width="315dp"
+        android:layout_height="265dp"
+        android:orientation="vertical">
+
+
+        <TextView
+            android:id="@+id/Name"
+            android:layout_width="316dp"
+            android:layout_height="wrap_content"
+            android:text="Name" />
+
+        <TextView
+            android:id="@+id/GivenName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="GiveName" />
+
+        <TextView
+            android:id="@+id/FamilyName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="FamilyName" />
+
+        <TextView
+            android:id="@+id/ID"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Id" />
+
+        <TextView
+            android:id="@+id/Email"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Email" />
+
+        <ImageView
+            android:id="@+id/photo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srcCompat="@android:drawable/gallery_thumb" />
+
+
+    </LinearLayout>
+
+    <com.google.android.gms.common.SignInButton
+        android:id="@+id/sign_in_button"
+        android:layout_width="316dp"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/bn_continue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Continue" />
+
+    <Button
+        android:id="@+id/bn_logout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sign Out" />
+
+
+</LinearLayout>
