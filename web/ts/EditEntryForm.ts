@@ -79,6 +79,7 @@ class EditEntryForm {
         // get string from fields
         // and check string not empty
         let msg = "" + $("#" + EditEntryForm.NAME + "-message").val();
+        let link = "" + $("#" + EditEntryForm.NAME + "-link").val();
         if (msg === "") {
             window.alert("Error: title or message is not valid");
             return;
@@ -87,19 +88,43 @@ class EditEntryForm {
         // hide the modal
         EditEntryForm.hide();
         console.log("EditEntryForm: requesting put to " + backendUrl + "/messages/" + EditEntryForm.id);
-        
+        if($("#Edit-Upload")[0].files.length === 1){
+            var file = $("#Edit-Upload")[0].files[0];
+            var fileName = file.name;
+            var reader = new FileReader();
+            reader.onload = function () {
+                //console.log(reader.result);
+                stringFile = reader.result!.toString().split(",")[1];
+                // set up an AJAX post.  When the server replies, the result will go to
+                // onSubmitResponse
+                console.log('Edit message with file');
+                $.ajax({
+                    type: "PUT",
+                    url: backendUrl + "/messages/" + EditEntryForm.id,
+                    dataType: "json",
+                    headers: { "Authorization": session_key },
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mfileID: "", mlink:link,fileName: fileName, file: stringFile }),
+                    success: EditEntryForm.onSubmitResponse
+                });
+              };
+              reader.onerror = function (error) {
+                console.log('Error: ', error);
+              };
+            reader.readAsDataURL(file);
+            }
         // call PUT message to backend
-        $.ajax({
-            type: "PUT",
-            url: backendUrl + "/messages/" + EditEntryForm.id,
-            dataType: "json",
-            headers: { "Authorization": session_key },
-            data: JSON.stringify({ uid: user_id, mMessage: msg }),
-            success: EditEntryForm.onSubmitResponse
-        });
-
+        else{
+            $.ajax({
+                type: "PUT",
+                url: backendUrl + "/messages/" + EditEntryForm.id,
+                dataType: "json",
+                headers: { "Authorization": session_key },
+                data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link,img: "", mfileID: "", fileName:"", file:"" }),
+                success: EditEntryForm.onSubmitResponse
+            });
+        }
     }
-
+       
     /**
      * onSubmitResponse runs when the AJAX call in submitForm() returns a 
      * result.

@@ -55,7 +55,7 @@ class Login {
             type: "POST",
             url: backendUrl + "/login",
             dataType: "json",
-            data: id_token,
+            data: JSON.stringify({ id_token: id_token}),
             success: Login.onSubmitResponse
         });
     }
@@ -100,6 +100,7 @@ class Login {
         $("#" + Login.NAME + "-container").show();
         $("#" + ElementList.NAME).hide();
         $("#" + NewEntryForm.NAME).hide();
+        session_key = "";
     }
 
     
