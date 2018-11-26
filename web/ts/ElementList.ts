@@ -29,7 +29,6 @@ class ElementList {
      * ElementList
      */
     private static update(data: any) {
-
         console.log("ElementList: update");
         // Remove the table of data, if it exists
         $("#" + ElementList.NAME).remove();
@@ -46,6 +45,9 @@ class ElementList {
 
         $("#" + ElementList.NAME + "-logoutbtn").click(ElementList.clickLogout);
 
+        $("." + ElementList.NAME + "-linkbtn").click(ElementList.clickLink);
+
+        $("." + ElementList.NAME + "-getFilebtn").click(ElementList.clickGetFile);
 
     }
 
@@ -164,6 +166,39 @@ class ElementList {
             data: JSON.stringify({ uid: user_id }),
             success: ElementList.onSubmitResponse
         });
+    }
+    private static clickLink(){
+
+    }
+    /**
+     * clickLike is the code we run in response to a click of a like button
+     */
+    private static clickGetFile() {
+
+        if (session_key === "") {
+            console.log("ElementList: refresh: user isn't logged in");
+            Login.hideMainPage();
+            return;
+        }
+
+        console.log("Getting File");    
+        let id = $(this).data("value");
+        $.ajax({
+            type: "GET",
+            url: "/messages/" + id + "/file",
+            dataType: "json",
+            headers: { "Authorization": session_key },
+            success: function(data:any){
+                console.log(data); 
+                var response = JSON.parse(data);
+                $("#"+ id + "fileLink").attr("href", response.mData);
+                //console.log("Link: ", response[0].mData);
+                console.log("Link: ", response.mData);
+            },
+        });
+
+        
+
     }
 
     private static clickLogout() {
