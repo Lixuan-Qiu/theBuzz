@@ -56,7 +56,8 @@ public class MainActivity extends Activity  {
                 JsonObjectRequest submitInfo = new JsonObjectRequest(
                         Request.Method.POST, url,request, new Response.Listener<JSONObject>()
                         {
-                            int key, uid;
+                            int uid;
+                            String key;
                             @Override
                             public void onResponse(JSONObject response) {
                                 // response
@@ -74,7 +75,7 @@ public class MainActivity extends Activity  {
 
                                         return;
                                     }
-                                    key = response.getInt("sessionkey");
+                                    key = response.getString("sessionkey");
                                     uid = response.getInt("uid");
                                     Toast.makeText(getApplicationContext(),"Redirecting...",Toast.LENGTH_SHORT).show();
                                 } catch (final JSONException e) {
@@ -85,11 +86,11 @@ public class MainActivity extends Activity  {
                                 //if there is a existing one, the existing content will be overwritten
                                 SharedPreferences mySP = getSharedPreferences("sesKey", Activity.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = mySP.edit();
-                                editor.putInt("key",key);
+                                editor.putString("key",key);
                                 editor.putInt("uid",uid);
                                 editor.commit();
                                 Log.d("cpl220", "Key successfully saved");
-                                Log.d("cpl220",Integer.toString(key));
+                                Log.d("cpl220",key);
                                 Log.d("cpl220",Integer.toString(uid));
 
                                 Log.d("cpl220", "Successful submission");
