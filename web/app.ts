@@ -34,24 +34,15 @@ $(document).ready(function () {
 
 });
 
-var callback = function(fileData:any){
-    stringFile = fileData;
-    console.log("File",stringFile);
-}
-
-function uploadFile() {
-    var file = $("#Upload")[0].files[0];
-    var reader  = new FileReader();
-    
-    reader.addEventListener("load", function () {
-      stringFile = reader.result!.toString().split(",")[1];
-      callback(reader.result!.toString().split(",")[1]);
-      
-    }, false);
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+Handlebars.registerHelper('equaluId', function(this:any, lvalue:any, options:any) {
+  if (arguments.length < 2){
+      throw new Error("Handlebars Helper equal needs 2 parameters");
   }
+  if( lvalue!=user_id ) {
+      return options.inverse(this);
+  } else{
+      return options.fn(this);
+  }
+});
 
 

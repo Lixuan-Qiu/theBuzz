@@ -57,6 +57,7 @@ class EditEntryForm {
     public static show(data: any) {
         console.log("EditEntryForm: show is called with data = " + data + " mId = " + data.mData.mId);
         $("#" + EditEntryForm.NAME + "-message").val(data.mData.mMessage);
+        $("#" + EditEntryForm.NAME + "-link").val(data.mData.mLink);
         $("#" + EditEntryForm.NAME).modal("show");
         EditEntryForm.id = data.mData.mId;
     }

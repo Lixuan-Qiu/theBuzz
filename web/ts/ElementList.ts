@@ -45,8 +45,6 @@ class ElementList {
 
         $("#" + ElementList.NAME + "-logoutbtn").click(ElementList.clickLogout);
 
-        $("." + ElementList.NAME + "-linkbtn").click(ElementList.clickLink);
-
         $("." + ElementList.NAME + "-getFilebtn").click(ElementList.clickGetFile);
 
     }
@@ -167,11 +165,11 @@ class ElementList {
             success: ElementList.onSubmitResponse
         });
     }
-    private static clickLink(){
-
-    }
+    
     /**
-     * clickLike is the code we run in response to a click of a like button
+     * When the clickGetFile is clicked, a get is called to get the download link. Then the link is put into the 
+     * message row.
+     * //TODO get this function to run without clicking the button, it would looke better
      */
     private static clickGetFile() {
 
@@ -194,6 +192,7 @@ class ElementList {
                 link!.innerHTML = "Dowload Link";
                 link!.setAttribute('href', data.mData);
                 console.log("Link: ", data.mData);
+                $("." + ElementList.NAME + "-getFilebtn").hide();
             },
         });
 
@@ -210,6 +209,7 @@ class ElementList {
 
         test = -1;
         session_key = "";
+        Login.hideMainPage();
     }
 
     private static onSubmitResponse(data: any) {

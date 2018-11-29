@@ -116,6 +116,7 @@ class NewEntryForm {
         if (data.mStatus === "ok") {
             ElementList.refresh();
             $("#" + NewEntryForm.NAME + "-message").val("");
+            $("#" + NewEntryForm.NAME + "-link").val("");
         }
         // Handle explicit errors with a detailed popup message
         else if (data.mStatus === "error") {
