@@ -37,7 +37,7 @@ cat app.css css/ElementList.css css/EditEntryForm.css css/NewEntryForm.css css/L
 
 # strp 5.1: concat Javascript file
 # somehow it just wont concat if there's no intermediate
-cat $TARGETFOLDER/$WEBFOLDERNAME/app.js Login.js > $TARGETFOLDER/$WEBFOLDERNAME/app2.js
+cat $TARGETFOLDER/$WEBFOLDERNAME/app.js Login.js Map.js> $TARGETFOLDER/$WEBFOLDERNAME/app2.js
 cat $TARGETFOLDER/$WEBFOLDERNAME/app2.js > $TARGETFOLDER/$WEBFOLDERNAME/app.js
 
 # step 6: compile handlebars templates to the deploy folder
@@ -45,6 +45,7 @@ node_modules/handlebars/bin/handlebars hb/ElementList.hb >> $TARGETFOLDER/$WEBFO
 node_modules/handlebars/bin/handlebars hb/EditEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 node_modules/handlebars/bin/handlebars hb/NewEntryForm.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 node_modules/handlebars/bin/handlebars hb/Login.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
+node_modules/handlebars/bin/handlebars hb/Map.hb >> $TARGETFOLDER/$WEBFOLDERNAME/templates.js
 
 # step 7: Add credentials.json to resources
 cat credentials.json >> $TARGETFOLDER/credentials.json

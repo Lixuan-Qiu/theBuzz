@@ -11,6 +11,8 @@ var gapi: any;
 var id_token: any = null;
 var stringFile: any = "";
 var test: number = 0;
+var lat: number = 0.0;
+var long: number = 0.0;
 
 /// This constant indicates the path to our backend server
 const backendUrl = "https://agile-plateau-21593.herokuapp.com";
@@ -44,5 +46,7 @@ Handlebars.registerHelper('equaluId', function(this:any, lvalue:any, options:any
       return options.fn(this);
   }
 });
+
+  
 
 

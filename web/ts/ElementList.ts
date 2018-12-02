@@ -38,6 +38,8 @@ class ElementList {
         $("." + ElementList.NAME + "-delbtn").click(ElementList.clickDelete);
         // Find all of the Edit buttons, and set their behavior
         $("." + ElementList.NAME + "-editbtn").click(ElementList.clickEdit);
+        // Find all of the Location buttons, and set their behavior
+        $("." + ElementList.NAME + "-locationbtn").click(ElementList.clickLocation);
         // Find all of the delete buttons, and set their behavior
         $("." + ElementList.NAME + "-likebtn").click(ElementList.clickLike);
         // Find all of the Edit buttons, and set their behavior
@@ -98,6 +100,29 @@ class ElementList {
 
 
     }
+
+    /**
+     * clickLocation is the code we run in response to a click of a location button
+     */
+    private static clickLocation() {
+        
+                if (session_key === "") {
+                    console.log("ElementList: refresh: user isn't logged in");
+                    Login.hideMainPage();
+                    return;
+                }
+        
+                let id = $(this).data("value");
+                $.ajax({
+                    type: "GET",
+                    url: "/messages/" + id,
+                    dataType: "json",
+                    headers: { "Authorization": session_key },
+                    success: EditEntryForm.show
+                });
+        
+            }
+        
 
     /**
      * clickEdit is the code we run in response to a click of a delete button
@@ -171,7 +196,7 @@ class ElementList {
      * message row.
      * //TODO get this function to run without clicking the button, it would looke better
      */
-    private static clickGetFile() {
+    public static clickGetFile() {
 
         if (session_key === "") {
             console.log("ElementList: refresh: user isn't logged in");

@@ -8,6 +8,7 @@
               <input id="NewEntryForm-link" type="number" name="quantity" style="width:10em" min="1" max="200"/>
             </td>
             <td><input id="Upload" type="file" accept="application/pdf" /></td>
+            <td><button type="button" class="btn btn-default" id="NewEntryForm-Location">Location</button></td>
             <td><button type="button" class="btn btn-default" id="NewEntryForm-OK">OK</button></td>
 
         </tr>

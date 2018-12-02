@@ -14,7 +14,6 @@ class NewEntryForm {
      * Track if the Singleton has been initialized
      */
     private static isInit = false;
-
     /**
      * Initialize the NewEntryForm by creating its element in the DOM and 
      * configuring its buttons.  This needs to be called from any public static 
@@ -24,6 +23,7 @@ class NewEntryForm {
         if (!NewEntryForm.isInit) {
             $("body").append(Handlebars.templates[NewEntryForm.NAME + ".hb"]());
             //$("#" + "Upload").click(NewEntryForm.submitForm);
+            $("#" + NewEntryForm.NAME + "-Location").click(NewEntryForm.addLocation);
             $("#" + NewEntryForm.NAME + "-OK").click(NewEntryForm.submitForm);
             NewEntryForm.isInit = true;
         }
@@ -38,8 +38,12 @@ class NewEntryForm {
         NewEntryForm.init();
     }
 
-    
+    /**
+     * add location for meessage which return latitude and longtitude 
+     */
+    private static addLocation(){
 
+    }
     /**
      * Send data to submit the form only if the fields are both valid.  
      * Immediately hide the form when we send data, so that the user knows that 
