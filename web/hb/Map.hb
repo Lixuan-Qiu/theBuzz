@@ -5,9 +5,9 @@
                 <h4 class="modal-title">Location</h4>
             </div>
             <div class="modal-body">
-                
                 <label for="Map-message">Location</label>
-                
+                <div id="map"></div>
+                <script>initMap();</script>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" id="Map-OK">OK</button>

@@ -42,7 +42,8 @@ class NewEntryForm {
      * add location for meessage which return latitude and longtitude 
      */
     private static addLocation(){
-
+        console.log("getting new location");
+        mMap.show();
     }
     /**
      * Send data to submit the form only if the fields are both valid.  
