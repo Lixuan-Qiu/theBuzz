@@ -3,13 +3,13 @@
 /**
  * mMap encapsulates all of the code for the form for adding an entry
  */
+declare function changeLocation(): void;
 class mMap {
     
         /**
          * The name of the DOM entry associated with mMap
          */
         public static readonly NAME = "Map";
-    
         /**
          * Track if the Singleton has been initialized
          */
@@ -55,6 +55,7 @@ class mMap {
          * with those ways of making the modal disappear.
          */
         public static show() {
+            changeLocation();
             $("#" + mMap.NAME).modal("show");
             console.log("mMap show");
         }

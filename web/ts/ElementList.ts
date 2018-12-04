@@ -111,16 +111,15 @@ class ElementList {
                     Login.hideMainPage();
                     return;
                 }
-        
+                console.log("check clickLocation");
                 let id = $(this).data("value");
                 $.ajax({
                     type: "GET",
                     url: "/messages/" + id,
                     dataType: "json",
                     headers: { "Authorization": session_key },
-                    success: EditEntryForm.show
+                    success: mMap.show
                 });
-        
             }
         
 

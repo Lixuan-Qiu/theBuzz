@@ -14,7 +14,8 @@ var stringFile: any = "";
 var test: number = 0;
 var latitude: number = 360.0;
 var longtitude: number = 360.0;
-
+var LAT_VALUE: number = 40.607164238;
+var LONG_VALUE: number = -75.378998484;
 /// This constant indicates the path to our backend server
 const backendUrl = "https://agile-plateau-21593.herokuapp.com";
 

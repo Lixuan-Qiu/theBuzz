@@ -38,6 +38,9 @@
                     <button class="ElementList-delbtn" data-value="{{this.mId}}">Delete</button>
                     </td>
                 {{/equaluId}}
+                <td>
+                <button class="ElementList-locationbtn" data-value="{{this.mId}}">Location</button>
+                </td>
             </tr>
             {{/each}}
         </tbody>
