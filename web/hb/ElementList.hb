@@ -23,6 +23,9 @@
                         <button class="ElementList-dislikebtn" data-value="{{this.mId}}">Dislike</button>
                     </div>
                 </td>
+                {{#equal360 this.latitude}}
+                <td><button class="ElementList-locationbtn" data-value="{{this.mId}}">Location</button></td>
+                {{/equal360}}
                 {{#if this.mimage}}
                     <td><img src="data:image/jpeg;base64,{{this.mimage}}" height="100" alt= "None"> </td>
                 {{/if}}
@@ -38,9 +41,6 @@
                     <button class="ElementList-delbtn" data-value="{{this.mId}}">Delete</button>
                     </td>
                 {{/equaluId}}
-                <td>
-                <button class="ElementList-locationbtn" data-value="{{this.mId}}">Location</button>
-                </td>
             </tr>
             {{/each}}
         </tbody>

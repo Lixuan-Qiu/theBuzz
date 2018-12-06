@@ -54,12 +54,21 @@ class mMap {
          * we haven't set up the hooks to clear the fields on the events associated
          * with those ways of making the modal disappear.
          */
-        public static show() {
+        public static show(data: any) {
+            if(!(data.mData.latitude === 360.0)){
+                LAT_VALUE = Number(data.mData.latitude);
+                LONG_VALUE = Number(data.mData.longitude);
+            }
             changeLocation();
             $("#" + mMap.NAME).modal("show");
             console.log("mMap show");
         }
-    
+        
+        public static show_2() {
+            $("#" + mMap.NAME).modal("show");
+            console.log("mMap show_2");
+        }
+
     
         /**
          * cancel the location marker

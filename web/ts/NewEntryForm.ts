@@ -43,7 +43,7 @@ class NewEntryForm {
      */
     private static addLocation(){
         console.log("getting new location");
-        mMap.show();
+        mMap.show_2();
     }
     /**
      * Send data to submit the form only if the fields are both valid.  
@@ -85,7 +85,7 @@ class NewEntryForm {
                     url: "/messages",
                     dataType: "json",
                     headers: { "Authorization": session_key },
-                    data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link, img: "", mfileID: "", fileName: fileName, file: stringFile}),
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link, img: "", mfileID: "", fileName: fileName, file: stringFile, latitude: latitude, longitude: longtitude}),
                     success: NewEntryForm.onSubmitResponse
                 });
               };
@@ -102,7 +102,7 @@ class NewEntryForm {
                 url: "/messages",
                 dataType: "json",
                 headers: { "Authorization": session_key },
-                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:link, mfileID: "", fileName: "", file: ""}),
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:link, mfileID: "", fileName: "", file: "", latitude: latitude, longitude: longtitude}),
                 success: NewEntryForm.onSubmitResponse
             });
         }

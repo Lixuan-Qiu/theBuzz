@@ -50,6 +50,17 @@ Handlebars.registerHelper('equaluId', function(this:any, lvalue:any, options:any
   }
 });
 
+Handlebars.registerHelper('equal360', function(this:any, lvalue:any, options:any) {
+    if (arguments.length < 2){
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+    }
+    if( lvalue==360.0 ) {
+        return options.inverse(this);
+    } else{
+        return options.fn(this);
+    }
+  });
+
   
 
 
