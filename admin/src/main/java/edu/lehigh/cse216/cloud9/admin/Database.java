@@ -114,16 +114,38 @@ public class Database {
         // ID of the creator of this message
         int uId;
 
+        // Username related to the uId
+        String username;
+
+        // imageId variable for upload
+        String mimage;
+
+        // fileID variable for upload
+        String mfileid;
+
+        String mLink;
+
+        double latitude;
+
+        double longitude;
+
         /**
          * Construct a RowData object by providing values for its fields
          */
 
-        public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid) {
+        public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid, String username,
+                String image, String fileid, String link, double latitude, double longitude) {
             mId = mid;
             mMessage = message;
             mlikeCount = likeCount;
             mdislikeCount = dislikeCount;
             uId = uid;
+            mimage = image;
+            mfileid = fileid;
+            mLink = link;
+            this.latitude = latitude;
+            this.longitude = longitude;
+            this.username = username;
         }
 
         /*
@@ -285,7 +307,10 @@ public class Database {
             // create message_table
             db.mCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblMessage (" + "mid SERIAL PRIMARY KEY, "
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
-                    + "dislikeCount INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "dislikeCount INT NOT NULL, " + "username VARCHAR(100) NOT NULL,"
+                    + "image VARCHAR(100000) NOT NULL, " + "fileid VARCHAR(500) NOT NULL, "
+                    + "link VARCHAR(500) NOT NULL, " + "latitude DOUBLE PRECISION NOT NULL, "
+                    + "longitude DOUBLE PRECISION NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
             db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
                     + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
@@ -296,7 +321,7 @@ public class Database {
                     + "FOREIGN KEY (mid) REFERENCES tblMessage(mid), " + "comment VARCHAR(200) NOT NULL)");
             // create session_table
             db.sCreateTable = db.mConnection
-                    .prepareStatement("CREATE TABLE tblSession (" + "key VARCHAR(100) SERIAL PRIMARY KEY, "
+                    .prepareStatement("CREATE TABLE tblSession (" + "key VARCHAR(500) PRIMARY KEY, "
                             + "uid INT NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create vote_table
             db.vCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblVote (" + "uid INT NOT NULL, "
@@ -312,9 +337,9 @@ public class Database {
 
             // Standard CRUD operations for message_table
             db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblMessage WHERE mid = ?");
-            db.mInsertOne = db.mConnection.prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0)");
-            db.mSelectAll = db.mConnection
-                    .prepareStatement("SELECT mid , message, likeCount, dislikeCount, uid FROM tblMessage");
+            db.mInsertOne = db.mConnection
+                    .prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?, ?, ?, ?, ?, ?)");
+            db.mSelectAll = db.mConnection.prepareStatement("SELECT * FROM tblMessage");
             db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblMessage WHERE mid=?");
             db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblMessage SET message = ? WHERE mid = ?");
             db.mAddLike = db.mConnection.prepareStatement("UPDATE tblMessage SET likeCount = ? WHERE mid = ?");
@@ -329,7 +354,7 @@ public class Database {
             // db.uUpdateUsername = db.mAddLike.prepareStatement("UPDATE tblUser SET
             // username = ? WHERE uid = ?")
             db.uGetuId = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE username=?");
-            db.uGetuId2 = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE email=?");
+            db.uGetuId2 = db.mConnection.prepareStatement("SELECT uid from tblUser WHERE email= ?");
 
             // Standard CRUD operations for comment_table
             db.cDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblComment WHERE cid = ?");
@@ -441,11 +466,20 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insert_messageRow(String message, int uid) {
+    int insert_messageRow(String message, int uid, String image, String fileid, String link, double latitude,
+            double longitude) {
         int count = 0;
         try {
+
             mInsertOne.setInt(1, uid);
             mInsertOne.setString(2, message);
+            String username = select_userOne(uid).uUsername;
+            mInsertOne.setString(3, username);
+            mInsertOne.setString(4, image);
+            mInsertOne.setString(5, fileid);
+            mInsertOne.setString(6, link);
+            mInsertOne.setDouble(7, latitude);
+            mInsertOne.setDouble(8, longitude);
             count += mInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -464,7 +498,9 @@ public class Database {
             ResultSet rs = mSelectAll.executeQuery();
             while (rs.next()) {
                 res.add(new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
-                        rs.getInt("dislikeCount"), rs.getInt("uid")));
+                        rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"),
+                        rs.getString("fileid"), rs.getString("link"), rs.getDouble("latitude"),
+                        rs.getDouble("longitude")));
             }
             rs.close();
             return res;
@@ -488,7 +524,9 @@ public class Database {
             ResultSet rs = mSelectOne.executeQuery();
             if (rs.next()) {
                 res = new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
-                        rs.getInt("dislikeCount"), rs.getInt("uid"));
+                        rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"),
+                        rs.getString("fileid"), rs.getString("link"), rs.getDouble("latitude"),
+                        rs.getDouble("longitude"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -579,7 +617,7 @@ public class Database {
     int insert_userRow(String username, String name, String email) {
         int count = 0;
         try {
-            uInsertOne.setString(1, name);
+            uInsertOne.setString(1, username);
             uInsertOne.setString(2, name);
             uInsertOne.setString(3, " ");
             uInsertOne.setString(4, email);
@@ -639,8 +677,8 @@ public class Database {
     int get_userId2(String email) {
         int res = -1;
         try {
-            uGetuId.setString(1, email);
-            ResultSet rs = uGetuId.executeQuery();
+            uGetuId2.setString(1, email);
+            ResultSet rs = uGetuId2.executeQuery();
             if (rs.next()) {
                 res = rs.getInt("uid");
             }
@@ -906,13 +944,13 @@ public class Database {
         return count;
     }
 
-    int get_sessionKey(int uid) {
-        int key = 0;
+    String get_sessionKey(int uid) {
+        String key = "";
         try {
             sGetKey.setInt(1, uid);
             ResultSet rs = sGetKey.executeQuery();
             if (rs.next()) {
-                key = rs.getInt("key");
+                key = rs.getString("key");
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -951,9 +989,10 @@ public class Database {
         boolean check = false;
         ArrayList<session_RowData> sessions = select_sessionAll();
         for (session_RowData session : sessions) {
-            if (session.key.equals(givenKey))
+            if (session.key.equals(givenKey)) {
                 check = true;
-            break;
+                break;
+            }
         }
         return check;
     }
