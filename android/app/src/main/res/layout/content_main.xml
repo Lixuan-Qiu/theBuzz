@@ -24,6 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:hint="@string/Hint"
         android:inputType="textPersonName"
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
@@ -35,15 +36,56 @@
 
     <Button
         android:id="@+id/sendButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="50dp"
-        android:text="Send"
+        android:layout_width="70dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="96dp"
+        android:text="@string/Send"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@id/editText"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+<!-->
+    <Button
+        android:id="@+id/sendButton2"
+        android:layout_width="76dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="4dp"
+        android:onClick="Camera"
+        android:text="@string/CAM"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/editText"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+<-->
+    <ImageButton
+        android:id="@+id/sendButton2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:onClick="Camera"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/editText"
+        app:srcCompat="@drawable/cameraicon" />
+
+    <ImageButton
+        android:id="@+id/sendButton3"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="8dp"
+        android:adjustViewBounds="true"
+        android:onClick="goToMapInput"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/sendButton2"
+        app:srcCompat="@drawable/mapicon" />
 
 </android.support.constraint.ConstraintLayout>
 
