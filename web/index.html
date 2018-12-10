@@ -21,7 +21,7 @@
 
     <!-- Google Platform Library that web pages need for Google Sign-In -->
     <script src="https://apis.google.com/js/platform.js" async defer></script>
-
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAmDqOtHJ-c9NITDnC_VrsMrbcKk-NI4k4&callback=initMap"async defer></script>
     <link href="https://fonts.googleapis.com/css?family=Fresca" rel="stylesheet">
     <link rel="stylesheet" href="app.css" />
     <link href="bootstrap.min.css" rel="stylesheet">
@@ -33,7 +33,23 @@
     <div id = "Login-container">
         <div class="g-signin2" data-onsuccess="onSignIn"></div>
     </div>
-    
+    <div id="Map" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Location</h4>
+                </div>
+                <div class="modal-body">
+                    <label for="Map-message">Location</label>
+                    <div id="map"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" id="Map-OK">OK</button>
+                    <button type="button" class="btn btn-default" id="Map-Close">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>
