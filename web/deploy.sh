@@ -37,7 +37,7 @@ cat app.css css/ElementList.css css/EditEntryForm.css css/NewEntryForm.css css/L
 
 # strp 5.1: concat Javascript file
 # somehow it just wont concat if there's no intermediate
-cat $TARGETFOLDER/$WEBFOLDERNAME/app.js Login.js > $TARGETFOLDER/$WEBFOLDERNAME/app2.js
+cat $TARGETFOLDER/$WEBFOLDERNAME/app.js Login.js Map.js changeLocation.js > $TARGETFOLDER/$WEBFOLDERNAME/app2.js
 cat $TARGETFOLDER/$WEBFOLDERNAME/app2.js > $TARGETFOLDER/$WEBFOLDERNAME/app.js
 
 # step 6: compile handlebars templates to the deploy folder

@@ -49,6 +49,8 @@ public class DisplayActivity extends AppCompatActivity {
     VolleySingleton volley;
     static final int REQUEST_IMAGE_CAPTURE = 1;
     String imageTosend = "";
+    double latitude = 360.0;
+    double longitude = 360.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,21 @@ public class DisplayActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         //setSupportActionBar(toolbar);
+
+        // get lat,lng from intent sent from map input
+        Intent intent = getIntent();
+        latitude = intent.getDoubleExtra("latitude", 360.0);
+        longitude = intent.getDoubleExtra("latitude", 360.0);
+        if(intent.hasExtra("savedMessage")) {
+            Log.i("DisplayActivity", "receive message: '" + intent.getStringExtra("savedMessage") + "'");
+            ((EditText)findViewById(R.id.editText)).setText(intent.getStringExtra("savedMessage"));
+        } else {
+            Log.i("DisplayActivity", "no message");
+        }
+
+
+
+
 
         volley = new VolleySingleton(this);
         getMessages();
@@ -163,6 +180,7 @@ public class DisplayActivity extends AppCompatActivity {
             }
         };
         // Add the request to the RequestQueue.
+        Log.i("getReq", "'" + getReq + "'");
         volley.getRequestQueue().add(getReq);
     }
 
@@ -183,6 +201,9 @@ public class DisplayActivity extends AppCompatActivity {
         sKey = mySP.getString("key", sKey);
         final int userid = userId;
         final String skey = sKey;
+
+
+        // add all parameter
         Map<String, String> params = new HashMap<String, String>();
         params.put("uid", Integer.toString(userId));
         params.put("key", sKey);
@@ -193,6 +214,13 @@ public class DisplayActivity extends AppCompatActivity {
         params.put("fileName", "");
         params.put("file", "");
         params.put("mlink", "");
+        // lat,lng is from global
+        Log.i("push", "pushMessage: push with LatLng: " + latitude + ", " +longitude);
+        params.put("latitude", Double.toString(latitude));
+        params.put("longitude", Double.toString(longitude));
+
+
+
         JSONObject request = new JSONObject(params);
         if (userId == -1 || sKey == "")
             Log.d("cpl220", "uid or session key is failed to be retrieved from share preferences in pushMessage");
@@ -333,6 +361,7 @@ public class DisplayActivity extends AppCompatActivity {
     }
 
     public void getComment(final Message m) {
+        Log.i("getComment", "getComment is called!?!?!");
         Intent in = new Intent(DisplayActivity.this, CommentActivity.class);
         in.putExtra("message", m);
         startActivity(in);
@@ -347,11 +376,15 @@ public class DisplayActivity extends AppCompatActivity {
                 //wait for response from Corey to see the correct form of variable names
                 int mId = list.getJSONObject(i).getInt("mId");
                 String msg = list.getJSONObject(i).getString("mMessage");
+                String username = list.getJSONObject(i).getString("username");
                 int like = list.getJSONObject(i).getInt("mlikeCount");
                 int dislike = list.getJSONObject(i).getInt("mdislikeCount");
                 String img = list.getJSONObject(i).getString("mimage");
-                Log.d("cpl220 mid", ""+mId);
-                messageArrayList.add(new Message(mId, msg, like, dislike, img));
+                double latitude = list.getJSONObject(i).getDouble("latitude");
+                double longitude = list.getJSONObject(i).getDouble("longitude");
+
+                Log.d("populateListFromVolley", "mId: " + mId + " get: lat = " + latitude + ", longitude = " + longitude);
+                messageArrayList.add(new Message(mId, msg, username, like, dislike, img, latitude, longitude));
             }
         } catch (final JSONException e) {
             Log.d("cpl220", "Error parsing JSON file: " + e.getMessage());
@@ -389,4 +422,14 @@ public class DisplayActivity extends AppCompatActivity {
                 return super.onContextItemSelected(item);
         }
     }
+
+    public void goToMapInput (View v) {
+        Intent intent = new Intent(getApplicationContext(), MapsActivityForInput.class);
+        EditText editText = findViewById(R.id.editText);
+        Log.i("goToMapInput", "go with message: " + editText.getText().toString());
+        intent.putExtra("savedMessage", editText.getText().toString());
+        startActivity(intent);
+    }
+
+
 }

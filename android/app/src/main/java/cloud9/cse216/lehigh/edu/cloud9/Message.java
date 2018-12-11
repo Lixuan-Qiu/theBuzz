@@ -15,6 +15,11 @@ public class Message implements Parcelable {
     String mMessage;
 
     /**
+     * The owner of message
+     */
+    String username;
+
+    /**
      * The current like count
      */
     int mLikeCount;
@@ -29,6 +34,18 @@ public class Message implements Parcelable {
     String mImage;
 
     /**
+     * The current image
+     */
+    double latitude;
+
+    /**
+     * The current image
+     */
+    double longitude;
+
+
+
+    /**
      * Construct a Datum by setting its index and text
      *
      * @param idx The index of this message
@@ -37,12 +54,15 @@ public class Message implements Parcelable {
      * @param dislikeCount The dislike count of this message
      * @param img The string for img
      */
-    Message(int idx, String txt, int likeCount, int dislikeCount, String mimage) {
+    Message(int idx, String txt, String username, int likeCount, int dislikeCount, String mimage, double latitude, double longitude) {
         mId = idx;
         mMessage = txt;
+        this.username = username;
         mLikeCount = likeCount;
         mDislikeCount = dislikeCount;
         this.mImage = mimage;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Message(Parcel in) {
