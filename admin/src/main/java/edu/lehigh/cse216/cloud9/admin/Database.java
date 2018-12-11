@@ -8,6 +8,9 @@ import java.sql.SQLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 public class Database {
 
@@ -122,12 +125,16 @@ public class Database {
 
         String mLink;
 
+        double latitude;
+
+        double longitude;
+
         /**
          * Construct a RowData object by providing values for its fields
          */
 
         public message_RowData(int mid, String message, int likeCount, int dislikeCount, int uid, String username,
-                String image, String fileid, String link) {
+                String image, String fileid, String link, double latitude, double longitude) {
             mId = mid;
             mMessage = message;
             mlikeCount = likeCount;
@@ -136,6 +143,8 @@ public class Database {
             mimage = image;
             mfileid = fileid;
             mLink = link;
+            this.latitude = latitude;
+            this.longitude = longitude;
             this.username = username;
         }
 
@@ -300,7 +309,8 @@ public class Database {
                     + "uid INT NOT NULL, " + "message VARCHAR(500) NOT NULL, " + "likeCount INT NOT NULL, "
                     + "dislikeCount INT NOT NULL, " + "username VARCHAR(100) NOT NULL,"
                     + "image VARCHAR(100000) NOT NULL, " + "fileid VARCHAR(500) NOT NULL, "
-                    + "link VARCHAR(500) NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
+                    + "link VARCHAR(500) NOT NULL, " + "latitude DOUBLE PRECISION NOT NULL, "
+                    + "longitude DOUBLE PRECISION NOT NULL, " + "FOREIGN KEY (uid) REFERENCES tblUser(uid))");
             // create user_table
             db.uCreateTable = db.mConnection.prepareStatement("CREATE TABLE tblUser (" + "uid SERIAL PRIMARY KEY, "
                     + "username VARCHAR(100) NOT NULL, " + "realname VARCHAR(100) NOT NULL, "
@@ -328,7 +338,7 @@ public class Database {
             // Standard CRUD operations for message_table
             db.mDeleteOne = db.mConnection.prepareStatement("DELETE FROM tblMessage WHERE mid = ?");
             db.mInsertOne = db.mConnection
-                    .prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?, ?, ?,?)");
+                    .prepareStatement("INSERT INTO tblMessage VALUES (default, ?, ?, 0, 0, ?, ?, ?, ?, ?, ?)");
             db.mSelectAll = db.mConnection.prepareStatement("SELECT * FROM tblMessage");
             db.mSelectOne = db.mConnection.prepareStatement("SELECT * from tblMessage WHERE mid=?");
             db.mUpdateOne = db.mConnection.prepareStatement("UPDATE tblMessage SET message = ? WHERE mid = ?");
@@ -456,7 +466,8 @@ public class Database {
      * 
      * @return The number of rows that were inserted
      */
-    int insert_messageRow(String message, int uid, String image, String fileid, String link) {
+    int insert_messageRow(String message, int uid, String image, String fileid, String link, double latitude,
+            double longitude) {
         int count = 0;
         try {
 
@@ -467,6 +478,8 @@ public class Database {
             mInsertOne.setString(4, image);
             mInsertOne.setString(5, fileid);
             mInsertOne.setString(6, link);
+            mInsertOne.setDouble(7, latitude);
+            mInsertOne.setDouble(8, longitude);
             count += mInsertOne.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -486,7 +499,8 @@ public class Database {
             while (rs.next()) {
                 res.add(new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
                         rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"),
-                        rs.getString("fileid"), rs.getString("link")));
+                        rs.getString("fileid"), rs.getString("link"), rs.getDouble("latitude"),
+                        rs.getDouble("longitude")));
             }
             rs.close();
             return res;
@@ -511,7 +525,8 @@ public class Database {
             if (rs.next()) {
                 res = new message_RowData(rs.getInt("mid"), rs.getString("message"), rs.getInt("likeCount"),
                         rs.getInt("dislikeCount"), rs.getInt("uid"), rs.getString("username"), rs.getString("image"),
-                        rs.getString("fileid"), rs.getString("link"));
+                        rs.getString("fileid"), rs.getString("link"), rs.getDouble("latitude"),
+                        rs.getDouble("longitude"));
             }
         } catch (SQLException e) {
             e.printStackTrace();

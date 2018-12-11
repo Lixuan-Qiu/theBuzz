@@ -2,6 +2,7 @@
 /// <reference path="ts/NewEntryForm.ts"/>
 /// <reference path="ts/ElementList.ts"/>
 /// <reference path="ts/Login.ts"/>
+/// <reference path="ts/Map.ts"/>
 
 // Prevent compiler errors when using jQuery.  "$" will be given a type of 
 // "any", so that we can use it anywhere, and assume it has any fields or
@@ -11,7 +12,10 @@ var gapi: any;
 var id_token: any = null;
 var stringFile: any = "";
 var test: number = 0;
-
+var latitude: number = 360.0;
+var longtitude: number = 360.0;
+var LAT_VALUE: number = 40.607164238;
+var LONG_VALUE: number = -75.378998484;
 /// This constant indicates the path to our backend server
 const backendUrl = "https://agile-plateau-21593.herokuapp.com";
 
@@ -30,28 +34,33 @@ $(document).ready(function () {
     ElementList.refresh();
     NewEntryForm.refresh();
     EditEntryForm.refresh();
+    mMap.refresh();
     Login.refresh();
 
 });
 
-var callback = function(fileData:any){
-    stringFile = fileData;
-    console.log("File",stringFile);
-}
-
-function uploadFile() {
-    var file = $("#Upload")[0].files[0];
-    var reader  = new FileReader();
-    
-    reader.addEventListener("load", function () {
-      stringFile = reader.result!.toString().split(",")[1];
-      callback(reader.result!.toString().split(",")[1]);
-      
-    }, false);
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
+Handlebars.registerHelper('equaluId', function(this:any, lvalue:any, options:any) {
+  if (arguments.length < 2){
+      throw new Error("Handlebars Helper equal needs 2 parameters");
   }
+  if( lvalue!=user_id ) {
+      return options.inverse(this);
+  } else{
+      return options.fn(this);
+  }
+});
+
+Handlebars.registerHelper('equal360', function(this:any, lvalue:any, options:any) {
+    if (arguments.length < 2){
+        throw new Error("Handlebars Helper equal needs 2 parameters");
+    }
+    if( lvalue==360.0 ) {
+        return options.inverse(this);
+    } else{
+        return options.fn(this);
+    }
+  });
+
+  
 
 

@@ -14,7 +14,6 @@ class NewEntryForm {
      * Track if the Singleton has been initialized
      */
     private static isInit = false;
-
     /**
      * Initialize the NewEntryForm by creating its element in the DOM and 
      * configuring its buttons.  This needs to be called from any public static 
@@ -24,6 +23,7 @@ class NewEntryForm {
         if (!NewEntryForm.isInit) {
             $("body").append(Handlebars.templates[NewEntryForm.NAME + ".hb"]());
             //$("#" + "Upload").click(NewEntryForm.submitForm);
+            $("#" + NewEntryForm.NAME + "-Location").click(NewEntryForm.addLocation);
             $("#" + NewEntryForm.NAME + "-OK").click(NewEntryForm.submitForm);
             NewEntryForm.isInit = true;
         }
@@ -38,8 +38,13 @@ class NewEntryForm {
         NewEntryForm.init();
     }
 
-    
-
+    /**
+     * add location for meessage which return latitude and longtitude 
+     */
+    private static addLocation(){
+        console.log("getting new location");
+        mMap.show_2();
+    }
     /**
      * Send data to submit the form only if the fields are both valid.  
      * Immediately hide the form when we send data, so that the user knows that 
@@ -80,7 +85,7 @@ class NewEntryForm {
                     url: "/messages",
                     dataType: "json",
                     headers: { "Authorization": session_key },
-                    data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link, img: "", mfileID: "", fileName: fileName, file: stringFile}),
+                    data: JSON.stringify({ uid: user_id, mMessage: msg, mlink:link, img: "", mfileID: "", fileName: fileName, file: stringFile, latitude: latitude, longitude: longtitude}),
                     success: NewEntryForm.onSubmitResponse
                 });
               };
@@ -97,7 +102,7 @@ class NewEntryForm {
                 url: "/messages",
                 dataType: "json",
                 headers: { "Authorization": session_key },
-                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:link, mfileID: "", fileName: "", file: ""}),
+                data: JSON.stringify({ uid: user_id, mMessage: msg, img: "", mlink:link, mfileID: "", fileName: "", file: "", latitude: latitude, longitude: longtitude}),
                 success: NewEntryForm.onSubmitResponse
             });
         }
@@ -116,6 +121,7 @@ class NewEntryForm {
         if (data.mStatus === "ok") {
             ElementList.refresh();
             $("#" + NewEntryForm.NAME + "-message").val("");
+            $("#" + NewEntryForm.NAME + "-link").val("");
         }
         // Handle explicit errors with a detailed popup message
         else if (data.mStatus === "error") {

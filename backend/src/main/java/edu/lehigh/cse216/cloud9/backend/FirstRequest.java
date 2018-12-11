@@ -8,10 +8,8 @@ package edu.lehigh.cse216.cloud9.backend;
  */
 public class FirstRequest {
     /**
-     * username
+     * idtoekn
      */
-    public String username;
-    // password
-    public String password;
+    public String id_token;
 
 }

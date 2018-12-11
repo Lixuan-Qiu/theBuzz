@@ -292,6 +292,20 @@ public class App {
                     } else {
                         cp.println("no file...", Attribute.NONE, FColor.RED, BColor.BLACK);
                     }
+                    cp.print(" Latitude : ");
+                    if (row.latitude != 0.0) {
+                        // if fileID not null
+                        cp.println(row.latitude, Attribute.NONE, FColor.GREEN, BColor.BLACK);
+                    } else {
+                        cp.println("no latitude...", Attribute.NONE, FColor.RED, BColor.BLACK);
+                    }
+                    cp.print(" Longitude : ");
+                    if (row.longitude != 0.0) {
+                        // if fileID not null
+                        cp.println(row.longitude, Attribute.NONE, FColor.GREEN, BColor.BLACK);
+                    } else {
+                        cp.println("no longitude...", Attribute.NONE, FColor.RED, BColor.BLACK);
+                    }
 
                     cp.println(" Like: " + row.mlikeCount + "\tDislike: " + row.mdislikeCount + "\n");
                 }
@@ -314,7 +328,7 @@ public class App {
                 id = getInt(in, "Eneter the User ID");
                 if (id == -1 || message.equals(""))
                     continue;
-                result = db.insert_messageRow(message, id, "", "", "");
+                result = db.insert_messageRow(message, id, "", "", "", 0.0,0.0);
 
                 cp.println(result + " rows added");
                 break;

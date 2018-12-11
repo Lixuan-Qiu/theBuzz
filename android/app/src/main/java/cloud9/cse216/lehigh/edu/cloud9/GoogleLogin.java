@@ -62,7 +62,9 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
 
 
     private static final String TAG = "SignInActivity";
+    //private static final String token = "319649689632-ab1spgcf6pbk9gldhkburq986cillq0k.apps.googleusercontent.com"; // google oauth 2.0 client id
     private static final String token = "319649689632-faqtfv5tgaa3n0urvoprhv66s9kdv6bg.apps.googleusercontent.com";
+
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient mGoogleSignInClient;
     private TextView mTextView;
@@ -163,7 +165,9 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
     }
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        Log.i("SignInResult", "handleSignInResult: beginning");
         try {
+            Log.i("SignInResult", "handleSignInResult: success sign in");
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
             String idToken = account.getIdToken();
             String url = "https://agile-plateau-21593.herokuapp.com/login";
@@ -205,7 +209,7 @@ public class GoogleLogin extends AppCompatActivity implements View.OnClickListen
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
-            Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
+            Log.w(TAG, "signInResult:failed code =" + e.getStatusCode());
             updateUI(null);
         }
     }

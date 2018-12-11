@@ -19,4 +19,7 @@
     <string name="CAM">CAM</string>
     <string name="Send">Send</string>
     <string name="Hint">Type your message here</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="backBtn">Back</string>
+    <string name="title_activity_maps_for_input">Map</string>
 </resources>

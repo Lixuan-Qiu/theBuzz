@@ -38,14 +38,14 @@ class ElementList {
         $("." + ElementList.NAME + "-delbtn").click(ElementList.clickDelete);
         // Find all of the Edit buttons, and set their behavior
         $("." + ElementList.NAME + "-editbtn").click(ElementList.clickEdit);
+        // Find all of the Location buttons, and set their behavior
+        $("." + ElementList.NAME + "-locationbtn").click(ElementList.clickLocation);
         // Find all of the delete buttons, and set their behavior
         $("." + ElementList.NAME + "-likebtn").click(ElementList.clickLike);
         // Find all of the Edit buttons, and set their behavior
         $("." + ElementList.NAME + "-dislikebtn").click(ElementList.clickDislike);
 
         $("#" + ElementList.NAME + "-logoutbtn").click(ElementList.clickLogout);
-
-        $("." + ElementList.NAME + "-linkbtn").click(ElementList.clickLink);
 
         $("." + ElementList.NAME + "-getFilebtn").click(ElementList.clickGetFile);
 
@@ -100,6 +100,28 @@ class ElementList {
 
 
     }
+
+    /**
+     * clickLocation is the code we run in response to a click of a location button
+     */
+    private static clickLocation() {
+        
+                if (session_key === "") {
+                    console.log("ElementList: refresh: user isn't logged in");
+                    Login.hideMainPage();
+                    return;
+                }
+                console.log("check clickLocation");
+                let id = $(this).data("value");
+                $.ajax({
+                    type: "GET",
+                    url: "/messages/" + id,
+                    dataType: "json",
+                    headers: { "Authorization": session_key },
+                    success: mMap.show
+                });
+            }
+        
 
     /**
      * clickEdit is the code we run in response to a click of a delete button
@@ -167,13 +189,13 @@ class ElementList {
             success: ElementList.onSubmitResponse
         });
     }
-    private static clickLink(){
-
-    }
+    
     /**
-     * clickLike is the code we run in response to a click of a like button
+     * When the clickGetFile is clicked, a get is called to get the download link. Then the link is put into the 
+     * message row.
+     * //TODO get this function to run without clicking the button, it would looke better
      */
-    private static clickGetFile() {
+    public static clickGetFile() {
 
         if (session_key === "") {
             console.log("ElementList: refresh: user isn't logged in");
@@ -190,10 +212,11 @@ class ElementList {
             headers: { "Authorization": session_key },
             success: function(data:any){
                 console.log(data); 
-                var response = JSON.parse(data);
-                $("#"+ id + "fileLink").attr("href", response.mData);
-                //console.log("Link: ", response[0].mData);
-                console.log("Link: ", response.mData);
+                var link = document.getElementById(id + "filelink");
+                link!.innerHTML = "Dowload Link";
+                link!.setAttribute('href', data.mData);
+                console.log("Link: ", data.mData);
+                $("." + ElementList.NAME + "-getFilebtn").hide();
             },
         });
 
@@ -210,6 +233,7 @@ class ElementList {
 
         test = -1;
         session_key = "";
+        Login.hideMainPage();
     }
 
     private static onSubmitResponse(data: any) {
